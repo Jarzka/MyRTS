@@ -2,35 +2,44 @@ package org.voimala.myrts.gameplay.units;
 
 public class Unit {
 
-    private double x = 0;
-    private double y = 0;
-    private double angle = 0;
+    private float x = 0;
+    private float y = 0;
+    private float angle = 0;
     private double velocity = 0;
     private double acceleration = 0;
     private double deceleration = 0;
     private UnitType type;
 
-    public double getX() {
+    public Unit() {
+
+    }
+
+    public float getX() {
         return x;
     }
 
-    public void setX(final double x) {
+    public void setX(final float x) {
         this.x = x;
     }
 
-    public double getY() {
+    public float getY() {
         return y;
     }
 
-    public void setY(final double y) {
+    public void setY(final float y) {
         this.y = y;
     }
 
-    public double getAngle() {
+    public void setPosition(final int x, final int y) {
+        this.x = x;
+        this.y = y;
+    }
+
+    public float getAngle() {
         return angle;
     }
 
-    public void setAngle(double angle) {
+    public void setAngle(float angle) {
         if (angle < 0) {
             angle = 0;
         }
@@ -66,4 +75,6 @@ public class Unit {
         this.deceleration = deceleration;
     }
 
+    public void update(float deltaTime) {
+    }
 }
