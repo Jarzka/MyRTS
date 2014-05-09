@@ -1,5 +1,9 @@
 package org.voimala.myrts.gameplay.units;
 
+import com.badlogic.gdx.math.Vector2;
+
+import java.util.ArrayList;
+
 public class Unit {
 
     private float x = 0;
@@ -8,10 +12,37 @@ public class Unit {
     private double velocity = 0;
     private double acceleration = 0;
     private double deceleration = 0;
+    private ArrayList<Vector2> pathPoints = new ArrayList<>();
     private UnitType type;
+    private int player = 0;
+    private int team = 0;
 
     public Unit() {
 
+    }
+
+    public int getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(int player) {
+        this.player = player;
+    }
+
+    public int getTeam() {
+        return team;
+    }
+
+    public void setTeam(int team) {
+        this.team = team;
+    }
+
+    public UnitType getType() {
+        return type;
+    }
+
+    public void setType(UnitType type) {
+        this.type = type;
     }
 
     public float getX() {
@@ -75,6 +106,21 @@ public class Unit {
         this.deceleration = deceleration;
     }
 
-    public void update(float deltaTime) {
+    public void update(final float deltaTime) {
+        if (!pathPoints.isEmpty()) {
+            move();
+        }
+    }
+
+    private void move() {
+
+    }
+
+    public void addPathPoint(Vector2 point) {
+        pathPoints.add(point);
+    }
+
+    public void clearPathPoints() {
+        pathPoints.clear();
     }
 }
