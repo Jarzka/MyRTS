@@ -1,6 +1,8 @@
 package org.voimala.myrts.gameplay.units;
 
 import com.badlogic.gdx.math.Vector2;
+import org.voimala.myrts.gameplay.units.states.UnitMovementState;
+import org.voimala.myrts.gameplay.units.states.UnitMovementStateStopped;
 
 import java.util.ArrayList;
 
@@ -16,9 +18,17 @@ public class Unit {
     private UnitType type;
     private int player = 0;
     private int team = 0;
+    private UnitMovementState movementState = new UnitMovementStateStopped(this);
 
     public Unit() {
+        initialize();
+    }
 
+    private void initialize() {
+        // TODO Add test path points
+        pathPoints.add(new Vector2(256, 256));
+        pathPoints.add(new Vector2(512, 256));
+        pathPoints.add(new Vector2(512, 512));
     }
 
     public int getPlayer() {
@@ -107,9 +117,7 @@ public class Unit {
     }
 
     public void update(final float deltaTime) {
-        if (!pathPoints.isEmpty()) {
-            move();
-        }
+        movementState.update();
     }
 
     private void move() {
@@ -122,5 +130,13 @@ public class Unit {
 
     public void clearPathPoints() {
         pathPoints.clear();
+    }
+
+    public ArrayList<Vector2> getPathPoints() {
+        return pathPoints;
+    }
+
+    public void changeMovementState(UnitMovementState state) {
+        this.movementState = state;
     }
 }
