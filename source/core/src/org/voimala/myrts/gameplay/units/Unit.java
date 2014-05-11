@@ -7,7 +7,7 @@ public class Unit {
 
     private float x = 0;
     private float y = 0;
-    private float angle = 0; // 0 = top, 90 = left, 180 = down, 270 = right
+    private float angle = 0; // 0 = right, 90 = top, 180 = left, 270 = down. Always between 0 and 360 (inclusive)
     private int player = 0;
     private int team = 0;
     protected Movement movement = null;
@@ -68,6 +68,16 @@ public class Unit {
         this.y = y;
     }
 
+    /** Adds the given value to unit's x value. */
+    public void moveX(final double x) {
+        this.x += x;
+    }
+
+    /** Adds the given value to unit's y value. */
+    public void moveY(final double y) {
+        this.y += y;
+    }
+
     public void setPosition(final int x, final int y) {
         setX(x);
         setY(y);
@@ -77,16 +87,21 @@ public class Unit {
         return angle;
     }
 
-    public void setAngle(float angle) {
+    public void setAngle(final float angle) {
+        this.angle = angle;
+        keepAngleValueInRange();
+    }
+
+    private void keepAngleValueInRange() {
         if (angle < 0) {
-            angle = 0;
+            float newAngle = 360 - Math.abs(angle);
+            this.angle = newAngle;
         }
 
         if (angle > 360) {
-            angle = 360;
+            float newAngle = 0 + angle - 360;
+            this.angle = newAngle;
         }
-
-        this.angle = angle;
     }
 
     public void update(final float deltaTime) {
@@ -105,5 +120,10 @@ public class Unit {
 
     public void rotate(final float angle) {
         this.angle += angle;
+        keepAngleValueInRange();
+    }
+
+    public double getAngleInRadians() {
+        return Math.toRadians(angle);
     }
 }

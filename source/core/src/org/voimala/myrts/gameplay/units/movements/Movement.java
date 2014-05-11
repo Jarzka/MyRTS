@@ -5,62 +5,72 @@ import org.voimala.myrts.exceptions.GameLogicException;
 import org.voimala.myrts.gameplay.units.Unit;
 
 public abstract class Movement {
-    protected double velocity = 0;
-    protected double acceleration = 0;
-    protected double deceleration = 0;
-    protected double rotationVelocity = 0;
-    protected double rotationAcceleration = 0; // TODO
-    protected double rotationDeceleration = 0; // TODO
+    protected double currentVelocity = 0; /** px/s */
+    protected double maxVelocity = 0; /** px/s */
+    protected double acceleration = 0; /** px/s */
+    protected double deceleration = 0; /** px/s */
+    protected double maxRotationVelocity = 0; /** px/s */
+    protected double currentRotationVelocity = 0; /** px/s */
+    protected double rotationAcceleration = 0; /** px/s */ // TODO
+    protected double rotationDeceleration = 0; /** px/s */ // TODO
     protected Unit ownerUnit = null;
 
-    public Movement(final Unit ownerUnit,
-                    final double acceleration,
-                    final double deceleration,
-                    final double rotationVelocity) {
-        if (acceleration < 0) {
-            throw new GameLogicException("Acceleration must be equal or greater than 0.");
-        }
-
-        if (deceleration < 0) {
-            throw new GameLogicException("Deceleration must be equal or greater than 0.");
-        }
-
-        if (rotationVelocity < 0) {
+    private void checkMaxRotationVelocity(double maxRotationVelocity) {
+        if (maxRotationVelocity < 0) {
             throw new GameLogicException("Rotation speed must be equal or greater than 0.");
         }
+    }
 
-        this.ownerUnit = ownerUnit;
-        this.acceleration = acceleration;
-        this.deceleration = deceleration;
-        this.rotationVelocity = rotationVelocity;
+    private void checkDeceleration(double rotationDeceleration) {
+        if (rotationDeceleration < 0) {
+            throw new GameLogicException("Deceleration must be equal or greater than 0.");
+        }
+    }
+
+    private void checkAcceleration(double rotationAcceleration) {
+        if (rotationAcceleration < 0) {
+            throw new GameLogicException("Acceleration must be equal or greater than 0.");
+        }
+    }
+
+    private void checkRotationAcceleration(double acceleration) {
+        if (acceleration < 0) {
+            throw new GameLogicException("Rotation acceleration must be equal or greater than 0.");
+        }
+    }
+
+    private void checkRotationDeceleration(double deceleration) {
+        if (acceleration < 0) {
+            throw new GameLogicException("Rotation deceleration must be equal or greater than 0.");
+        }
+    }
+
+    private void checkMaxVelocity(double maxVelocity) {
+        if (maxVelocity < 0) {
+            throw new GameLogicException("Max velocity must be equal or greater than 0.");
+        }
     }
 
     public Movement(final Unit ownerUnit) {
         this.ownerUnit = ownerUnit;
     }
 
-    public double getVelocity() {
-        return velocity;
+    public double getMaxVelocity() {
+        return maxVelocity;
     }
 
-    public void setVelocity(final double velocity) {
-        if (velocity < 0) {
-            throw new GameLogicException("Velocity must be equal or greater than 0.");
-        }
-
-        this.velocity = velocity;
+    public void setMaxVelocity(final double maxVelocity) {
+        checkMaxVelocity(maxVelocity);
+        this.maxVelocity = maxVelocity;
     }
 
-    public double getRotationSpeed() {
-        return rotationVelocity;
+    public double getMaxRotationVelocity() {
+        return maxRotationVelocity;
     }
 
-    public void setRotationSpeed(final double rotationVelocity) {
-        if (rotationVelocity < 0) {
-            throw new GameLogicException("Rotation speed must be equal or greater than 0.");
-        }
-
-        this.rotationVelocity = rotationVelocity;
+    public void setMaxRotationVelocity(final double rotationVelocity) {
+        checkMaxRotationVelocity(rotationVelocity);
+        this.maxRotationVelocity = rotationVelocity;
     }
 
     public double getAcceleration() {
@@ -68,10 +78,7 @@ public abstract class Movement {
     }
 
     public void setAcceleration(final double acceleration) {
-        if (acceleration < 0) {
-            throw new GameLogicException("Acceleration must be equal or greater than 0.");
-        }
-
+        checkAcceleration(acceleration);
         this.acceleration = acceleration;
     }
 
@@ -80,18 +87,35 @@ public abstract class Movement {
     }
 
     public void setDeceleration(final double deceleration) {
-        if (deceleration < 0) {
-            throw new GameLogicException("Deceleration must be equal or greater than 0.");
-        }
-
+        checkDeceleration(deceleration);
         this.deceleration = deceleration;
     }
 
     public abstract void update(final float deltaTime);
 
-    protected boolean hasReachedPoint(Vector2 nextPoint) {
-        return ownerUnit.getX() == nextPoint.x
-                && ownerUnit.getY() == nextPoint.y;
+    protected boolean hasReachedPoint(Vector2 point) {
+        return ownerUnit.getX() >=  point.x - 5
+                && ownerUnit.getX() <=  point.x + 5
+                && ownerUnit.getY() >=  point.y - 5
+                && ownerUnit.getY() <= point.y + 5;
+    }
+
+    public double getRotationAcceleration() {
+        return rotationAcceleration;
+    }
+
+    public void setRotationAcceleration(final double rotationAcceleration) {
+        checkRotationAcceleration(rotationAcceleration);
+        this.rotationAcceleration = rotationAcceleration;
+    }
+
+    public double getRotationDeceleration() {
+        return rotationDeceleration;
+    }
+
+    public void setRotationDeceleration(final double rotationDeceleration) {
+        checkRotationDeceleration(rotationDeceleration);
+        this.rotationDeceleration = rotationDeceleration;
     }
 
 }

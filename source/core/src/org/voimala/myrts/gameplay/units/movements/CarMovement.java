@@ -9,14 +9,7 @@ import java.util.ArrayList;
 public class CarMovement extends Movement {
     private ArrayList<Vector2> pathPoints = new ArrayList<>();
 
-    public CarMovement(final Unit ownerUnit,
-                       final double acceleration,
-                       final double deceleration,
-                       final double rotationVelocity) {
-        super(ownerUnit, acceleration, deceleration, rotationVelocity);
-    }
-
-    public CarMovement(final Unit ownerUnit) {
+    public CarMovement(Unit ownerUnit) {
         super(ownerUnit);
     }
 
@@ -31,26 +24,34 @@ public class CarMovement extends Movement {
         moveTowardsPoint(deltaTime, nextPoint);
 
         if (hasReachedPoint(nextPoint)) {
-            pathPoints.clear();
+            pathPoints.remove(nextPoint);
         }
     }
 
     private void moveTowardsPoint(final float deltaTime, final Vector2 nextPoint) {
         rotateTowardsPoint(deltaTime, nextPoint);
-
-        // TODO
-        //double angleFromUnitToTarget = getAngleFromUnitToTarget(nextPoint);
-        //ownerUnit.setX();
-        //ownerUnit.setY();
+        ownerUnit.moveX(Math.cos(ownerUnit.getAngleInRadians()) * maxVelocity * deltaTime);
+        ownerUnit.moveY(Math.sin(ownerUnit.getAngleInRadians()) * maxVelocity * deltaTime);
     }
 
-    private void rotateTowardsPoint(final float deltaTime,  final Vector2 point) {
-        int rotationDirection = 1; // TODO
+    private void rotateTowardsPoint(final float deltaTime, final Vector2 point) {
+        double angleBetweenUnitAndPointInRadians = MathHelper.getAngleBetweenPointsInRadians(
+                ownerUnit.getX(),
+                ownerUnit.getY(),
+                point.x,
+                point.y);
 
-        if (rotationDirection == 2) {
-            ownerUnit.rotate((float) (deltaTime * rotationVelocity));
-        } else if (rotationDirection == 1) {
-            ownerUnit.rotate(-(float) (deltaTime * rotationVelocity));
+        // If unit is not looking at the point, rotate it
+        if (MathHelper.round(ownerUnit.getAngleInRadians(), 4)
+                != MathHelper.round(angleBetweenUnitAndPointInRadians, 4)) {
+            int rotationDirection = MathHelper.getFasterTurningDirection(ownerUnit.getAngleInRadians(),
+                    angleBetweenUnitAndPointInRadians);
+
+            if (rotationDirection == 1) {
+                ownerUnit.rotate(-(float) (deltaTime * maxRotationVelocity));
+            } else if (rotationDirection == 2) {
+                ownerUnit.rotate((float) (deltaTime * maxRotationVelocity));
+            }
         }
     }
 
