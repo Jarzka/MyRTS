@@ -1,23 +1,21 @@
-package org.voimala.myrts.gameplay.units.states.tests;
+package org.voimala.myrts.gameplay.units;
 
-import org.voimala.myrts.gameplay.units.Unit;
-import org.voimala.myrts.gameplay.units.states.UnitMovementStateMoving;
+import org.voimala.myrts.gameplay.units.movements.CarMovement;
 
 import static org.junit.Assert.*;
 
-public class UnitMovementStateMovingTest {
+public class MovementTest {
 
     @org.junit.Test
     public void testUnitMoves() {
         Unit unit = new Unit();
+        unit.setMovement(new CarMovement(unit, 10, 10, 10));
 
         float angleOld = unit.getAngle();
         float xOld = unit.getX();
         float yOld = unit.getY();
 
-        UnitMovementStateMoving state = new UnitMovementStateMoving(unit);
-        unit.changeMovementState(state);
-        state.update();
+        unit.getMovement().update(10);
 
         // Unit has moved
         assertTrue(unit.getAngle() != angleOld

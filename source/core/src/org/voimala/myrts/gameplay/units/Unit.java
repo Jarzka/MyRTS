@@ -1,41 +1,34 @@
 package org.voimala.myrts.gameplay.units;
 
-import com.badlogic.gdx.math.Vector2;
-import org.voimala.myrts.gameplay.units.states.UnitMovementState;
-import org.voimala.myrts.gameplay.units.states.UnitMovementStateStopped;
-
-import java.util.ArrayList;
+import org.voimala.myrts.exceptions.GameLogicException;
+import org.voimala.myrts.gameplay.units.movements.Movement;
 
 public class Unit {
 
     private float x = 0;
     private float y = 0;
-    private float angle = 0;
-    private double velocity = 0;
-    private double acceleration = 0;
-    private double deceleration = 0;
-    private ArrayList<Vector2> pathPoints = new ArrayList<>();
-    private UnitType type;
+    private float angle = 0; // 0 = top, 90 = left, 180 = down, 270 = right
     private int player = 0;
     private int team = 0;
-    private UnitMovementState movementState = new UnitMovementStateStopped(this);
+    protected Movement movement = null;
+    private UnitType type;
 
     public Unit() {
         initialize();
     }
 
     private void initialize() {
-        // TODO Add test path points
-        pathPoints.add(new Vector2(256, 256));
-        pathPoints.add(new Vector2(512, 256));
-        pathPoints.add(new Vector2(512, 512));
     }
 
     public int getPlayer() {
         return player;
     }
 
-    public void setPlayer(int player) {
+    public void setPlayer(final int player) {
+        if (player < 0) {
+            throw new GameLogicException("Player number must be equal or greater than 0");
+        }
+
         this.player = player;
     }
 
@@ -43,7 +36,11 @@ public class Unit {
         return team;
     }
 
-    public void setTeam(int team) {
+    public void setTeam(final int team) {
+        if (team < 0) {
+            throw new GameLogicException("Team number must be equal or greater than 0");
+        }
+
         this.team = team;
     }
 
@@ -72,8 +69,8 @@ public class Unit {
     }
 
     public void setPosition(final int x, final int y) {
-        this.x = x;
-        this.y = y;
+        setX(x);
+        setY(y);
     }
 
     public float getAngle() {
@@ -92,51 +89,21 @@ public class Unit {
         this.angle = angle;
     }
 
-    public double getVelocity() {
-        return velocity;
-    }
-
-    public void setVelocity(final double velocity) {
-        this.velocity = velocity;
-    }
-
-    public double getAcceleration() {
-        return acceleration;
-    }
-
-    public void setAcceleration(final double acceleration) {
-        this.acceleration = acceleration;
-    }
-
-    public double getDeceleration() {
-        return deceleration;
-    }
-
-    public void setDeceleration(final double deceleration) {
-        this.deceleration = deceleration;
-    }
-
     public void update(final float deltaTime) {
-        movementState.update();
+        if (movement != null) {
+            movement.update(deltaTime);
+        }
     }
 
-    private void move() {
-
+    public void setMovement(final Movement movement) {
+        this.movement = movement;
     }
 
-    public void addPathPoint(Vector2 point) {
-        pathPoints.add(point);
+    public Movement getMovement() {
+        return movement;
     }
 
-    public void clearPathPoints() {
-        pathPoints.clear();
-    }
-
-    public ArrayList<Vector2> getPathPoints() {
-        return pathPoints;
-    }
-
-    public void changeMovementState(UnitMovementState state) {
-        this.movementState = state;
+    public void rotate(final float angle) {
+        this.angle += angle;
     }
 }

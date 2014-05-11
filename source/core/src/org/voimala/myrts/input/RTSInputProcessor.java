@@ -55,7 +55,7 @@ public class RTSInputProcessor implements InputProcessor{
     }
 
     private void handleInputZoom(int amount) {
-        OrthographicCamera camera = worldController.getWorldRenderer().getCamera();
+        OrthographicCamera camera = worldController.getCamera();
 
         if (amount < 0) {
             if (camera.zoom > 1) {

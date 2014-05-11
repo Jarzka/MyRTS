@@ -10,11 +10,9 @@ import org.voimala.myrts.gameplay.units.Unit;
 import org.voimala.myrts.graphics.SpriteContainer;
 
 public class WorldRenderer implements Disposable {
-    private OrthographicCamera camera;
+
     private SpriteBatch batch;
     private WorldController worldController;
-
-    public final int TILE_SIZE_PIXELS = 256;
 
     public WorldRenderer (WorldController worldController) {
         this. worldController = worldController;
@@ -24,23 +22,15 @@ public class WorldRenderer implements Disposable {
 
     private void initialize () {
         initializeBatch();
-        initializeCamera();
     }
 
     private void initializeBatch() {
         batch = new SpriteBatch();
     }
 
-    private void initializeCamera() {
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.lookAt(0, 0, 0);
-        camera.translate(800, 800);
-        camera.zoom = 4;
-        camera.update();
-    }
 
     public void render () {
-        batch.setProjectionMatrix(camera.combined);
+        batch.setProjectionMatrix(worldController.getCamera().combined);
 
         renderGround();
         renderUnits();
@@ -51,7 +41,7 @@ public class WorldRenderer implements Disposable {
             for (int j = 0; j < 10; j++) {
                 batch.begin();
                 Sprite sprite = SpriteContainer.getInstance().getSprite("grass1");
-                sprite.setPosition(i * TILE_SIZE_PIXELS, j * TILE_SIZE_PIXELS);
+                sprite.setPosition(i * worldController.TILE_SIZE_PIXELS, j * worldController.TILE_SIZE_PIXELS);
                 sprite.draw(batch);
                 batch.end();
             }
@@ -71,9 +61,9 @@ public class WorldRenderer implements Disposable {
     }
 
     public void resize(int width, int height) {
-        camera.viewportWidth = Gdx.graphics.getWidth();
-        camera.viewportHeight = Gdx.graphics.getHeight();
-        camera.update();
+        worldController.getCamera().viewportWidth = Gdx.graphics.getWidth();
+        worldController.getCamera().viewportHeight = Gdx.graphics.getHeight();
+        worldController.getCamera().update();
     }
 
     @Override
@@ -81,7 +71,4 @@ public class WorldRenderer implements Disposable {
 
     }
 
-    public OrthographicCamera getCamera() {
-        return camera;
-    }
 }

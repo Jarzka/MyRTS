@@ -18,7 +18,6 @@ public class MyRTS extends ApplicationAdapter {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         worldController = new WorldController();
         worldRenderer = new WorldRenderer(worldController);
-        worldController.setWorldRenderer(worldRenderer);
     }
 
     @Override
