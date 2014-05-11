@@ -8,30 +8,38 @@ import java.util.ArrayList;
 
 public class CarMovement extends Movement {
     private ArrayList<Vector2> pathPoints = new ArrayList<>();
+    private double acceleratorPedal = 0; /// 0 = no acceleration, 1 = full acceleration.
 
     public CarMovement(Unit ownerUnit) {
         super(ownerUnit);
     }
 
     public void update(final float deltaTime) {
+        handleMovement(deltaTime);
+        handleAI(deltaTime);
+    }
+
+    private void handleAI(float deltaTime) {
         if(!pathPoints.isEmpty()) {
-            move(deltaTime);
+            drive(deltaTime);
+        } else {
+            stop(deltaTime); // TODO Stop at the last path point
         }
     }
 
-    private void move(final float deltaTime) {
+    private void drive(final float deltaTime) {
+        acceleratorPedal = 1;
+
         Vector2 nextPoint = pathPoints.get(0);
-        moveTowardsPoint(deltaTime, nextPoint);
+        driveTowardsPoint(deltaTime, nextPoint);
 
         if (hasReachedPoint(nextPoint)) {
             pathPoints.remove(nextPoint);
         }
     }
 
-    private void moveTowardsPoint(final float deltaTime, final Vector2 nextPoint) {
+    private void driveTowardsPoint(final float deltaTime, final Vector2 nextPoint) {
         rotateTowardsPoint(deltaTime, nextPoint);
-        ownerUnit.moveX(Math.cos(ownerUnit.getAngleInRadians()) * maxVelocity * deltaTime);
-        ownerUnit.moveY(Math.sin(ownerUnit.getAngleInRadians()) * maxVelocity * deltaTime);
     }
 
     private void rotateTowardsPoint(final float deltaTime, final Vector2 point) {
@@ -51,6 +59,37 @@ public class CarMovement extends Movement {
                 ownerUnit.rotate(-(float) (deltaTime * maxRotationVelocity));
             } else if (rotationDirection == 2) {
                 ownerUnit.rotate((float) (deltaTime * maxRotationVelocity));
+            }
+        }
+    }
+
+    private void stop(final float deltaTime) {
+        acceleratorPedal = 0;
+    }
+
+    private void handleMovement(float deltaTime) {
+        handleAcceleration(deltaTime);
+        handleDeceleration(deltaTime);
+        ownerUnit.moveX(Math.cos(ownerUnit.getAngleInRadians()) * currentVelocity * deltaTime);
+        ownerUnit.moveY(Math.sin(ownerUnit.getAngleInRadians()) * currentVelocity * deltaTime);
+    }
+
+    private void handleAcceleration(final float deltaTime) {
+        if (acceleratorPedal > 0) {
+            currentVelocity += acceleration * deltaTime;
+
+            if (currentVelocity >= maxVelocity) {
+                currentVelocity = maxVelocity;
+            }
+        }
+    }
+
+    private void handleDeceleration(final float deltaTime) {
+        if (acceleratorPedal == 0) {
+            currentVelocity -= deceleration * deltaTime;
+
+            if (currentVelocity < 0) {
+                currentVelocity = 0;
             }
         }
     }

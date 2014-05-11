@@ -70,13 +70,12 @@ public class WorldController {
     private void createTestUnit() {
         M4Unit unit = new M4Unit();
         unit.setPosition(TILE_SIZE_PIXELS / 2, TILE_SIZE_PIXELS / 2);
-        unit.setAngle(270);
+        unit.setAngle(0);
         CarMovement unitMovement = (CarMovement) unit.getMovement();
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 5, TILE_SIZE_PIXELS / 2 * 1));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 1, TILE_SIZE_PIXELS / 2 * 5));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 5, TILE_SIZE_PIXELS / 2 * 3));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 4, TILE_SIZE_PIXELS / 2 * 3));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 3, TILE_SIZE_PIXELS / 2 * 4));
+        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 6, TILE_SIZE_PIXELS / 2 * 3));
+        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 9, TILE_SIZE_PIXELS / 2 * 7));
+        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 4, TILE_SIZE_PIXELS / 2 * 8));
+        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 2, TILE_SIZE_PIXELS / 2 * 2));
         unitContainer.addUnit(unit);
     }
 
