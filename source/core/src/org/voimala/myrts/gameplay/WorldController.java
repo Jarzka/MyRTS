@@ -75,7 +75,7 @@ public class WorldController {
         unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 6, TILE_SIZE_PIXELS / 2 * 3));
         unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 9, TILE_SIZE_PIXELS / 2 * 7));
         unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 4, TILE_SIZE_PIXELS / 2 * 8));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 2, TILE_SIZE_PIXELS / 2 * 2));
+        unitMovement.addPathPoint(new Vector2(0, 0));
         unitContainer.addUnit(unit);
     }
 

@@ -67,4 +67,7 @@ public class MathHelper {
         return bd.doubleValue();
     }
 
+    public static double getDistanceBetweenPoints(float x1, float y1, float x2, float y2) {
+        return Math.sqrt((Math.pow(x2 - x1, 2)) + (Math.pow(y1 - y2, 2)));
+    }
 }
