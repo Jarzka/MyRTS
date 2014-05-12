@@ -10,8 +10,8 @@ public class M4Unit extends Infantry {
         movement.setMaxVelocity(400);
         movement.setAcceleration(500);
         movement.setDeceleration(500);
-        movement.setMaxRotationVelocity(100);
-        movement.setRotationAcceleration(20);
-        movement.setRotationDeceleration(20);
+        movement.setMaxRotationVelocity(600);
+        movement.setRotationAcceleration(400);
+        movement.setRotationDeceleration(400);
     }
 }

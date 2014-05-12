@@ -72,9 +72,11 @@ public class WorldController {
         unit.setPosition(TILE_SIZE_PIXELS / 2, TILE_SIZE_PIXELS / 2);
         unit.setAngle(0);
         CarMovement unitMovement = (CarMovement) unit.getMovement();
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 6, TILE_SIZE_PIXELS / 2 * 3));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 9, TILE_SIZE_PIXELS / 2 * 7));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 4, TILE_SIZE_PIXELS / 2 * 8));
+        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 8, TILE_SIZE_PIXELS / 2 * 8));
+        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 14, TILE_SIZE_PIXELS / 2 * 8));
+        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 13, TILE_SIZE_PIXELS / 2 * 8));
+        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 11, TILE_SIZE_PIXELS / 2 * 8));
+        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 10, TILE_SIZE_PIXELS / 2 * 5));
         unitMovement.addPathPoint(new Vector2(0, 0));
         unitContainer.addUnit(unit);
     }

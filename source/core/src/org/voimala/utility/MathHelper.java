@@ -15,30 +15,10 @@ public class MathHelper {
         // TODO There has to be a faster way to calculate this.
 
         // Calculate radians clockwise
-        double clockwiseAngleInRadians = angle1Radians;
-        double clockwiseTurnedRadians = 0;
-        while (round(clockwiseAngleInRadians, 1) != round(angle2Radians, 1)) {
-            clockwiseTurnedRadians -= 0.1;
-            clockwiseAngleInRadians -= 0.1;
+        double clockwise = getDistanceBetweenAngles(angle1Radians, angle2Radians, 1);
+        double counterCockwise = getDistanceBetweenAngles(angle1Radians, angle2Radians, 2);
 
-            if (clockwiseAngleInRadians < 0) {
-                clockwiseAngleInRadians = Math.PI * 2 - clockwiseAngleInRadians;
-            }
-        }
-
-        // Calculate radians counter-clockwise
-        double counterClockwiseAngleInRadians = angle1Radians;
-        double counterClockwiseTurnedRadians = 0;
-        while (round(counterClockwiseAngleInRadians, 1) != round(angle2Radians, 1)) {
-            counterClockwiseTurnedRadians += 0.1;
-            counterClockwiseAngleInRadians += 0.1;
-
-            if (counterClockwiseAngleInRadians > Math.PI * 2) {
-                counterClockwiseAngleInRadians = 0 + counterClockwiseAngleInRadians - Math.PI * 2;
-            }
-        }
-
-        if (Math.abs(clockwiseTurnedRadians) < Math.abs(counterClockwiseTurnedRadians)) {
+        if (Math.abs(clockwise) < Math.abs(counterCockwise)) {
             return 1;
         }
 
@@ -69,5 +49,42 @@ public class MathHelper {
 
     public static double getDistanceBetweenPoints(float x1, float y1, float x2, float y2) {
         return Math.sqrt((Math.pow(x2 - x1, 2)) + (Math.pow(y1 - y2, 2)));
+    }
+
+    /** @param rotationDirection 1 = clockwise, 2 = counter-clockwise */
+    public static double getDistanceBetweenAngles(double angle1Radians,
+                                                  double angle2Radians,
+                                                  int rotationDirection) {
+        if (rotationDirection == 1) {
+            // Calculate radians clockwise
+            double clockwiseAngleInRadians = angle1Radians;
+            double clockwiseTurnedRadians = 0;
+            while (round(clockwiseAngleInRadians, 1) != round(angle2Radians, 1)) {
+                clockwiseTurnedRadians -= 0.1;
+                clockwiseAngleInRadians -= 0.1;
+
+                if (clockwiseAngleInRadians < 0) {
+                    clockwiseAngleInRadians = Math.PI * 2 - clockwiseAngleInRadians;
+                }
+            }
+
+            return Math.abs(clockwiseTurnedRadians);
+        } else if (rotationDirection == 2) {
+            // Calculate radians counter-clockwise
+            double counterClockwiseAngleInRadians = angle1Radians;
+            double counterClockwiseTurnedRadians = 0;
+            while (round(counterClockwiseAngleInRadians, 1) != round(angle2Radians, 1)) {
+                counterClockwiseTurnedRadians += 0.1;
+                counterClockwiseAngleInRadians += 0.1;
+
+                if (counterClockwiseAngleInRadians > Math.PI * 2) {
+                    counterClockwiseAngleInRadians = 0 + counterClockwiseAngleInRadians - Math.PI * 2;
+                }
+            }
+
+            return Math.abs(counterClockwiseTurnedRadians);
+        } else {
+            throw new RuntimeException("rotationDirection should be 1 or 2.");
+        }
     }
 }

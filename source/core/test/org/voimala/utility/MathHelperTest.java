@@ -103,4 +103,11 @@ public class MathHelperTest {
         Assert.assertTrue(MathHelper.round(144.163436, 2) == 144.16);
     }
 
+    @Test
+    public void testGetDistanceBetweenAngles1() {
+        double distance = MathHelper.round(MathHelper.getDistanceBetweenAngles(0, Math.PI / 2, 2), 1);
+        double result = MathHelper.round(Math.PI / 2, 1);
+        Assert.assertTrue(distance == result);
+    }
+
 }
