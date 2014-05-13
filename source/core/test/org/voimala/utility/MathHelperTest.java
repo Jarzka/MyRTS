@@ -105,9 +105,15 @@ public class MathHelperTest {
 
     @Test
     public void testGetDistanceBetweenAngles1() {
-        double distance = MathHelper.round(MathHelper.getDistanceBetweenAngles(0, Math.PI / 2, 2), 1);
+        double distance = MathHelper.round(MathHelper.getShortestDistanceBetweenAngles(0, Math.PI / 2), 1);
         double result = MathHelper.round(Math.PI / 2, 1);
         Assert.assertTrue(distance == result);
+    }
+
+    @Test
+    public void testGetDistanceBetweenAngles2() {
+        double distance = MathHelper.getShortestDistanceBetweenAngles(0.8853820191506202, 0.046947636512593004);
+        Assert.assertTrue(distance < 1);
     }
 
 }

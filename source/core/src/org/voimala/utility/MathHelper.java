@@ -1,10 +1,7 @@
 package org.voimala.utility;
 
-import com.badlogic.gdx.math.Vector2;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.DecimalFormat;
 
 public class MathHelper {
     /** Is it faster to turn clockwise or counter-clockwise from angle1 to reach angle2.
@@ -12,8 +9,6 @@ public class MathHelper {
      */
     public static byte getFasterTurningDirection(double angle1Radians,
                                                  double angle2Radians) {
-        // TODO There has to be a faster way to calculate this.
-
         // Calculate radians clockwise
         double clockwise = getDistanceBetweenAngles(angle1Radians, angle2Radians, 1);
         double counterCockwise = getDistanceBetweenAngles(angle1Radians, angle2Radians, 2);
@@ -51,17 +46,40 @@ public class MathHelper {
         return Math.sqrt((Math.pow(x2 - x1, 2)) + (Math.pow(y1 - y2, 2)));
     }
 
+    public static double getShortestDistanceBetweenAngles(double angle1Radians,
+                                                          double angle2Radians) {
+        double result1 = 0;
+        double result2 = 0;
+
+        if (angle1Radians > angle2Radians) {
+            result1 = angle1Radians - angle2Radians;
+            result2 = (Math.PI * 2) - angle1Radians + angle2Radians;
+        } else if (angle1Radians < angle2Radians) {
+            result1 = angle2Radians - angle1Radians;
+            result2 = (Math.PI * 2) - angle2Radians + angle1Radians;
+        }
+
+        if (result1 < result2) {
+            return result1;
+        }
+
+        return result2;
+    }
+
     /** @param rotationDirection 1 = clockwise, 2 = counter-clockwise */
+    // TODO OLD VERSION
     public static double getDistanceBetweenAngles(double angle1Radians,
-                                                  double angle2Radians,
-                                                  int rotationDirection) {
+                                                          double angle2Radians,
+                                                          int rotationDirection) {
+        // TODO There has to be a faster way to calculate this.
+
         if (rotationDirection == 1) {
             // Calculate radians clockwise
             double clockwiseAngleInRadians = angle1Radians;
             double clockwiseTurnedRadians = 0;
             while (round(clockwiseAngleInRadians, 1) != round(angle2Radians, 1)) {
-                clockwiseTurnedRadians -= 0.1;
-                clockwiseAngleInRadians -= 0.1;
+                clockwiseTurnedRadians -= 0.04;
+                clockwiseAngleInRadians -= 0.04;
 
                 if (clockwiseAngleInRadians < 0) {
                     clockwiseAngleInRadians = Math.PI * 2 - clockwiseAngleInRadians;
@@ -74,8 +92,8 @@ public class MathHelper {
             double counterClockwiseAngleInRadians = angle1Radians;
             double counterClockwiseTurnedRadians = 0;
             while (round(counterClockwiseAngleInRadians, 1) != round(angle2Radians, 1)) {
-                counterClockwiseTurnedRadians += 0.1;
-                counterClockwiseAngleInRadians += 0.1;
+                counterClockwiseTurnedRadians += 0.04;
+                counterClockwiseAngleInRadians += 0.04;
 
                 if (counterClockwiseAngleInRadians > Math.PI * 2) {
                     counterClockwiseAngleInRadians = 0 + counterClockwiseAngleInRadians - Math.PI * 2;
