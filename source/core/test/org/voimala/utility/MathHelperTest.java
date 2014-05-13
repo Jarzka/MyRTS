@@ -9,63 +9,63 @@ public class MathHelperTest {
     public void testGetFasterTurningDirection1() {
         Assert.assertEquals(MathHelper.getFasterTurningDirection(Math.PI,
                         MathHelper.getAngleBetweenPointsInRadians(0, 0, 10, 10)),
-                1);
+                RotationDirection.CLOCKWISE);
     }
 
     @Test
     public void testGetFasterTurningDirection2() {
         Assert.assertEquals(MathHelper.getFasterTurningDirection(Math.PI * 2,
                         MathHelper.getAngleBetweenPointsInRadians(0, 0, 10, 10)),
-                2);
+                RotationDirection.COUNTERCLOCKWISE);
     }
 
     @Test
     public void testGetFasterTurningDirection3() {
         Assert.assertEquals(MathHelper.getFasterTurningDirection(Math.PI * 2,
                         MathHelper.getAngleBetweenPointsInRadians(10, 10, -235, -151)),
-                1);
+                RotationDirection.CLOCKWISE);
     }
 
     @Test
     public void testGetFasterTurningDirection4() {
         Assert.assertEquals(MathHelper.getFasterTurningDirection(0,
                         MathHelper.getAngleBetweenPointsInRadians(0, 0, -10, 10)),
-                2);
+                RotationDirection.COUNTERCLOCKWISE);
     }
 
     @Test
     public void testGetFasterTurningDirection5() {
         Assert.assertEquals(MathHelper.getFasterTurningDirection(Math.PI / 10,
                         MathHelper.getAngleBetweenPointsInRadians(0, 0, 10, 10)),
-                2);
+                RotationDirection.COUNTERCLOCKWISE);
     }
 
     @Test
     public void testGetFasterTurningDirection6() {
         Assert.assertEquals(MathHelper.getFasterTurningDirection(Math.PI * 1.5,
                         MathHelper.getAngleBetweenPointsInRadians(0, 0, 10, 100)),
-                2);
+                RotationDirection.COUNTERCLOCKWISE);
     }
 
     @Test
     public void testGetFasterTurningDirection7() {
         Assert.assertEquals(MathHelper.getFasterTurningDirection(0,
                         MathHelper.getAngleBetweenPointsInRadians(0, 0, -10, -10)),
-                1);
+                RotationDirection.CLOCKWISE);
     }
 
     @Test
     public void testGetFasterTurningDirection8() {
         Assert.assertEquals(MathHelper.getFasterTurningDirection(Math.PI / 2,
                         MathHelper.getAngleBetweenPointsInRadians(0, 0, -10, -10)),
-                2);
+                RotationDirection.COUNTERCLOCKWISE);
     }
 
     @Test
     public void testGetFasterTurningDirection9() {
         Assert.assertEquals(MathHelper.getFasterTurningDirection(Math.PI,
                         MathHelper.getAngleBetweenPointsInRadians(0, 0, -10, 10)),
-                1);
+                RotationDirection.CLOCKWISE);
     }
 
     @Test
@@ -105,15 +105,34 @@ public class MathHelperTest {
 
     @Test
     public void testGetDistanceBetweenAngles1() {
-        double distance = MathHelper.round(MathHelper.getShortestDistanceBetweenAngles(0, Math.PI / 2), 1);
-        double result = MathHelper.round(Math.PI / 2, 1);
-        Assert.assertTrue(distance == result);
+        double distance = MathHelper.getDistanceFromAngle1ToAngle2(0,
+                Math.PI / 2,
+                RotationDirection.COUNTERCLOCKWISE);
+        Assert.assertTrue(distance == Math.PI / 2);
     }
 
     @Test
     public void testGetDistanceBetweenAngles2() {
-        double distance = MathHelper.getShortestDistanceBetweenAngles(0.8853820191506202, 0.046947636512593004);
+        double distance = MathHelper.getDistanceFromAngle1ToAngle2(0.8853820191506202,
+                0.046947636512593004,
+                RotationDirection.CLOCKWISE);
         Assert.assertTrue(distance < 1);
+    }
+
+    @Test
+    public void testGetDistanceBetweenAngles3() {
+        double distance = MathHelper.getDistanceFromAngle1ToAngle2(0,
+                Math.PI / 2,
+                RotationDirection.CLOCKWISE);
+        Assert.assertTrue(distance == Math.PI + (Math.PI / 2));
+    }
+
+    @Test
+    public void testGetDistanceBetweenAngles4() {
+        double distance = MathHelper.getDistanceFromAngle1ToAngle2(Math.PI,
+                Math.PI,
+                RotationDirection.COUNTERCLOCKWISE);
+        Assert.assertTrue(distance == 0);
     }
 
 }

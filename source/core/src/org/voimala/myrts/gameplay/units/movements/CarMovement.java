@@ -3,6 +3,7 @@ package org.voimala.myrts.gameplay.units.movements;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.gameplay.units.Unit;
 import org.voimala.utility.MathHelper;
+import org.voimala.utility.RotationDirection;
 
 import java.util.ArrayList;
 
@@ -111,7 +112,7 @@ public class CarMovement extends Movement {
 
         Vector2 nextPoint = pathPoints.get(0);
         driveTowardsPoint(deltaTime, nextPoint);
-        stopAtFinalPoint(nextPoint);
+        anticipate(nextPoint);
 
         if (hasReachedPoint(nextPoint)) {
             pathPoints.remove(nextPoint);
@@ -120,6 +121,10 @@ public class CarMovement extends Movement {
 
     private void driveTowardsPoint(final float deltaTime, final Vector2 nextPoint) {
         rotateTowardsPoint(deltaTime, nextPoint);
+    }
+
+    private void anticipate(final Vector2 nextPoint) {
+        stopAtFinalPoint(nextPoint);
     }
 
     private void stopAtFinalPoint(final Vector2 nextPoint) {
@@ -149,12 +154,12 @@ public class CarMovement extends Movement {
         // If unit is not looking at the point, set the correct rotation direction
         if (MathHelper.round(ownerUnit.getAngle(), 1)
                 != MathHelper.round(Math.toDegrees(angleBetweenUnitAndPointInRadians), 1)) {
-            int rotationDirection = MathHelper.getFasterTurningDirection(ownerUnit.getAngleInRadians(),
+            RotationDirection rotationDirection = MathHelper.getFasterTurningDirection(ownerUnit.getAngleInRadians(),
                     angleBetweenUnitAndPointInRadians);
 
-            if (rotationDirection == 1) {
+            if (rotationDirection == RotationDirection.CLOCKWISE) {
                 this.steeringWheel = 1;
-            } else if (rotationDirection == 2) {
+            } else if (rotationDirection == RotationDirection.COUNTERCLOCKWISE) {
                 this.steeringWheel = -1;
             }
 
@@ -164,7 +169,7 @@ public class CarMovement extends Movement {
             double timeToStopRotationInSeconds = currentRotationVelocity / rotationDeceleration;
 
             // Calculate distance between current angle and the next (final) angle
-            double distanceBetweenCurrentAngleAndEndAngle = MathHelper.getDistanceBetweenAngles(
+            double distanceBetweenCurrentAngleAndEndAngle = MathHelper.getDistanceFromAngle1ToAngle2(
                     ownerUnit.getAngleInRadians(),
                     angleBetweenUnitAndPointInRadians,
                     rotationDirection);
