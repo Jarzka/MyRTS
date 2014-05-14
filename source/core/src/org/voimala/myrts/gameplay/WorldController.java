@@ -92,14 +92,6 @@ public class WorldController {
         unit.setPosition(TILE_SIZE_PIXELS / 2, TILE_SIZE_PIXELS / 2);
         unit.setTeam(1);
         unit.setAngle(0);
-        CarMovement unitMovement = (CarMovement) unit.getMovement();
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 8, TILE_SIZE_PIXELS / 2 * 8));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 14, TILE_SIZE_PIXELS / 2 * 8));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 14, TILE_SIZE_PIXELS / 2 * 1));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 14, TILE_SIZE_PIXELS / 2 * 10));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 1, TILE_SIZE_PIXELS / 2 * 1));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 2, TILE_SIZE_PIXELS / 2 * 2));
-        unitMovement.addPathPoint(new Vector2(0, 0));
         unitContainer.addUnit(unit);
 
         M4Unit unit2 = new M4Unit();
@@ -120,6 +112,7 @@ public class WorldController {
     private void handleUserInput() {
         handleCameraManagement();
         handleUnitSelection();
+        handleUnitCommands();
     }
 
     private void handleCameraManagement() {
@@ -130,11 +123,35 @@ public class WorldController {
         if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             unselectAllOwnUnits();
             for (Unit unit : unitContainer.getUnits()) {
-                Vector3 mouseLocationInWorld = worldCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+                Vector3 mouseLocationInWorld = worldCamera.unproject(new Vector3(Gdx.input.getX(),
+                        Gdx.input.getY(),
+                        0));
                 // TODO CHECK TEAM
                 if (unit.onCollision(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y))) {
                     unit.setSelected(true);
                     break;
+                }
+            }
+        }
+    }
+
+    private void handleUnitCommands() {
+        handleUnitMoveCommand();
+    }
+
+    private void handleUnitMoveCommand() {
+        if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+            for (Unit unit : unitContainer.getUnits()) {
+                if (unit.isSelected()) { // TODO CHECK TEAM
+                    if (unit.getMovement() instanceof CarMovement) {
+                        // TODO All movements should have addPath method?
+                        Vector3 mouseLocationInWorld = worldCamera.unproject(new Vector3(Gdx.input.getX(),
+                                Gdx.input.getY(),
+                                0));
+                        CarMovement movement = (CarMovement) unit.getMovement();
+                        // TODO Set path point
+                        movement.addPathPoint(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y));
+                    }
                 }
             }
         }
