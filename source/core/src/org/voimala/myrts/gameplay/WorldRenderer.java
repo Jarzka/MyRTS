@@ -3,6 +3,7 @@ package org.voimala.myrts.gameplay;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
 import org.voimala.myrts.gameplay.units.Unit;
 import org.voimala.myrts.graphics.SpriteContainer;
@@ -12,6 +13,7 @@ public class WorldRenderer implements Disposable {
     private SpriteBatch batch;
     private SpriteBatch hudBatch;
     private WorldController worldController;
+    private ShapeRenderer shapeRenderer = new ShapeRenderer();
 
     public WorldRenderer (WorldController worldController) {
         this. worldController = worldController;
@@ -39,9 +41,12 @@ public class WorldRenderer implements Disposable {
 
         renderGround();
         renderUnits();
+        renderUnitEnergyBars();
         renderHud();
         //renderPointer();
     }
+
+
 
     private void renderGround() {
         for (int i = 0; i < 10; i++) {
@@ -64,6 +69,18 @@ public class WorldRenderer implements Disposable {
             sprite.setRotation(unit.getAngle() - 90);
             sprite.draw(batch);
             batch.end();
+        }
+    }
+
+    private void renderUnitEnergyBars() {
+        for (Unit unit : worldController.getUnitContainer().getUnits()) {
+            // TODO Wrong position
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.rect(unit.getX() - unit.getCurrentSprite().getWidth() / 2,
+                    unit.getY() - unit.getCurrentSprite().getHeight() / 2 - 20,
+                    unit.getCurrentSprite().getWidth(),
+                    15);
+            shapeRenderer.end();
         }
     }
 

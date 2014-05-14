@@ -1,9 +1,10 @@
 package org.voimala.myrts.gameplay.units;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import org.voimala.myrts.exceptions.GameLogicException;
 import org.voimala.myrts.gameplay.units.movements.Movement;
 
-public class Unit {
+public abstract class Unit {
 
     private float x = 0;
     private float y = 0;
@@ -13,11 +14,21 @@ public class Unit {
     protected Movement movement = null;
     private UnitType type;
 
+    private boolean isSelected = false;
+
     public Unit() {
         initialize();
     }
 
     private void initialize() {
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean isSelected) {
+        this.isSelected = isSelected;
     }
 
     public int getPlayer() {
@@ -126,4 +137,6 @@ public class Unit {
     public double getAngleInRadians() {
         return Math.toRadians(angle);
     }
+
+    public abstract Sprite getCurrentSprite();
 }

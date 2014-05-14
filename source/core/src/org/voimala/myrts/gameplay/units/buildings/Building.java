@@ -2,5 +2,5 @@ package org.voimala.myrts.gameplay.units.buildings;
 
 import org.voimala.myrts.gameplay.units.Unit;
 
-public class Building extends Unit {
+public abstract class Building extends Unit {
 }

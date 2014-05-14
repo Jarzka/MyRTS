@@ -20,6 +20,7 @@ public class WorldController {
     private RTSInputProcessor inputHandler = new RTSInputProcessor(this);
     private OrthographicCamera worldCamera;
     private CameraManagement cameraManagement;
+    private double hudSize = 1; // TODO Hud size needs to be implemented
 
     public final int TILE_SIZE_PIXELS = 256;
 
@@ -88,7 +89,9 @@ public class WorldController {
     private void createTestUnit() {
         M4Unit unit = new M4Unit();
         unit.setPosition(TILE_SIZE_PIXELS / 2, TILE_SIZE_PIXELS / 2);
+        unit.setTeam(1);
         unit.setAngle(0);
+        unit.setSelected(true);
         CarMovement unitMovement = (CarMovement) unit.getMovement();
         unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 8, TILE_SIZE_PIXELS / 2 * 8));
         unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 14, TILE_SIZE_PIXELS / 2 * 8));
@@ -98,6 +101,11 @@ public class WorldController {
         unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 2, TILE_SIZE_PIXELS / 2 * 2));
         unitMovement.addPathPoint(new Vector2(0, 0));
         unitContainer.addUnit(unit);
+
+        M4Unit unit2 = new M4Unit();
+        unit2.setPosition(TILE_SIZE_PIXELS / 2 * 9, TILE_SIZE_PIXELS / 2 * 10);
+        unit2.setTeam(2);
+        unitContainer.addUnit(unit2);
     }
 
     public UnitContainer getUnitContainer() {
