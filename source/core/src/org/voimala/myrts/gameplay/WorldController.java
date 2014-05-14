@@ -19,7 +19,7 @@ public class WorldController {
     private UnitContainer unitContainer = new UnitContainer();
     private RTSInputProcessor inputHandler = new RTSInputProcessor(this);
     private OrthographicCamera worldCamera;
-    private CameraManagement cameraManagement = new CameraManagement();
+    private CameraManagement cameraManagement;
 
     public final int TILE_SIZE_PIXELS = 256;
 
@@ -47,6 +47,8 @@ public class WorldController {
         worldCamera.translate(800, 800);
         worldCamera.zoom = 4;
         worldCamera.update();
+
+        cameraManagement = new CameraManagement(worldCamera);
     }
 
     private void initializeSprites() {
@@ -108,23 +110,7 @@ public class WorldController {
     }
 
     private void updateCameraManagement() {
-        if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-            cameraManagement.setMovingCamera(true);
-
-            if (!cameraManagement.isStartPointSet()) {
-                cameraManagement.setStartX(Gdx.input.getX());
-                cameraManagement.setStartY(Gdx.input.getY());
-                cameraManagement.setStartPointSet(true);
-            }
-        } else {
-            cameraManagement.setMovingCamera(false);
-        }
-
-        if (cameraManagement.isMovingCamera()) {
-            worldCamera.translate(Gdx.input.getX() - cameraManagement.getStartX(),
-                    cameraManagement.getStartY() - Gdx.input.getY());
-            worldCamera.update();
-        }
+        cameraManagement.update();
     }
 
     private void updateUnits(float deltaTime) {
