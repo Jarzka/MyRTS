@@ -1,10 +1,6 @@
 package org.voimala.myrts.gameplay;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
@@ -14,6 +10,7 @@ import org.voimala.myrts.graphics.SpriteContainer;
 public class WorldRenderer implements Disposable {
 
     private SpriteBatch batch;
+    private SpriteBatch hudBatch;
     private WorldController worldController;
 
     public WorldRenderer (WorldController worldController) {
@@ -23,11 +20,12 @@ public class WorldRenderer implements Disposable {
     }
 
     private void initialize () {
-        initializeBatch();
+        initializeBatches();
     }
 
-    private void initializeBatch() {
+    private void initializeBatches() {
         batch = new SpriteBatch();
+        hudBatch = new SpriteBatch();
     }
 
 
@@ -37,10 +35,12 @@ public class WorldRenderer implements Disposable {
          * point to up, 90 degrees point to left etc. WorldRenderer makes the conversion
          * automatically.
          */
-        batch.setProjectionMatrix(worldController.getCamera().combined);
+        batch.setProjectionMatrix(worldController.getWorldCamera().combined);
 
         renderGround();
         renderUnits();
+        renderHud();
+        renderPointer();
     }
 
     private void renderGround() {
@@ -67,10 +67,22 @@ public class WorldRenderer implements Disposable {
         }
     }
 
+    private void renderHud() {
+
+    }
+
+    private void renderPointer() {
+        hudBatch.begin();
+        Sprite sprite = SpriteContainer.getInstance().getSprite("pointer-basic-0");
+        sprite.setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY() - sprite.getHeight());
+        sprite.draw(hudBatch);
+        hudBatch.end();
+    }
+
     public void resize(int width, int height) {
-        worldController.getCamera().viewportWidth = Gdx.graphics.getWidth();
-        worldController.getCamera().viewportHeight = Gdx.graphics.getHeight();
-        worldController.getCamera().update();
+        worldController.getWorldCamera().viewportWidth = Gdx.graphics.getWidth();
+        worldController.getWorldCamera().viewportHeight = Gdx.graphics.getHeight();
+        worldController.getWorldCamera().update();
     }
 
     @Override

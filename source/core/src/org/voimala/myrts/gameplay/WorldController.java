@@ -16,7 +16,7 @@ public class WorldController {
     private static final String TAG = WorldController.class.getName();
     private UnitContainer unitContainer = new UnitContainer();
     private RTSInputProcessor inputHandler = new RTSInputProcessor(this);
-    private OrthographicCamera camera;
+    private OrthographicCamera worldCamera;
 
     public final int TILE_SIZE_PIXELS = 256;
 
@@ -32,17 +32,23 @@ public class WorldController {
     }
 
     private void initializeCamera() {
-        camera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        camera.lookAt(0, 0, 0);
-        camera.translate(800, 800);
-        camera.zoom = 4;
-        camera.update();
+        worldCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        worldCamera.lookAt(0, 0, 0);
+        worldCamera.translate(800, 800);
+        worldCamera.zoom = 4;
+        worldCamera.update();
     }
 
-
     private void initializeSprites() {
+        initializeCursorSprites();
         initializeGroundSprites();
         initializeUnitSprites();
+    }
+
+    private void initializeCursorSprites() {
+        Texture texture = new Texture("graphics/pointers/pointer-basic-0.png");
+        Sprite sprite = new Sprite(texture);
+        SpriteContainer.getInstance().addSprite("pointer-basic-0", sprite);
     }
 
     private void initializeInputProcessor() {
@@ -96,7 +102,7 @@ public class WorldController {
         }
     }
 
-    public OrthographicCamera getCamera() {
-        return camera;
+    public OrthographicCamera getWorldCamera() {
+        return worldCamera;
     }
 }

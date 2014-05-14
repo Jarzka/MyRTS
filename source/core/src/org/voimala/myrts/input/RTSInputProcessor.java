@@ -1,7 +1,6 @@
 package org.voimala.myrts.input;
 
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import org.voimala.myrts.gameplay.WorldController;
 
@@ -55,7 +54,7 @@ public class RTSInputProcessor implements InputProcessor{
     }
 
     private void handleInputZoom(int amount) {
-        OrthographicCamera camera = worldController.getCamera();
+        OrthographicCamera camera = worldController.getWorldCamera();
 
         if (amount < 0) {
             if (camera.zoom > 1) {
