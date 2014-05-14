@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import org.voimala.myrts.gameplay.units.Unit;
 import org.voimala.myrts.graphics.SpriteContainer;
@@ -74,13 +75,22 @@ public class WorldRenderer implements Disposable {
 
     private void renderUnitEnergyBars() {
         for (Unit unit : worldController.getUnitContainer().getUnits()) {
-            // TODO Wrong position
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.rect(unit.getX() - unit.getCurrentSprite().getWidth() / 2,
-                    unit.getY() - unit.getCurrentSprite().getHeight() / 2 - 20,
-                    unit.getCurrentSprite().getWidth(),
-                    15);
-            shapeRenderer.end();
+            if (unit.isSelected()) {
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                Vector3 unitTopLeftWorldCoordinates = new Vector3(unit.getX() - unit.getCurrentSprite().getWidth() / 2,
+                        unit.getY() + unit.getCurrentSprite().getHeight() / 2, 0);
+                Vector3 unitTopRightWorldCoordinates = new Vector3(unit.getX() + unit.getCurrentSprite().getWidth() / 2,
+                        unit.getY() + unit.getCurrentSprite().getHeight() / 2, 0);
+
+                Vector3 unitTopLeftScreenCoordinates = worldController.getWorldCamera().project(unitTopLeftWorldCoordinates);
+                Vector3 unitTopRightScreenCoordinates = worldController.getWorldCamera().project(unitTopRightWorldCoordinates);
+
+                shapeRenderer.rect(unitTopLeftScreenCoordinates.x,
+                        unitTopLeftScreenCoordinates.y,
+                        unitTopRightScreenCoordinates.x - unitTopLeftScreenCoordinates.x,
+                        (float) (Gdx.graphics.getPpiY() * 0.1)); // warning: ppi is not supported on the desktop
+                shapeRenderer.end();
+            }
         }
     }
 

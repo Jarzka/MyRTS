@@ -91,7 +91,6 @@ public class WorldController {
         unit.setPosition(TILE_SIZE_PIXELS / 2, TILE_SIZE_PIXELS / 2);
         unit.setTeam(1);
         unit.setAngle(0);
-        unit.setSelected(true);
         CarMovement unitMovement = (CarMovement) unit.getMovement();
         unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 8, TILE_SIZE_PIXELS / 2 * 8));
         unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 14, TILE_SIZE_PIXELS / 2 * 8));
@@ -113,12 +112,27 @@ public class WorldController {
     }
 
     public void update(float deltaTime) {
-        updateCameraManagement();
-        updateUnits(deltaTime);
+        handleUserInput();
+        updateWorld(deltaTime);
     }
 
-    private void updateCameraManagement() {
+    private void handleUserInput() {
+        handleCameraManagement();
+        handleUnitSelection();
+    }
+
+    private void handleCameraManagement() {
         cameraManagement.update();
+    }
+
+    private void handleUnitSelection() {
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            // TODO
+        }
+    }
+
+    private void updateWorld(float deltaTime) {
+        updateUnits(deltaTime);
     }
 
     private void updateUnits(float deltaTime) {
