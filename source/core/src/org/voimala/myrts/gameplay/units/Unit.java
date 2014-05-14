@@ -1,18 +1,22 @@
 package org.voimala.myrts.gameplay.units;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.exceptions.GameLogicException;
 import org.voimala.myrts.gameplay.units.movements.Movement;
 
 public abstract class Unit {
 
-    private float x = 0;
-    private float y = 0;
-    private float angle = 0; // 0 = right, 90 = top, 180 = left, 270 = down. Always between 0 and 360 (inclusive)
-    private int player = 0;
-    private int team = 0;
+    protected float x = 0;
+    protected float y = 0;
+    protected float angle = 0; // 0 = right, 90 = top, 180 = left, 270 = down. Always between 0 and 360 (inclusive)
+    protected int player = 0;
+    protected int team = 0;
     protected Movement movement = null;
-    private UnitType type;
+    protected  UnitType type;
+    protected float width = 0;
+    protected float height = 0;
+    protected Object collisionMask;
 
     private boolean isSelected = false;
 
@@ -20,7 +24,10 @@ public abstract class Unit {
         initialize();
     }
 
-    private void initialize() {
+    protected void initialize() {
+        initializeDimensions();
+        initializeCollisionMask();
+        initializeMovement();
     }
 
     public boolean isSelected() {
@@ -116,6 +123,11 @@ public abstract class Unit {
     }
 
     public void update(final float deltaTime) {
+        updateMovement(deltaTime);
+        updateCollisionMask();
+    }
+
+    private void updateMovement(float deltaTime) {
         if (movement != null) {
             movement.update(deltaTime);
         }
@@ -138,5 +150,33 @@ public abstract class Unit {
         return Math.toRadians(angle);
     }
 
-    public abstract Sprite getCurrentSprite();
+    public float getWidth() {
+        return width;
+    }
+
+    public void setWidth(final float width) {
+        if (width < 0) {
+            throw new IllegalArgumentException("width must be equal or greater than 0.");
+        }
+
+        this.width = width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public void setHeight(final float height) {
+        if (height < 0) {
+            throw new IllegalArgumentException("height must be equal or greater than 0.");
+        }
+
+        this.height = height;
+    }
+
+    protected abstract void updateCollisionMask();
+    public abstract boolean onCollision(Vector2 point);
+    protected abstract void initializeDimensions();
+    protected abstract void initializeCollisionMask();
+    protected abstract void initializeMovement();
 }

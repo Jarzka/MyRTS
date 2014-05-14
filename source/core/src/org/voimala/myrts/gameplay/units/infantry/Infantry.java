@@ -4,8 +4,4 @@ import org.voimala.myrts.gameplay.units.Unit;
 import org.voimala.myrts.gameplay.units.movements.CarMovement;
 
 public abstract class Infantry extends Unit {
-
-    public Infantry() {
-        movement = new CarMovement(this);
-    }
 }

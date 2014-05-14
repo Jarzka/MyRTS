@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import org.voimala.myrts.gameplay.units.Unit;
 import org.voimala.myrts.gameplay.units.UnitContainer;
 import org.voimala.myrts.gameplay.units.infantry.M4Unit;
@@ -127,7 +128,22 @@ public class WorldController {
 
     private void handleUnitSelection() {
         if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            // TODO
+            unselectAllOwnUnits();
+            for (Unit unit : unitContainer.getUnits()) {
+                Vector3 mouseLocationInWorld = worldCamera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+                // TODO CHECK TEAM
+                if (unit.onCollision(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y))) {
+                    unit.setSelected(true);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void unselectAllOwnUnits() {
+        // TODO CHECK TEAM
+        for (Unit unit : unitContainer.getUnits()) {
+            unit.setSelected(false);
         }
     }
 
