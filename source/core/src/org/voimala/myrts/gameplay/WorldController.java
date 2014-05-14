@@ -1,7 +1,9 @@
 package org.voimala.myrts.gameplay;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -17,6 +19,7 @@ public class WorldController {
     private UnitContainer unitContainer = new UnitContainer();
     private RTSInputProcessor inputHandler = new RTSInputProcessor(this);
     private OrthographicCamera worldCamera;
+    private CameraManagement cameraManagement = new CameraManagement();
 
     public final int TILE_SIZE_PIXELS = 256;
 
@@ -25,10 +28,17 @@ public class WorldController {
     }
 
     private void initialize() {
+        initializePointer();
         initializeCamera();
         initializeInputProcessor();
         initializeSprites();
         initializeMap();
+    }
+
+    private void initializePointer() {
+        Pixmap pixelmap = new Pixmap(Gdx.files.internal("graphics/pointers/pointer-basic-0.png"));
+        Gdx.input.setCursorImage(pixelmap, 0, 0);
+        pixelmap.dispose();
     }
 
     private void initializeCamera() {
@@ -93,7 +103,28 @@ public class WorldController {
     }
 
     public void update(float deltaTime) {
+        updateCameraManagement();
         updateUnits(deltaTime);
+    }
+
+    private void updateCameraManagement() {
+        if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+            cameraManagement.setMovingCamera(true);
+
+            if (!cameraManagement.isStartPointSet()) {
+                cameraManagement.setStartX(Gdx.input.getX());
+                cameraManagement.setStartY(Gdx.input.getY());
+                cameraManagement.setStartPointSet(true);
+            }
+        } else {
+            cameraManagement.setMovingCamera(false);
+        }
+
+        if (cameraManagement.isMovingCamera()) {
+            worldCamera.translate(Gdx.input.getX() - cameraManagement.getStartX(),
+                    cameraManagement.getStartY() - Gdx.input.getY());
+            worldCamera.update();
+        }
     }
 
     private void updateUnits(float deltaTime) {

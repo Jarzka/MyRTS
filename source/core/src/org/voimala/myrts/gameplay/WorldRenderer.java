@@ -40,7 +40,7 @@ public class WorldRenderer implements Disposable {
         renderGround();
         renderUnits();
         renderHud();
-        renderPointer();
+        //renderPointer();
     }
 
     private void renderGround() {
@@ -83,6 +83,8 @@ public class WorldRenderer implements Disposable {
         worldController.getWorldCamera().viewportWidth = Gdx.graphics.getWidth();
         worldController.getWorldCamera().viewportHeight = Gdx.graphics.getHeight();
         worldController.getWorldCamera().update();
+
+        hudBatch = new SpriteBatch(); // Resize hud
     }
 
     @Override
