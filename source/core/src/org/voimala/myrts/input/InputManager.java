@@ -2,6 +2,7 @@ package org.voimala.myrts.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import org.voimala.myrts.gameplay.WorldController;
@@ -10,9 +11,21 @@ import org.voimala.myrts.gameplay.units.Unit;
 public class InputManager {
 
     private WorldController worldController;
+
     private boolean mouseButtonLeftPressedLastFrame;
     private boolean mouseButtonRightPressedLastFrame;
+
     private CameraManager cameraManager;
+
+    private Rectangle unitSelectionRectangle;
+    private boolean isDrawingRectangle = false;
+    private float rectangleStartX = -1;
+    private float rectangleStartY = -1;
+
+    /** Returns null if there is no active selection rectangle. */
+    public Rectangle getUnitSelectionRectangle() {
+        return unitSelectionRectangle;
+    }
 
     public InputManager(WorldController worldController) {
         this.worldController = worldController;
@@ -26,10 +39,11 @@ public class InputManager {
     private void handleUserInput() {
         handleCameraManagement();
 
-        handleDesktopUnitSelection();
+        handleDesktopSingleUnitSelection();
+        handleDesktopDrawSelectionArea();
         handleDesktopUnitCommands();
 
-        handleTouchUnitSelection();
+        handleTouchSingleUnitSelection();
         handleTouchDesktopUnitCommands();
 
         mouseButtonLeftPressedLastFrame = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
@@ -40,7 +54,7 @@ public class InputManager {
         cameraManager.update();
     }
 
-    private void handleDesktopUnitSelection() {
+    private void handleDesktopSingleUnitSelection() {
         if (mouseButtonLeftPressedLastFrame && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             unselectAllOwnUnits();
             for (Unit unit : worldController.getUnitContainer().getUnits()) {
@@ -53,6 +67,31 @@ public class InputManager {
                     break;
                 }
             }
+
+        }
+    }
+
+    private void handleDesktopDrawSelectionArea() {
+        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            if (unitSelectionRectangle == null) {
+                unitSelectionRectangle = new Rectangle();
+            }
+
+            if (!isDrawingRectangle) {
+                isDrawingRectangle = true;
+                rectangleStartX = Gdx.input.getX();
+                rectangleStartY = Gdx.graphics.getHeight() - Gdx.input.getY();
+            }
+
+            unitSelectionRectangle.x = rectangleStartX;
+            unitSelectionRectangle.y = rectangleStartY;
+            unitSelectionRectangle.width = Gdx.input.getX() - rectangleStartX;
+            unitSelectionRectangle.height = (Gdx.graphics.getHeight() - Gdx.input.getY()) - rectangleStartY;
+        } else {
+            isDrawingRectangle = false;
+            rectangleStartX = -1;
+            rectangleStartY = -1;
+            unitSelectionRectangle = null;
         }
     }
 
@@ -82,7 +121,7 @@ public class InputManager {
     private void handleTouchCameraManagement() {
     }
 
-    private void handleTouchUnitSelection() {
+    private void handleTouchSingleUnitSelection() {
 
     }
 

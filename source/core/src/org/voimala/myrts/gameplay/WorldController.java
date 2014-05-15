@@ -21,7 +21,7 @@ public class WorldController {
     private UnitContainer unitContainer = new UnitContainer();
 
     private RTSInputProcessor inputHandler = new RTSInputProcessor(this);
-    private InputManager inputManager = new InputManager(this);
+    private InputManager inputManager;
 
     private OrthographicCamera worldCamera;
 
@@ -53,6 +53,8 @@ public class WorldController {
         worldCamera.translate(800, 800);
         worldCamera.zoom = 4;
         worldCamera.update();
+
+        inputManager = new InputManager(this);
     }
 
     private void initializeSprites() {
@@ -123,5 +125,9 @@ public class WorldController {
 
     public OrthographicCamera getWorldCamera() {
         return worldCamera;
+    }
+
+    public InputManager getInputManager() {
+        return inputManager;
     }
 }

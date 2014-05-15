@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import org.voimala.myrts.gameplay.units.Unit;
@@ -46,10 +47,9 @@ public class WorldRenderer implements Disposable {
         renderUnits();
         renderUnitEnergyBars();
         renderHud();
+        renderUnitSelectionRectangle();
         renderGameVersion();
     }
-
-
 
     private void renderGround() {
         for (int i = 0; i < 10; i++) {
@@ -97,7 +97,21 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderHud() {
+        // TODO
+    }
 
+    private void renderUnitSelectionRectangle() {
+        Rectangle selectionRectangle = worldController.getInputManager().getUnitSelectionRectangle();
+
+        if (selectionRectangle != null) {
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(0, 255, 0, (float) 0.5);
+            shapeRenderer.rect(selectionRectangle.x,
+                    selectionRectangle.y,
+                    selectionRectangle.width,
+                    selectionRectangle.height);
+            shapeRenderer.end();
+        }
     }
 
     private void renderGameVersion() {
