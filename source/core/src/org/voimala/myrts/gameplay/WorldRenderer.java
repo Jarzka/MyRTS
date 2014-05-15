@@ -1,6 +1,8 @@
 package org.voimala.myrts.gameplay;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -44,7 +46,7 @@ public class WorldRenderer implements Disposable {
         renderUnits();
         renderUnitEnergyBars();
         renderHud();
-        //renderPointer();
+        renderGameVersion();
     }
 
 
@@ -98,11 +100,11 @@ public class WorldRenderer implements Disposable {
 
     }
 
-    private void renderPointer() {
+    private void renderGameVersion() {
         hudBatch.begin();
-        Sprite sprite = SpriteContainer.getInstance().getSprite("pointer-basic-0");
-        sprite.setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY() - sprite.getHeight());
-        sprite.draw(hudBatch);
+        BitmapFont font = new BitmapFont();
+        font.setColor(Color.WHITE);
+        font.draw(hudBatch, "Project named \"MyRTS\", early alpha version", 10, Gdx.graphics.getHeight() - 10);
         hudBatch.end();
     }
 

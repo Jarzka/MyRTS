@@ -103,7 +103,9 @@ public class CarMovement extends Movement {
         if(!pathPoints.isEmpty()) {
             drive(deltaTime);
         } else {
-            stop(deltaTime);
+            if (currentVelocity > 0) {
+                stop(deltaTime);
+            }
         }
     }
 
@@ -112,7 +114,7 @@ public class CarMovement extends Movement {
 
         Vector2 nextPoint = pathPoints.get(0);
         driveTowardsPoint(deltaTime, nextPoint);
-        anticipate(nextPoint);
+        predictMovement(nextPoint);
 
         if (hasReachedPoint(nextPoint)) {
             pathPoints.remove(nextPoint);
@@ -123,7 +125,7 @@ public class CarMovement extends Movement {
         rotateTowardsPoint(deltaTime, nextPoint);
     }
 
-    private void anticipate(final Vector2 nextPoint) {
+    private void predictMovement(final Vector2 nextPoint) {
         stopAtFinalPoint(nextPoint);
     }
 

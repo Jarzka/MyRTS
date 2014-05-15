@@ -3,6 +3,7 @@ package org.voimala.myrts.gameplay.units.movements;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.exceptions.GameLogicException;
 import org.voimala.myrts.gameplay.units.Unit;
+import org.voimala.utility.MathHelper;
 
 public abstract class Movement {
     protected double currentVelocity = 0; /** px/s */
@@ -94,10 +95,10 @@ public abstract class Movement {
     public abstract void update(final float deltaTime);
 
     protected boolean hasReachedPoint(Vector2 point) {
-        return ownerUnit.getX() >=  point.x - 5
-                && ownerUnit.getX() <=  point.x + 5
-                && ownerUnit.getY() >=  point.y - 5
-                && ownerUnit.getY() <= point.y + 5;
+        return MathHelper.getDistanceBetweenPoints(ownerUnit.getX(),
+                ownerUnit.getY(),
+                point.x,
+                point.y) <= 8;
     }
 
     public double getRotationAcceleration() {

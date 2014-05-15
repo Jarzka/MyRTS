@@ -110,16 +110,20 @@ public class WorldController {
     }
 
     private void handleUserInput() {
-        handleCameraManagement();
-        handleUnitSelection();
-        handleUnitCommands();
+        handleDesktopCameraManagement();
+        handleDesktopUnitSelection();
+        handleDesktopUnitCommands();
+
+        handleTouchCameraManagement();
+        handleTouchUnitSelection();
+        handleTouchDesktopUnitCommands();
     }
 
-    private void handleCameraManagement() {
+    private void handleDesktopCameraManagement() {
         cameraManagement.update();
     }
 
-    private void handleUnitSelection() {
+    private void handleDesktopUnitSelection() {
         if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             unselectAllOwnUnits();
             for (Unit unit : unitContainer.getUnits()) {
@@ -135,11 +139,11 @@ public class WorldController {
         }
     }
 
-    private void handleUnitCommands() {
-        handleUnitMoveCommand();
+    private void handleDesktopUnitCommands() {
+        handleDesktopUnitMoveCommand();
     }
 
-    private void handleUnitMoveCommand() {
+    private void handleDesktopUnitMoveCommand() {
         if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
             for (Unit unit : unitContainer.getUnits()) {
                 if (unit.isSelected()) { // TODO CHECK TEAM
@@ -155,6 +159,18 @@ public class WorldController {
                 }
             }
         }
+    }
+
+
+    private void handleTouchCameraManagement() {
+    }
+
+    private void handleTouchUnitSelection() {
+
+    }
+
+    private void handleTouchDesktopUnitCommands() {
+
     }
 
     private void unselectAllOwnUnits() {
