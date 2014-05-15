@@ -12,18 +12,20 @@ import org.voimala.myrts.gameplay.units.Unit;
 import org.voimala.myrts.gameplay.units.UnitContainer;
 import org.voimala.myrts.gameplay.units.infantry.M4Unit;
 import org.voimala.myrts.graphics.SpriteContainer;
+import org.voimala.myrts.input.CameraManager;
+import org.voimala.myrts.input.InputManager;
 import org.voimala.myrts.input.RTSInputProcessor;
 
 public class WorldController {
     private static final String TAG = WorldController.class.getName();
     private UnitContainer unitContainer = new UnitContainer();
-    private RTSInputProcessor inputHandler = new RTSInputProcessor(this);
-    private OrthographicCamera worldCamera;
-    private CameraManager cameraManager;
-    private double hudSize = 1; // TODO Hud size needs to be implemented
 
-    private boolean mouseButtonLeftPressedLastFrame;
-    private boolean mouseButtonRightPressedLastFrame;
+    private RTSInputProcessor inputHandler = new RTSInputProcessor(this);
+    private InputManager inputManager = new InputManager(this);
+
+    private OrthographicCamera worldCamera;
+
+    private double hudSize = 1; // TODO Hud size needs to be implemented
 
     public final int TILE_SIZE_PIXELS = 256;
 
@@ -51,8 +53,6 @@ public class WorldController {
         worldCamera.translate(800, 800);
         worldCamera.zoom = 4;
         worldCamera.update();
-
-        cameraManager = new CameraManager(worldCamera);
     }
 
     private void initializeSprites() {
@@ -107,82 +107,8 @@ public class WorldController {
     }
 
     public void update(float deltaTime) {
-        handleUserInput();
+        inputManager.update();
         updateWorld(deltaTime);
-    }
-
-    private void handleUserInput() {
-        handleCameraManagement();
-
-        handleDesktopUnitSelection();
-        handleDesktopUnitCommands();
-
-        handleTouchUnitSelection();
-        handleTouchDesktopUnitCommands();
-
-        mouseButtonLeftPressedLastFrame = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
-        mouseButtonRightPressedLastFrame = Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
-    }
-
-    private void handleCameraManagement() {
-        cameraManager.update();
-    }
-
-    private void handleDesktopUnitSelection() {
-        if (mouseButtonLeftPressedLastFrame && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            unselectAllOwnUnits();
-            for (Unit unit : unitContainer.getUnits()) {
-                Vector3 mouseLocationInWorld = worldCamera.unproject(new Vector3(Gdx.input.getX(),
-                        Gdx.input.getY(),
-                        0));
-                // TODO CHECK TEAM
-                if (unit.onCollision(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y))) {
-                    unit.setSelected(true);
-                    break;
-                }
-            }
-        }
-    }
-
-    private void handleDesktopUnitCommands() {
-        handleDesktopUnitMoveCommand();
-    }
-
-    private void handleDesktopUnitMoveCommand() {
-        /** It is possible that at least one unit is selected while the player
-         * stops moving camera by stopping pressing right mouse button. To prevent this,
-         * at least x seconds need to be passed sincle camera movement stopped. */
-         if (cameraManager.timeSinceCameraMovementStoppedInMs() > 100
-                && mouseButtonRightPressedLastFrame
-                && !Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-            for (Unit unit : unitContainer.getUnits()) {
-                if (unit.isSelected()) { // TODO CHECK TEAM
-                    Vector3 mouseLocationInWorld = worldCamera.unproject(new Vector3(Gdx.input.getX(),
-                            Gdx.input.getY(),
-                            0));
-                    unit.getMovement().setPathPoint(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y));
-                }
-            }
-        }
-    }
-
-
-    private void handleTouchCameraManagement() {
-    }
-
-    private void handleTouchUnitSelection() {
-
-    }
-
-    private void handleTouchDesktopUnitCommands() {
-
-    }
-
-    private void unselectAllOwnUnits() {
-        // TODO CHECK TEAM
-        for (Unit unit : unitContainer.getUnits()) {
-            unit.setSelected(false);
-        }
     }
 
     private void updateWorld(float deltaTime) {
