@@ -7,7 +7,7 @@ import java.util.HashMap;
 public class SpriteContainer {
 
     private static SpriteContainer instanceOfThis = null;
-    private HashMap<String, Sprite> sprites = new HashMap<>();
+    private HashMap<String, Sprite> sprites = new HashMap<String, Sprite>();
 
     private SpriteContainer() {}
 

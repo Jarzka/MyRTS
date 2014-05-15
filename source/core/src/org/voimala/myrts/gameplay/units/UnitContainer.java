@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class UnitContainer {
 
-    private ArrayList<Unit> units = new ArrayList<>();
+    private ArrayList<Unit> units = new ArrayList<Unit>();
 
     public ArrayList<Unit> getUnits() {
         return units;
