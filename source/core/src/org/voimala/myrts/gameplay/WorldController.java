@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.Vector3;
 import org.voimala.myrts.gameplay.units.Unit;
 import org.voimala.myrts.gameplay.units.UnitContainer;
 import org.voimala.myrts.gameplay.units.infantry.M4Unit;
-import org.voimala.myrts.gameplay.units.movements.CarMovement;
 import org.voimala.myrts.graphics.SpriteContainer;
 import org.voimala.myrts.input.RTSInputProcessor;
 
@@ -20,7 +19,7 @@ public class WorldController {
     private UnitContainer unitContainer = new UnitContainer();
     private RTSInputProcessor inputHandler = new RTSInputProcessor(this);
     private OrthographicCamera worldCamera;
-    private CameraManagement cameraManagement;
+    private CameraManager cameraManager;
     private double hudSize = 1; // TODO Hud size needs to be implemented
 
     private boolean mouseButtonLeftPressedLastFrame;
@@ -53,7 +52,7 @@ public class WorldController {
         worldCamera.zoom = 4;
         worldCamera.update();
 
-        cameraManagement = new CameraManagement(worldCamera);
+        cameraManager = new CameraManager(worldCamera);
     }
 
     private void initializeSprites() {
@@ -126,7 +125,7 @@ public class WorldController {
     }
 
     private void handleCameraManagement() {
-        cameraManagement.update();
+        cameraManager.update();
     }
 
     private void handleDesktopUnitSelection() {
@@ -153,7 +152,7 @@ public class WorldController {
         /** It is possible that at least one unit is selected while the player
          * stops moving camera by stopping pressing right mouse button. To prevent this,
          * at least x seconds need to be passed sincle camera movement stopped. */
-         if (cameraManagement.timeSinceCameraMovementStoppedInMs() > 100
+         if (cameraManager.timeSinceCameraMovementStoppedInMs() > 100
                 && mouseButtonRightPressedLastFrame
                 && !Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
             for (Unit unit : unitContainer.getUnits()) {

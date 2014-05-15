@@ -9,7 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 
-public class CameraManagement {
+public class CameraManager {
     private boolean isMovingCamera = false;
     private boolean isStartPointSet = false;
     private int startX = -1;
@@ -17,7 +17,7 @@ public class CameraManagement {
     private OrthographicCamera worldCamera = null;
     private long cameraMovementStoppedTimestampMs = 0;
 
-    public CameraManagement(OrthographicCamera worldCamera) {
+    public CameraManager(OrthographicCamera worldCamera) {
         this.worldCamera = worldCamera;
     }
 
