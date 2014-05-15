@@ -79,6 +79,7 @@ public class WorldRenderer implements Disposable {
         for (Unit unit : worldController.getUnitContainer().getUnits()) {
             if (unit.isSelected()) {
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                shapeRenderer.setColor(Color.WHITE);
                 Vector3 unitTopLeftWorldCoordinates = new Vector3(unit.getX() - unit.getWidth() / 2,
                         unit.getY() + unit.getHeight() / 2, 0);
                 Vector3 unitTopRightWorldCoordinates = new Vector3(unit.getX() + unit.getWidth() / 2,

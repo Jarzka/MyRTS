@@ -38,13 +38,10 @@ public class InputManager {
 
     private void handleUserInput() {
         handleCameraManagement();
-
-        handleDesktopSingleUnitSelection();
-        handleDesktopDrawSelectionArea();
-        handleDesktopUnitCommands();
-
-        handleTouchSingleUnitSelection();
-        handleTouchDesktopUnitCommands();
+        handleSingleUnitSelection();
+        handleSelectionRectangle();
+        handleDrawSelectionRectangle();
+        handleUnitCommands();
 
         mouseButtonLeftPressedLastFrame = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
         mouseButtonRightPressedLastFrame = Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
@@ -54,11 +51,16 @@ public class InputManager {
         cameraManager.update();
     }
 
+    private void handleSingleUnitSelection() {
+        handleDesktopSingleUnitSelection();
+    }
+
     private void handleDesktopSingleUnitSelection() {
         if (mouseButtonLeftPressedLastFrame && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             unselectAllOwnUnits();
             for (Unit unit : worldController.getUnitContainer().getUnits()) {
-                Vector3 mouseLocationInWorld = worldController.getWorldCamera().unproject(new Vector3(Gdx.input.getX(),
+                Vector3 mouseLocationInWorld = worldController.getWorldCamera().unproject(new Vector3(
+                        Gdx.input.getX(),
                         Gdx.input.getY(),
                         0));
                 // TODO CHECK TEAM
@@ -69,6 +71,43 @@ public class InputManager {
             }
 
         }
+    }
+
+    private void handleSelectionRectangle() {
+        if (mouseButtonLeftPressedLastFrame && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+            // TODO Toimii vain vetämällä hiirellä oikealle ylös.
+            Vector3 rectangleTopLeftWorld = worldController.getWorldCamera().unproject(
+                    new Vector3(unitSelectionRectangle.x,
+                            Gdx.graphics.getHeight() - unitSelectionRectangle.y - unitSelectionRectangle.height,
+                            0));
+            Vector3 rectangleTopRightWorld = worldController.getWorldCamera().unproject(
+                    new Vector3(unitSelectionRectangle.x + unitSelectionRectangle.width,
+                            Gdx.graphics.getHeight() - unitSelectionRectangle.y - unitSelectionRectangle.height,
+                            0));
+            Vector3 rectangleBottomLeftWorld = worldController.getWorldCamera().unproject(
+                    new Vector3(unitSelectionRectangle.x,
+                            Gdx.graphics.getHeight() - unitSelectionRectangle.y,
+                            0));
+            Vector3 rectangleBottomRightWorld = worldController.getWorldCamera().unproject(
+                    new Vector3(unitSelectionRectangle.x + unitSelectionRectangle.width,
+                            Gdx.graphics.getHeight() - unitSelectionRectangle.y,
+                            0));
+
+            Rectangle rectangleWorld = new Rectangle(rectangleBottomLeftWorld.x,
+                    rectangleBottomLeftWorld.y,
+                    rectangleBottomRightWorld.x - rectangleBottomLeftWorld.x,
+                    rectangleTopRightWorld.y - rectangleBottomRightWorld.y);
+
+            for (Unit unit : worldController.getUnitContainer().getUnits()) {
+                if (rectangleWorld.contains(unit.getX(), unit.getY())) {
+                    unit.setSelected(true);
+                }
+            }
+        }
+    }
+
+    private void handleDrawSelectionRectangle() {
+        handleDesktopDrawSelectionArea();
     }
 
     private void handleDesktopDrawSelectionArea() {
@@ -95,6 +134,10 @@ public class InputManager {
         }
     }
 
+    private void handleUnitCommands() {
+        handleDesktopUnitCommands();
+    }
+
     private void handleDesktopUnitCommands() {
         handleDesktopUnitMoveCommand();
     }
@@ -115,18 +158,6 @@ public class InputManager {
                 }
             }
         }
-    }
-
-
-    private void handleTouchCameraManagement() {
-    }
-
-    private void handleTouchSingleUnitSelection() {
-
-    }
-
-    private void handleTouchDesktopUnitCommands() {
-
     }
 
     private void unselectAllOwnUnits() {
