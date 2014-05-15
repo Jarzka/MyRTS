@@ -8,7 +8,7 @@ import org.voimala.utility.RotationDirection;
 import java.util.ArrayList;
 
 public class CarMovement extends Movement {
-    private ArrayList<Vector2> pathPoints = new ArrayList<Vector2>();
+
     private double acceleratorPedal = 0; /// 0 = no acceleration, 1 = full acceleration.
     private double steeringWheel = 0; // 1 = full clockwise, -1 = full counter-clockwise
     private int currentRotationDirection = 0; // 1 = clockwise, -1 = counter-clockwise
@@ -190,13 +190,5 @@ public class CarMovement extends Movement {
     private void stop(final float deltaTime) {
         acceleratorPedal = 0;
         steeringWheel = 0;
-    }
-
-    public void addPathPoint(final Vector2 point) {
-        pathPoints.add(point);
-    }
-
-    public ArrayList<Vector2> getPathPoints() {
-        return pathPoints;
     }
 }

@@ -23,6 +23,9 @@ public class WorldController {
     private CameraManagement cameraManagement;
     private double hudSize = 1; // TODO Hud size needs to be implemented
 
+    private boolean mouseButtonLeftPressedLastFrame;
+    private boolean mouseButtonRightPressedLastFrame;
+
     public final int TILE_SIZE_PIXELS = 256;
 
     public WorldController() {
@@ -110,21 +113,24 @@ public class WorldController {
     }
 
     private void handleUserInput() {
-        handleDesktopCameraManagement();
+        handleCameraManagement();
+
         handleDesktopUnitSelection();
         handleDesktopUnitCommands();
 
-        handleTouchCameraManagement();
         handleTouchUnitSelection();
         handleTouchDesktopUnitCommands();
+
+        mouseButtonLeftPressedLastFrame = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
+        mouseButtonRightPressedLastFrame = Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
     }
 
-    private void handleDesktopCameraManagement() {
+    private void handleCameraManagement() {
         cameraManagement.update();
     }
 
     private void handleDesktopUnitSelection() {
-        if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+        if (mouseButtonLeftPressedLastFrame && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             unselectAllOwnUnits();
             for (Unit unit : unitContainer.getUnits()) {
                 Vector3 mouseLocationInWorld = worldCamera.unproject(new Vector3(Gdx.input.getX(),
@@ -144,18 +150,18 @@ public class WorldController {
     }
 
     private void handleDesktopUnitMoveCommand() {
-        if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+        /** It is possible that at least one unit is selected while the player
+         * stops moving camera by stopping pressing right mouse button. To prevent this,
+         * at least x seconds need to be passed sincle camera movement stopped. */
+         if (cameraManagement.timeSinceCameraMovementStoppedInMs() > 100
+                && mouseButtonRightPressedLastFrame
+                && !Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
             for (Unit unit : unitContainer.getUnits()) {
                 if (unit.isSelected()) { // TODO CHECK TEAM
-                    if (unit.getMovement() instanceof CarMovement) {
-                        // TODO All movements should have addPath method?
-                        Vector3 mouseLocationInWorld = worldCamera.unproject(new Vector3(Gdx.input.getX(),
-                                Gdx.input.getY(),
-                                0));
-                        CarMovement movement = (CarMovement) unit.getMovement();
-                        // TODO Set path point
-                        movement.addPathPoint(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y));
-                    }
+                    Vector3 mouseLocationInWorld = worldCamera.unproject(new Vector3(Gdx.input.getX(),
+                            Gdx.input.getY(),
+                            0));
+                    unit.getMovement().setPathPoint(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y));
                 }
             }
         }

@@ -5,6 +5,9 @@ package org.voimala.myrts.gameplay;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
+
+import java.util.ArrayList;
 
 public class CameraManagement {
     private boolean isMovingCamera = false;
@@ -12,24 +15,38 @@ public class CameraManagement {
     private int startX = -1;
     private int startY = -1;
     private OrthographicCamera worldCamera = null;
+    private long cameraMovementStoppedTimestampMs = 0;
 
     public CameraManagement(OrthographicCamera worldCamera) {
         this.worldCamera = worldCamera;
     }
 
     public void update() {
-        if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-            setMovingCamera(true);
+        handleDesktopCameraMovement();
+        moveCamera();
+    }
 
-            if (!isStartPointSet()) {
+    private void handleDesktopCameraMovement() {
+        if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+            if (isStartPointSet()) {
+                if (Gdx.input.getX() != startX || Gdx.input.getY() != startY) {
+                    setMovingCamera(true);
+                }
+            } else {
                 setStartX(Gdx.input.getX());
                 setStartY(Gdx.input.getY());
                 setStartPointSet(true);
             }
         } else {
+            if (isMovingCamera()) {
+                cameraMovementStoppedTimestampMs = System.currentTimeMillis();
+            }
+
             setMovingCamera(false);
         }
+    }
 
+    private void moveCamera() {
         if (isMovingCamera()) {
             worldCamera.translate(Gdx.input.getX() - getStartX(),
                     getStartY() - Gdx.input.getY());
@@ -75,4 +92,9 @@ public class CameraManagement {
     public void setStartY(int startY) {
         this.startY = startY;
     }
+
+    public long timeSinceCameraMovementStoppedInMs() {
+        return System.currentTimeMillis() - cameraMovementStoppedTimestampMs;
+    }
+
 }

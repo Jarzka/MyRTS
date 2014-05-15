@@ -5,6 +5,8 @@ import org.voimala.myrts.exceptions.GameLogicException;
 import org.voimala.myrts.gameplay.units.Unit;
 import org.voimala.utility.MathHelper;
 
+import java.util.ArrayList;
+
 public abstract class Movement {
     protected double currentVelocity = 0; /** px/s */
     protected double maxVelocity = 0; /** px/s */
@@ -15,6 +17,7 @@ public abstract class Movement {
     protected double rotationAcceleration = 0; /** px/s */ // TODO
     protected double rotationDeceleration = 0; /** px/s */ // TODO
     protected Unit ownerUnit = null;
+    protected ArrayList<Vector2> pathPoints = new ArrayList<Vector2>();
 
     private void checkMaxRotationVelocity(double maxRotationVelocity) {
         if (maxRotationVelocity < 0) {
@@ -117,6 +120,19 @@ public abstract class Movement {
     public void setRotationDeceleration(final double rotationDeceleration) {
         checkRotationDeceleration(rotationDeceleration);
         this.rotationDeceleration = rotationDeceleration;
+    }
+
+    public void addPathPoint(final Vector2 point) {
+        pathPoints.add(point);
+    }
+
+    public void setPathPoint(final Vector2 point) {
+        pathPoints.clear();
+        pathPoints.add(point);
+    }
+
+    public ArrayList<Vector2> getPathPoints() {
+        return pathPoints;
     }
 
 }
