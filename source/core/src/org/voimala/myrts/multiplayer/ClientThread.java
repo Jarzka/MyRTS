@@ -8,6 +8,7 @@ import org.voimala.myrts.scenes.gameplay.Player;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class ClientThread extends Thread {
@@ -54,13 +55,26 @@ public class ClientThread extends Thread {
                 Gdx.app.debug(TAG, "Listening messages from the player.");
             }
 
-            BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
 
             try {
+                InputStreamReader inputStream = new InputStreamReader(socket.getInputStream());
+                char[] readCharacter = new char[1];
+                String message = "";
+                while (true) {
+                    inputStream.read(readCharacter);
+                    message += readCharacter[0];
+
+                    // End of message reached
+                    if (readCharacter[0] == '>') {
+                        break;
+                    }
+                }
+
                 if (socketType == SocketType.SERVER_SOCKET) {
-                    Gdx.app.debug(TAG, "Got message from the server: " + buffer.readLine()); // TODO Dies for some reason
+                    Gdx.app.debug(TAG, "Got message from the server: " + message); // TODO Dies for some reason
                 } else if (socketType == SocketType.PLAYER_SOCKET) {
-                    Gdx.app.debug(TAG, "Got message from the player: " + buffer.readLine());
+                    Gdx.app.debug(TAG, "Got message from the player: " + message);
                 }
 
                 Gdx.app.debug(TAG, "Message handled.");

@@ -60,10 +60,11 @@ public class ServerThread extends Thread {
     }
 
     private void sendMessageOfTheDay(ClientThread client) {
-        Gdx.app.debug(TAG, "Sending message of the day to the client...");
+        String motd = "<MOTD|Welcome to the server.>"; // TODO Hardcoded.
+        Gdx.app.debug(TAG, "Sending message of the day to the client: " + motd);
         try {
-            client.getSocket().getOutputStream().write("Welcome to the server.\\n".getBytes()); // TODO Hardcoded.
-        } catch (IOException e) {
+            client.getSocket().getOutputStream().write(motd.getBytes());
+        } catch (Exception e) {
             Gdx.app.debug(TAG, "WARNING: Unable to send message to client." + " " + e.getMessage());
         }
     }
