@@ -21,6 +21,8 @@ public class ServerThread extends Thread {
     private ArrayList<ConnectedClientThread> connectedClients = new ArrayList<ConnectedClientThread>();
 
     public ServerThread(final int port) {
+        super(ServerThread.class.getName());
+
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
         serverSocketHint = new ServerSocketHints();

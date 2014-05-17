@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import org.voimala.myrts.scenes.gameplay.Player;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,12 +19,18 @@ public class ClientThread extends Thread {
     private String ip;
     private Socket socket;
     private boolean running = true;
+    private Player player;
 
     public ClientThread(final String ip, final int port) {
+        super(ClientThread.class.getName());
+
         socketHints = new SocketHints();
         socketHints.connectTimeout = 10000;
+
         this.ip = ip;
         this.port = port;
+
+        player = new Player();
     }
 
     public void run() {
@@ -40,7 +47,7 @@ public class ClientThread extends Thread {
             System.out.println("Got message from the server."); // TODO Testing
 
             try {
-                System.out.println(buffer.readLine()); // TODO TEsting
+                System.out.println(buffer.readLine()); // TODO Testing
             } catch (IOException e) {
                 // Continue
             }
