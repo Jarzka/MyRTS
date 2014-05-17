@@ -77,7 +77,7 @@ public class ClientThread extends Thread {
                     Gdx.app.debug(TAG, "Got message from the player: " + message);
                 }
 
-                Gdx.app.debug(TAG, "Message handled.");
+                RTSProtocolManager.getInstance().handleNetworkMessage(message, socketType);
             } catch (Exception e) {
                 Gdx.app.debug(TAG, "ERROR: while reading buffer: " + e.getMessage());
                 running = false;

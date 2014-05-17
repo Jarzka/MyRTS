@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import org.voimala.myrts.app.MyRTS;
+import org.voimala.myrts.multiplayer.ServerThread;
 import org.voimala.myrts.scenes.gameplay.units.Unit;
 import org.voimala.myrts.scenes.gameplay.units.UnitContainer;
 import org.voimala.myrts.scenes.gameplay.units.infantry.M4Unit;
@@ -16,13 +18,13 @@ import org.voimala.myrts.multiplayer.ClientThread;
 
 public class WorldController {
 
-    private ClientThread clientThread;
-
     private static final String TAG = WorldController.class.getName();
     private UnitContainer unitContainer = new UnitContainer();
 
     private RTSInputProcessor inputHandler = new RTSInputProcessor(this);
     private InputManager inputManager;
+
+    private MyRTS myRTS;
 
     private OrthographicCamera worldCamera;
 
@@ -30,21 +32,17 @@ public class WorldController {
 
     public final int TILE_SIZE_PIXELS = 256;
 
-    public WorldController(final ClientThread clientThread) {
-        initialize(clientThread);
+    public WorldController(final MyRTS myRTS) {
+        this.myRTS = myRTS;
+        initialize();
     }
 
-    private void initialize(final ClientThread clientThread) {
-        initializeNetwork(clientThread);
+    private void initialize() {
         initializePointer();
         initializeCamera();
         initializeInputProcessor();
         initializeSprites();
         initializeMap();
-    }
-
-    private void initializeNetwork(final ClientThread clientThread) {
-        this.clientThread = clientThread;
     }
 
     private void initializePointer() {
@@ -147,12 +145,23 @@ public class WorldController {
         return inputManager;
     }
 
-    public ClientThread getClientThread() {
-        return clientThread;
-    }
-
     // TODO Move to another class?
     public void moveUnit(final Unit unit, final int x, final int y) {
         unit.getMovement().setPathPoint(new Vector2(x, y));
+    }
+
+    /** Returns null if unit is not found. */
+    public Unit findUnitById(final String id) {
+        for (Unit unit : unitContainer.getUnits()) {
+            if (unit.getUnitId().equals(id)) {
+                return unit;
+            }
+        }
+
+        return null;
+    }
+
+    public MyRTS getMyRTS() {
+        return myRTS;
     }
 }

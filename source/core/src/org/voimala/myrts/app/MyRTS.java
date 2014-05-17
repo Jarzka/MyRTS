@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import org.voimala.myrts.multiplayer.RTSProtocolManager;
 import org.voimala.myrts.scenes.gameplay.WorldController;
 import org.voimala.myrts.scenes.gameplay.WorldRenderer;
 import org.voimala.myrts.multiplayer.ClientThread;
@@ -49,7 +50,8 @@ public class MyRTS extends ApplicationAdapter {
         handleCommandLineArguments();
 
         // TODO Create scene
-        worldController = new WorldController(clientThread);
+        worldController = new WorldController(this);
+        RTSProtocolManager.getInstance().setWorldController(worldController);
         worldRenderer = new WorldRenderer(worldController);
     }
 
@@ -95,7 +97,9 @@ public class MyRTS extends ApplicationAdapter {
 
     @Override
     public void pause() {
-        paused = true;
+        /* TODO This is called on the desktop when the windows is minimized.
+         * This is not the desired case. */
+        //paused = true;
     }
 
     @Override
@@ -114,5 +118,13 @@ public class MyRTS extends ApplicationAdapter {
         }
 
         worldRenderer.dispose();
+    }
+
+    public ServerThread getServerThread() {
+        return serverThread;
+    }
+
+    public ClientThread getClientThread() {
+        return clientThread;
     }
 }

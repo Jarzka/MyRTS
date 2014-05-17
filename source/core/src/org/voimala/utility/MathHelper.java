@@ -8,11 +8,13 @@ public class MathHelper {
     public static RotationDirection getFasterTurningDirection(double angle1Radians,
                                                  double angle2Radians) {
         if (angle1Radians < 0 || angle1Radians > Math.PI * 2) {
-            throw new IllegalArgumentException("Angle 1 must be between 0 and PI * 2 (inclusive)");
+            throw new IllegalArgumentException("Angle 1 must be between 0 and PI * 2 (inclusive), "
+                    + angle1Radians + " " + "given.");
         }
 
         if (angle2Radians < 0 || angle2Radians > Math.PI * 2) {
-            throw new IllegalArgumentException("Angle 2 must be between 0 and PI * 2 (inclusive)");
+            throw new IllegalArgumentException("Angle 2 must be between 0 and PI * 2 (inclusive), "
+                    + angle2Radians + " " + "given.");
         }
 
         double distanceClockwise = getDistanceFromAngle1ToAngle2(angle1Radians,

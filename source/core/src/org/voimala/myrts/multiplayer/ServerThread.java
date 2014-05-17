@@ -50,23 +50,13 @@ public class ServerThread extends Thread {
                 connectedClients.add(client);
                 client.start();
 
-                sendMessageOfTheDay(client);
+                RTSProtocolManager.getInstance().sendMessageOfTheDay(client);
             } catch (Exception e) {
                 Gdx.app.debug(TAG, "Error accepting client connection: " + e.getMessage());
             }
         }
 
         Gdx.app.debug(TAG, "Server stopped.");
-    }
-
-    private void sendMessageOfTheDay(ClientThread client) {
-        String motd = "<MOTD|Welcome to the server.>"; // TODO Hardcoded.
-        Gdx.app.debug(TAG, "Sending message of the day to the client: " + motd);
-        try {
-            client.getSocket().getOutputStream().write(motd.getBytes());
-        } catch (Exception e) {
-            Gdx.app.debug(TAG, "WARNING: Unable to send message to client." + " " + e.getMessage());
-        }
     }
 
     public void sendMessageToAllClients(final String message) {

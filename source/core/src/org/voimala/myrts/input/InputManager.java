@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import org.voimala.myrts.multiplayer.RTSProtocolManager;
 import org.voimala.myrts.scenes.gameplay.WorldController;
 import org.voimala.myrts.scenes.gameplay.units.Unit;
 
@@ -151,20 +152,20 @@ public class InputManager {
                 && !Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
             for (Unit unit : worldController.getUnitContainer().getUnits()) {
                 if (unit.isSelected()) { // TODO CHECK TEAM
-                    Vector3 mouseLocationInWorld = worldController.getWorldCamera().unproject(new Vector3(Gdx.input.getX(),
+                    Vector3 mouseLocationInWorld = worldController.getWorldCamera().unproject(
+                            new Vector3(Gdx.input.getX(),
                             Gdx.input.getY(),
                             0));
-                    sendUnitMoveCommandToServer(unit, mouseLocationInWorld);
+                    RTSProtocolManager.getInstance().sendUnitMoveCommandToServer(
+                            worldController.getMyRTS().getClientThread(),
+                            unit.getUnitId(),
+                            mouseLocationInWorld);
                 }
             }
         }
     }
 
-    // TODO Move to another class?
-    private void sendUnitMoveCommandToServer(final Unit unit, final Vector3 mouseLocationInWorld) {
-        worldController.getClientThread().sendMessage(
-                "<UNIT_MOVE|" + unit.getUnitId() + "|" + mouseLocationInWorld.x + "|" + mouseLocationInWorld.y + ">");
-    }
+
 
     private void unselectAllOwnUnits() {
         // TODO CHECK TEAM
