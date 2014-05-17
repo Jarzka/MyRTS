@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Vector3;
 import org.voimala.myrts.gameplay.units.Unit;
 import org.voimala.myrts.gameplay.units.UnitContainer;
 import org.voimala.myrts.gameplay.units.infantry.M4Unit;
+import org.voimala.myrts.gameplay.units.movements.CarMovement;
 import org.voimala.myrts.graphics.SpriteContainer;
 import org.voimala.myrts.input.CameraManager;
 import org.voimala.myrts.input.InputManager;
@@ -97,6 +98,16 @@ public class WorldController {
         unit.setTeam(1);
         unit.setAngle(0);
         unitContainer.addUnit(unit);
+        /*
+        CarMovement unitMovement = (CarMovement) unit.getMovement();
+        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 8, TILE_SIZE_PIXELS / 2 * 8));
+        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 14, TILE_SIZE_PIXELS / 2 * 8));
+        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 14, TILE_SIZE_PIXELS / 2 * 1));
+        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 14, TILE_SIZE_PIXELS / 2 * 10));
+        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 1, TILE_SIZE_PIXELS / 2 * 1));
+        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 2, TILE_SIZE_PIXELS / 2 * 2));
+        unitMovement.addPathPoint(new Vector2(0, 0));
+        */
 
         M4Unit unit2 = new M4Unit();
         unit2.setPosition(TILE_SIZE_PIXELS / 2 * 9, TILE_SIZE_PIXELS / 2 * 10);

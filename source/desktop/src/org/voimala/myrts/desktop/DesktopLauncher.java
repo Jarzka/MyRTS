@@ -10,6 +10,9 @@ public class DesktopLauncher {
         config.title = "MyRTS";
         config.width = 800;
         config.height = 600;
+        config.backgroundFPS = 80;
+        config.foregroundFPS = 80;
+        config.vSyncEnabled = true;
 		new LwjglApplication(new MyRTS(arg), config);
 	}
 }

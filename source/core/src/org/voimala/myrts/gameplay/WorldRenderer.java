@@ -48,7 +48,7 @@ public class WorldRenderer implements Disposable {
         renderUnitEnergyBars();
         renderHud();
         renderUnitSelectionRectangle();
-        renderGameVersion();
+        renderInfoText();
     }
 
     private void renderGround() {
@@ -115,11 +115,18 @@ public class WorldRenderer implements Disposable {
         }
     }
 
-    private void renderGameVersion() {
+    private void renderInfoText() {
         hudBatch.begin();
         BitmapFont font = new BitmapFont();
         font.setColor(Color.WHITE);
-        font.draw(hudBatch, "Project named \"MyRTS\", early alpha version", 10, Gdx.graphics.getHeight() - 10);
+        font.draw(hudBatch,
+                "Project named \"MyRTS\", early alpha version",
+                10,
+                Gdx.graphics.getHeight() - 10);
+        font.draw(hudBatch,
+                String.valueOf(Gdx.graphics.getFramesPerSecond()) + "fps",
+                10,
+                Gdx.graphics.getHeight() - 10 - font.getLineHeight());
         hudBatch.end();
     }
 
