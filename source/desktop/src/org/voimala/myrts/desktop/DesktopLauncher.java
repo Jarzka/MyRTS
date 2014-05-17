@@ -10,6 +10,6 @@ public class DesktopLauncher {
         config.title = "MyRTS";
         config.width = 800;
         config.height = 600;
-		new LwjglApplication(new MyRTS(), config);
+		new LwjglApplication(new MyRTS(arg), config);
 	}
 }
