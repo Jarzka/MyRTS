@@ -12,6 +12,9 @@ import org.voimala.myrts.multiplayer.ServerThread;
 import java.util.HashMap;
 
 public class MyRTS extends ApplicationAdapter {
+
+    public static int LOG_LEVEL = Application.LOG_DEBUG;
+
     private static final String TAG = MyRTS.class.getName();
 
     private WorldController worldController; // TODO Move to gameplay scene
@@ -41,7 +44,7 @@ public class MyRTS extends ApplicationAdapter {
 
     @Override
     public void create() {
-        Gdx.app.setLogLevel(Application.LOG_DEBUG);
+        Gdx.app.setLogLevel(MyRTS.LOG_LEVEL);
 
         handleCommandLineArguments();
 

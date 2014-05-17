@@ -6,6 +6,7 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
+import org.voimala.myrts.app.MyRTS;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,17 +14,18 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class ServerThread extends Thread {
+    private static final String TAG = ServerThread.class.getName();
     private ServerSocketHints serverSocketHint;
     private ServerSocket serverSocket;
     private boolean running = true;
     private int port = 0;
     private Socket socket;
-    private ArrayList<ConnectedClientThread> connectedClients = new ArrayList<ConnectedClientThread>();
+    private ArrayList<ClientThread> connectedClients = new ArrayList<ClientThread>();
 
     public ServerThread(final int port) {
         super(ServerThread.class.getName());
 
-        Gdx.app.setLogLevel(Application.LOG_DEBUG);
+        Gdx.app.setLogLevel(MyRTS.LOG_LEVEL);
 
         serverSocketHint = new ServerSocketHints();
         serverSocketHint.acceptTimeout = 100000;
@@ -31,34 +33,36 @@ public class ServerThread extends Thread {
     }
 
     public void run() {
-        System.out.println("Creating server"); // TODO Testing
+        Gdx.app.debug(TAG, "Creating server");
         serverSocket = Gdx.net.newServerSocket(Net.Protocol.TCP, port, serverSocketHint);
-        System.out.println("Server created"); // TODO Testing
+        Gdx.app.debug(TAG, "Server created");
 
         // Wait for clients to connect
         while (running) {
-            System.out.println("Listening connections...");
+            Gdx.app.debug(TAG, "Listening connections...");
 
             socket = serverSocket.accept(null);
 
-            System.out.println("Client connected"); // TODO Testing
+            Gdx.app.debug(TAG, "Client connected");
 
-            ConnectedClientThread client = new ConnectedClientThread(socket);
+            ClientThread client = new ClientThread(socket);
             connectedClients.add(client);
             client.start();
         }
     }
 
-    public void sendMessageToClients(final String message) {
+    public void sendMessageToAllClients(final String message) {
         try {
-            socket.getOutputStream().write(message.getBytes());
+            for (ClientThread client : connectedClients) {
+                client.getSocket().getOutputStream().write(message.getBytes());
+            }
         } catch (IOException e) {
-            // Continue
+            Gdx.app.debug(TAG, "WARNING: Unable to send message to client." + " " + e.getMessage());
         }
     }
 
     public void die() {
-        for (ConnectedClientThread client : connectedClients) {
+        for (ClientThread client : connectedClients) {
             client.die();
         }
 
