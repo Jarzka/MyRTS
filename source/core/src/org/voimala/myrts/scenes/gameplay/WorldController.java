@@ -1,23 +1,23 @@
-package org.voimala.myrts.gameplay;
+package org.voimala.myrts.scenes.gameplay;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import org.voimala.myrts.gameplay.units.Unit;
-import org.voimala.myrts.gameplay.units.UnitContainer;
-import org.voimala.myrts.gameplay.units.infantry.M4Unit;
-import org.voimala.myrts.gameplay.units.movements.CarMovement;
+import org.voimala.myrts.scenes.gameplay.units.Unit;
+import org.voimala.myrts.scenes.gameplay.units.UnitContainer;
+import org.voimala.myrts.scenes.gameplay.units.infantry.M4Unit;
 import org.voimala.myrts.graphics.SpriteContainer;
-import org.voimala.myrts.input.CameraManager;
 import org.voimala.myrts.input.InputManager;
 import org.voimala.myrts.input.RTSInputProcessor;
+import org.voimala.myrts.multiplayer.ClientThread;
 
 public class WorldController {
+
+    private ClientThread clientThread;
+
     private static final String TAG = WorldController.class.getName();
     private UnitContainer unitContainer = new UnitContainer();
 
@@ -30,16 +30,21 @@ public class WorldController {
 
     public final int TILE_SIZE_PIXELS = 256;
 
-    public WorldController() {
-        initialize();
+    public WorldController(final ClientThread clientThread) {
+        initialize(clientThread);
     }
 
-    private void initialize() {
+    private void initialize(final ClientThread clientThread) {
+        initializeNetwork(clientThread);
         initializePointer();
         initializeCamera();
         initializeInputProcessor();
         initializeSprites();
         initializeMap();
+    }
+
+    private void initializeNetwork(final ClientThread clientThread) {
+        this.clientThread = clientThread;
     }
 
     private void initializePointer() {
@@ -93,7 +98,7 @@ public class WorldController {
     }
 
     private void createTestUnit() {
-        M4Unit unit = new M4Unit();
+        M4Unit unit = new M4Unit("1");
         unit.setPosition(TILE_SIZE_PIXELS / 2, TILE_SIZE_PIXELS / 2);
         unit.setTeam(1);
         unit.setAngle(0);
@@ -109,7 +114,7 @@ public class WorldController {
         unitMovement.addPathPoint(new Vector2(0, 0));
         */
 
-        M4Unit unit2 = new M4Unit();
+        M4Unit unit2 = new M4Unit("2");
         unit2.setPosition(TILE_SIZE_PIXELS / 2 * 9, TILE_SIZE_PIXELS / 2 * 10);
         unit2.setTeam(2);
         unitContainer.addUnit(unit2);
@@ -140,5 +145,14 @@ public class WorldController {
 
     public InputManager getInputManager() {
         return inputManager;
+    }
+
+    public ClientThread getClientThread() {
+        return clientThread;
+    }
+
+    // TODO Move to another class?
+    public void moveUnit(final Unit unit, final int x, final int y) {
+        unit.getMovement().setPathPoint(new Vector2(x, y));
     }
 }

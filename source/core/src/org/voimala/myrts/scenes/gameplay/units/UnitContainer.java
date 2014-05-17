@@ -1,4 +1,4 @@
-package org.voimala.myrts.gameplay.units;
+package org.voimala.myrts.scenes.gameplay.units;
 
 import java.util.ArrayList;
 

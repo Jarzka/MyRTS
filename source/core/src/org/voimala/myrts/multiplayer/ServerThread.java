@@ -31,10 +31,12 @@ public class ServerThread extends Thread {
     public void run() {
         System.out.println("Creating server"); // TODO Testing
         serverSocket = Gdx.net.newServerSocket(Net.Protocol.TCP, port, serverSocketHint);
-        System.out.println("Server created. Listening on port" + " " + port); // TODO Testing
+        System.out.println("Server created"); // TODO Testing
 
         // Wait for clients to connect
         while (running) {
+            System.out.println("Listening connections...");
+
             socket = serverSocket.accept(null);
 
             System.out.println("Client connected"); // TODO Testing

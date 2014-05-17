@@ -1,11 +1,9 @@
-package org.voimala.myrts.gameplay.units.movements;
+package org.voimala.myrts.scenes.gameplay.units.movements;
 
 import com.badlogic.gdx.math.Vector2;
-import org.voimala.myrts.gameplay.units.Unit;
+import org.voimala.myrts.scenes.gameplay.units.Unit;
 import org.voimala.utility.MathHelper;
 import org.voimala.utility.RotationDirection;
-
-import java.util.ArrayList;
 
 public class CarMovement extends Movement {
 

@@ -4,8 +4,8 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import org.voimala.myrts.gameplay.WorldController;
-import org.voimala.myrts.gameplay.WorldRenderer;
+import org.voimala.myrts.scenes.gameplay.WorldController;
+import org.voimala.myrts.scenes.gameplay.WorldRenderer;
 import org.voimala.myrts.multiplayer.ClientThread;
 import org.voimala.myrts.multiplayer.ServerThread;
 
@@ -13,12 +13,16 @@ import java.util.HashMap;
 
 public class MyRTS extends ApplicationAdapter {
     private static final String TAG = MyRTS.class.getName();
-    private WorldController worldController;
-    private WorldRenderer worldRenderer;
+
+    private WorldController worldController; // TODO Move to gameplay scene
+    private WorldRenderer worldRenderer; // TODO Move to gameplay scene
+
     private boolean paused = false;
+
     private ServerThread serverThread;
-    private HashMap<String, String> commandLineArguments = new HashMap<String, String>();
     private ClientThread clientThread;
+
+    private HashMap<String, String> commandLineArguments = new HashMap<String, String>();
 
     public MyRTS(String[] commandLineArguments) {
         super();
@@ -41,7 +45,8 @@ public class MyRTS extends ApplicationAdapter {
 
         handleCommandLineArguments();
 
-        worldController = new WorldController();
+        // TODO Create scene
+        worldController = new WorldController(clientThread);
         worldRenderer = new WorldRenderer(worldController);
     }
 
@@ -62,9 +67,9 @@ public class MyRTS extends ApplicationAdapter {
     }
 
     private void hostGame() {
-        ServerThread server = new ServerThread(
+        serverThread = new ServerThread(
                 Integer.valueOf(commandLineArguments.get("-port")));
-        server.start();
+        serverThread.start();
     }
 
     @Override

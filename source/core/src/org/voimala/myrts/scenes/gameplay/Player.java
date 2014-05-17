@@ -1,4 +1,4 @@
-package org.voimala.myrts.gameplay;
+package org.voimala.myrts.scenes.gameplay;
 
 public class Player {
 

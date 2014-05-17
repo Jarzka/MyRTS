@@ -1,12 +1,12 @@
-package org.voimala.myrts.gameplay.units;
+package org.voimala.myrts.scenes.gameplay.units;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.exceptions.GameLogicException;
-import org.voimala.myrts.gameplay.units.movements.Movement;
+import org.voimala.myrts.scenes.gameplay.units.movements.Movement;
 
 public abstract class Unit {
 
+    protected String unitId; // Every unit should have an unique id
     protected float x = 0;
     protected float y = 0;
     protected float angle = 0; // 0 = right, 90 = top, 180 = left, 270 = down. Always between 0 and 360 (inclusive)
@@ -19,15 +19,25 @@ public abstract class Unit {
     protected Object collisionMask;
 
     private boolean isSelected = false;
+    private String id;
 
-    public Unit() {
-        initialize();
+    public Unit(final String id) {
+        initialize(id);
     }
 
-    protected void initialize() {
+    private void initialize(final String id) {
+        initializeId(id);
         initializeDimensions();
         initializeCollisionMask();
         initializeMovement();
+    }
+
+    protected abstract void initializeDimensions();
+    protected abstract void initializeCollisionMask();
+    protected abstract void initializeMovement();
+
+    private void initializeId(final String id) {
+        this.unitId = id;
     }
 
     public boolean isSelected() {
@@ -176,7 +186,8 @@ public abstract class Unit {
 
     protected abstract void updateCollisionMask();
     public abstract boolean onCollision(Vector2 point);
-    protected abstract void initializeDimensions();
-    protected abstract void initializeCollisionMask();
-    protected abstract void initializeMovement();
+
+    public String getUnitId() {
+        return unitId;
+    }
 }

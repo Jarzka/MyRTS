@@ -1,4 +1,4 @@
-package org.voimala.myrts.gameplay;
+package org.voimala.myrts.scenes.gameplay;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
-import org.voimala.myrts.gameplay.units.Unit;
+import org.voimala.myrts.scenes.gameplay.units.Unit;
 import org.voimala.myrts.graphics.SpriteContainer;
 
 public class WorldRenderer implements Disposable {

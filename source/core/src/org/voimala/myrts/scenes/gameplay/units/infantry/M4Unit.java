@@ -1,15 +1,13 @@
-package org.voimala.myrts.gameplay.units.infantry;
+package org.voimala.myrts.scenes.gameplay.units.infantry;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
-import org.voimala.myrts.gameplay.units.movements.CarMovement;
-import org.voimala.myrts.graphics.SpriteContainer;
+import org.voimala.myrts.scenes.gameplay.units.movements.CarMovement;
 
 public class M4Unit extends Infantry {
 
-    public M4Unit() {
-        initialize();
+    public M4Unit(final String id) {
+        super(id);
     }
 
     protected void initializeDimensions() {
