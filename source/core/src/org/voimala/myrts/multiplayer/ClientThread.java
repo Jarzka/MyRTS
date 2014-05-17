@@ -19,6 +19,7 @@ public class ClientThread extends Thread {
     private Socket socket;
     private boolean running = true;
     private Player player;
+    private SocketType socketType;
 
     /** Used when the server creates a new thread for the connected client. */
     public ClientThread(final Socket socket) {
@@ -27,6 +28,7 @@ public class ClientThread extends Thread {
         socketHints = new SocketHints();
         socketHints.connectTimeout = 10000;
         this.socket = socket;
+        this.socketType = SocketType.PLAYER_SOCKET;
         player = new Player();
     }
 
@@ -38,6 +40,7 @@ public class ClientThread extends Thread {
         socketHints.connectTimeout = 10000;
         this.ip = ip;
         this.port = port;
+        this.socketType = SocketType.SERVER_SOCKET;
         player = new Player();
     }
 
@@ -45,12 +48,21 @@ public class ClientThread extends Thread {
         connectToTheServer();
 
         while (running) {
-            Gdx.app.debug(TAG, "Listening messages from the server.");
+            if (socketType == SocketType.SERVER_SOCKET) {
+                Gdx.app.debug(TAG, "Listening messages from the server.");
+            } else if (socketType == SocketType.PLAYER_SOCKET) {
+                Gdx.app.debug(TAG, "Listening messages from the player.");
+            }
 
             BufferedReader buffer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             try {
-                Gdx.app.debug(TAG, "Got message from the server: " + buffer.readLine());
+                if (socketType == SocketType.SERVER_SOCKET) {
+                    Gdx.app.debug(TAG, "Got message from the server: " + buffer.readLine());
+                } else if (socketType == SocketType.PLAYER_SOCKET) {
+                    Gdx.app.debug(TAG, "Got message from the player: " + buffer.readLine());
+                }
+
             } catch (IOException e) {
                 Gdx.app.debug(TAG, "ERROR: while reading buffer: " + e.getMessage());
             }
@@ -62,7 +74,7 @@ public class ClientThread extends Thread {
             Gdx.app.debug(TAG, "Connecting to the server...");
             socket = Gdx.net.newClientSocket(Net.Protocol.TCP, ip, port, socketHints);
 
-            Gdx.app.debug(TAG, "Connected.");
+            Gdx.app.debug(TAG, "Connected to the server.");
         }
     }
 

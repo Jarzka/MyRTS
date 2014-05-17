@@ -33,7 +33,7 @@ public class ServerThread extends Thread {
     }
 
     public void run() {
-        Gdx.app.debug(TAG, "Creating server");
+        Gdx.app.debug(TAG, "Creating server...");
         serverSocket = Gdx.net.newServerSocket(Net.Protocol.TCP, port, serverSocketHint);
         Gdx.app.debug(TAG, "Server created");
 
@@ -41,13 +41,18 @@ public class ServerThread extends Thread {
         while (running) {
             Gdx.app.debug(TAG, "Listening connections...");
 
-            socket = serverSocket.accept(null);
+            try {
+                socket = serverSocket.accept(null);
 
-            Gdx.app.debug(TAG, "Client connected");
+                Gdx.app.debug(TAG, "Client connected");
 
-            ClientThread client = new ClientThread(socket);
-            connectedClients.add(client);
-            client.start();
+                ClientThread client = new ClientThread(socket);
+                connectedClients.add(client);
+                client.start();
+            } catch (Exception e) {
+                Gdx.app.debug(TAG, "Error accepting client connection: " + e.getMessage());
+            }
+
         }
     }
 
