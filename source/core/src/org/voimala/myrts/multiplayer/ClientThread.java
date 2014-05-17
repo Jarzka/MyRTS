@@ -58,15 +58,19 @@ public class ClientThread extends Thread {
 
             try {
                 if (socketType == SocketType.SERVER_SOCKET) {
-                    Gdx.app.debug(TAG, "Got message from the server: " + buffer.readLine());
+                    Gdx.app.debug(TAG, "Got message from the server: " + buffer.readLine()); // TODO Dies for some reason
                 } else if (socketType == SocketType.PLAYER_SOCKET) {
                     Gdx.app.debug(TAG, "Got message from the player: " + buffer.readLine());
                 }
 
-            } catch (IOException e) {
+                Gdx.app.debug(TAG, "Message handled.");
+            } catch (Exception e) {
                 Gdx.app.debug(TAG, "ERROR: while reading buffer: " + e.getMessage());
+                running = false;
             }
         }
+
+        Gdx.app.debug(TAG, "Socket disconnected.");
     }
 
     private void connectToTheServer() {
@@ -80,9 +84,14 @@ public class ClientThread extends Thread {
 
     public void sendMessage(final String message) {
         try {
+            Gdx.app.debug(TAG, "Sending message to the server: " + message);
             socket.getOutputStream().write(message.getBytes());
         } catch (IOException e) {
-            Gdx.app.debug(TAG, "WARNING: Unable to send message to client." + " " + e.getMessage());
+            if (socketType == SocketType.SERVER_SOCKET) {
+                Gdx.app.debug(TAG, "WARNING: Unable to send message to server: " + e.getMessage());
+            } else if (socketType == SocketType.PLAYER_SOCKET) {
+                Gdx.app.debug(TAG, "WARNING: Unable to send message to player: " + e.getMessage());
+            }
         }
     }
 

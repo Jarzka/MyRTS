@@ -44,15 +44,27 @@ public class ServerThread extends Thread {
             try {
                 socket = serverSocket.accept(null);
 
-                Gdx.app.debug(TAG, "Client connected");
+                Gdx.app.debug(TAG, "Client connected from" + " " + socket.getRemoteAddress());
 
                 ClientThread client = new ClientThread(socket);
                 connectedClients.add(client);
                 client.start();
+
+                sendMessageOfTheDay(client);
             } catch (Exception e) {
                 Gdx.app.debug(TAG, "Error accepting client connection: " + e.getMessage());
             }
+        }
 
+        Gdx.app.debug(TAG, "Server stopped.");
+    }
+
+    private void sendMessageOfTheDay(ClientThread client) {
+        Gdx.app.debug(TAG, "Sending message of the day to the client...");
+        try {
+            client.getSocket().getOutputStream().write("Welcome to the server.\\n".getBytes()); // TODO Hardcoded.
+        } catch (IOException e) {
+            Gdx.app.debug(TAG, "WARNING: Unable to send message to client." + " " + e.getMessage());
         }
     }
 

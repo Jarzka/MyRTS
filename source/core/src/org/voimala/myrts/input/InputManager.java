@@ -163,7 +163,7 @@ public class InputManager {
     // TODO Move to another class?
     private void sendUnitMoveCommandToServer(final Unit unit, final Vector3 mouseLocationInWorld) {
         worldController.getClientThread().sendMessage(
-                "<UNIT_MOVE|" + unit.getUnitId() + "|" + mouseLocationInWorld.x + "|" + mouseLocationInWorld.y + ">");
+                "<UNIT_MOVE|" + unit.getUnitId() + "|" + mouseLocationInWorld.x + "|" + mouseLocationInWorld.y + ">" + "\\n");
     }
 
     private void unselectAllOwnUnits() {
