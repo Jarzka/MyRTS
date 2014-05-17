@@ -13,6 +13,15 @@ public class MyRTS extends ApplicationAdapter {
     private WorldRenderer worldRenderer;
     private boolean paused = false;
 
+    public MyRTS(String[] commandLineArguments) {
+        super();
+
+        // TODO Parse command line arguments
+        for (String argument : commandLineArguments) {
+            System.out.println(argument);
+        }
+    }
+
     @Override
     public void create() {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
