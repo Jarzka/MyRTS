@@ -81,7 +81,14 @@ public class MyRTS extends ApplicationAdapter {
     public void render() {
         // Update game world
         if (!paused) {
-            worldController.update(Gdx.graphics.getDeltaTime());
+            float deltaTime = Gdx.graphics.getDeltaTime();
+
+            // Set deltaTime min and max values
+            if (deltaTime > 0.06) {
+                deltaTime = (float) 0.06;
+            }
+
+            worldController.update(deltaTime);
         }
 
         // Render frame
