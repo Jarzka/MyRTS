@@ -6,9 +6,7 @@ import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 import org.voimala.myrts.scenes.gameplay.Player;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class ClientThread extends Thread {
@@ -26,10 +24,6 @@ public class ClientThread extends Thread {
     public ClientThread(final Socket socket) {
         super(ClientThread.class.getName());
 
-        socketHints = new SocketHints();
-        socketHints.connectTimeout = 10000;
-        socketHints.receiveBufferSize = 90000;
-        socketHints.sendBufferSize = 90000;
         this.socket = socket;
         this.socketType = SocketType.PLAYER_SOCKET;
         player = new Player();
@@ -62,24 +56,25 @@ public class ClientThread extends Thread {
             try {
                 InputStreamReader inputStream = new InputStreamReader(socket.getInputStream());
                 char[] readCharacter = new char[1];
-                String message = "";
+                StringBuilder constructMessage = new StringBuilder();
                 while (true) {
-                    inputStream.read(readCharacter);
-                    message += readCharacter[0];
-
-                    // End of message reached
-                    if (readCharacter[0] == '>') {
+                    if (inputStream.read(readCharacter) == -1) {
                         break;
                     }
-                }
 
-                if (socketType == SocketType.SERVER_SOCKET) {
-                    Gdx.app.debug(TAG, "Got message from the server: " + message); // TODO Dies for some reason
-                } else if (socketType == SocketType.PLAYER_SOCKET) {
-                    Gdx.app.debug(TAG, "Got message from the player: " + message);
-                }
+                    constructMessage.append(readCharacter[0]);
 
-                RTSProtocolManager.getInstance().handleNetworkMessage(message, socketType);
+                    if (readCharacter[0] == '>') { // End of message reached
+                        if (socketType == SocketType.SERVER_SOCKET) {
+                            Gdx.app.debug(TAG, "Got message from the server: " + constructMessage); // TODO Dies for some reason
+                        } else if (socketType == SocketType.PLAYER_SOCKET) {
+                            Gdx.app.debug(TAG, "Got message from the player: " + constructMessage);
+                        }
+
+                        RTSProtocolManager.getInstance().handleNetworkMessage(constructMessage.toString(), socketType);
+                        constructMessage = new StringBuilder();
+                    }
+                }
             } catch (Exception e) {
                 Gdx.app.debug(TAG, "ERROR: while reading buffer: " + e.getMessage());
                 running = false;
@@ -102,6 +97,7 @@ public class ClientThread extends Thread {
         try {
             Gdx.app.debug(TAG, "Sending message to the server: " + message);
             socket.getOutputStream().write(message.getBytes());
+            socket.getOutputStream().flush();
         } catch (IOException e) {
             if (socketType == SocketType.SERVER_SOCKET) {
                 Gdx.app.debug(TAG, "WARNING: Unable to send message to server: " + e.getMessage());

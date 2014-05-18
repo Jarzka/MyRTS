@@ -1,21 +1,19 @@
 package org.voimala.myrts.multiplayer;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
+import com.badlogic.gdx.net.SocketHints;
 import org.voimala.myrts.app.MyRTS;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class ServerThread extends Thread {
     private static final String TAG = ServerThread.class.getName();
-    private ServerSocketHints serverSocketHint;
+    private ServerSocketHints serverSocketHints;
     private ServerSocket serverSocket;
     private boolean running = true;
     private int port = 0;
@@ -27,14 +25,15 @@ public class ServerThread extends Thread {
 
         Gdx.app.setLogLevel(MyRTS.LOG_LEVEL);
 
-        serverSocketHint = new ServerSocketHints();
-        serverSocketHint.acceptTimeout = 100000;
+        serverSocketHints = new ServerSocketHints();
+        serverSocketHints.acceptTimeout = 100000;
+        serverSocketHints.receiveBufferSize = 90000;
         this.port = port;
     }
 
     public void run() {
         Gdx.app.debug(TAG, "Creating server...");
-        serverSocket = Gdx.net.newServerSocket(Net.Protocol.TCP, port, serverSocketHint);
+        serverSocket = Gdx.net.newServerSocket(Net.Protocol.TCP, port, serverSocketHints);
         Gdx.app.debug(TAG, "Server created");
 
         // Wait for clients to connect
@@ -42,7 +41,11 @@ public class ServerThread extends Thread {
             Gdx.app.debug(TAG, "Listening connections...");
 
             try {
-                socket = serverSocket.accept(null);
+                SocketHints socketHints = new SocketHints();
+                socketHints.connectTimeout = 10000;
+                socketHints.receiveBufferSize = 90000;
+                socketHints.sendBufferSize = 90000;
+                socket = serverSocket.accept(socketHints);
 
                 Gdx.app.debug(TAG, "Client connected from" + " " + socket.getRemoteAddress());
 
@@ -50,7 +53,7 @@ public class ServerThread extends Thread {
                 connectedClients.add(client);
                 client.start();
 
-                RTSProtocolManager.getInstance().sendMessageOfTheDay(client);
+                //RTSProtocolManager.getInstance().sendMessageOfTheDay(client);
             } catch (Exception e) {
                 Gdx.app.debug(TAG, "Error accepting client connection: " + e.getMessage());
             }
