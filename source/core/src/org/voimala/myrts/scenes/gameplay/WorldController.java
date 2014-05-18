@@ -96,26 +96,15 @@ public class WorldController {
     }
 
     private void createTestUnit() {
-        M4Unit unit = new M4Unit("1");
-        unit.setPosition(TILE_SIZE_PIXELS / 2, TILE_SIZE_PIXELS / 2);
-        unit.setTeam(1);
-        unit.setAngle(0);
-        unitContainer.addUnit(unit);
-        /*
-        CarMovement unitMovement = (CarMovement) unit.getMovement();
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 8, TILE_SIZE_PIXELS / 2 * 8));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 14, TILE_SIZE_PIXELS / 2 * 8));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 14, TILE_SIZE_PIXELS / 2 * 1));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 14, TILE_SIZE_PIXELS / 2 * 10));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 1, TILE_SIZE_PIXELS / 2 * 1));
-        unitMovement.addPathPoint(new Vector2(TILE_SIZE_PIXELS / 2 * 2, TILE_SIZE_PIXELS / 2 * 2));
-        unitMovement.addPathPoint(new Vector2(0, 0));
-        */
-
-        M4Unit unit2 = new M4Unit("2");
-        unit2.setPosition(TILE_SIZE_PIXELS / 2 * 9, TILE_SIZE_PIXELS / 2 * 10);
-        unit2.setTeam(2);
-        unitContainer.addUnit(unit2);
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                M4Unit unit = new M4Unit(String.valueOf(i) + String.valueOf(j));
+                unit.setPosition(TILE_SIZE_PIXELS * i, TILE_SIZE_PIXELS  * j);
+                unit.setTeam(i % 2 + 1);
+                unit.setAngle(0);
+                unitContainer.addUnit(unit);
+            }
+        }
     }
 
     public UnitContainer getUnitContainer() {

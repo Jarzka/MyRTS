@@ -28,6 +28,8 @@ public class ClientThread extends Thread {
 
         socketHints = new SocketHints();
         socketHints.connectTimeout = 10000;
+        socketHints.receiveBufferSize = 90000;
+        socketHints.sendBufferSize = 90000;
         this.socket = socket;
         this.socketType = SocketType.PLAYER_SOCKET;
         player = new Player();
@@ -39,6 +41,8 @@ public class ClientThread extends Thread {
 
         socketHints = new SocketHints();
         socketHints.connectTimeout = 10000;
+        socketHints.receiveBufferSize = 90000;
+        socketHints.sendBufferSize = 90000;
         this.ip = ip;
         this.port = port;
         this.socketType = SocketType.SERVER_SOCKET;
@@ -54,8 +58,6 @@ public class ClientThread extends Thread {
             } else if (socketType == SocketType.PLAYER_SOCKET) {
                 Gdx.app.debug(TAG, "Listening messages from the player.");
             }
-
-
 
             try {
                 InputStreamReader inputStream = new InputStreamReader(socket.getInputStream());
