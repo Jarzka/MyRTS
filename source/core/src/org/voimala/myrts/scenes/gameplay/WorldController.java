@@ -96,7 +96,7 @@ public class WorldController {
     }
 
     private void createTestUnit() {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 3; j++) {
                 M4Unit unit = new M4Unit(String.valueOf(i) + String.valueOf(j));
                 unit.setPosition(TILE_SIZE_PIXELS * i, TILE_SIZE_PIXELS  * j);

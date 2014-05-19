@@ -100,6 +100,18 @@ public class RTSProtocolManager {
         client.sendMessage("<UNIT_MOVE|" + unitId + "|" + mouseLocationInWorld.x + "|" + mouseLocationInWorld.y + ">");
     }
 
+    public void sendChatMessage(final ClientThread client, final String nick, final String message) {
+        client.sendMessage("<CHAT|" + nick + "|" + message + ">");
+    }
+
+    public void sendPing(final ClientThread client) {
+        client.sendMessage("<PING>");
+    }
+
+    public void sendPong(final ClientThread client) {
+        client.sendMessage("<PONG>");
+    }
+
     public void sendMessageOfTheDay(ClientThread client) {
         String motd = "<MOTD|Welcome to the server.>"; // TODO Hardcoded.
         Gdx.app.debug(TAG, "Sending message of the day to the client: " + motd);
