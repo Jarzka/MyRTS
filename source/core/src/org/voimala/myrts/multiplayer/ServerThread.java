@@ -21,6 +21,7 @@ import java.util.ArrayList;
  * <CHAT|nick|message>
  * <PING>
  * <PONG>
+ * <LATENCY|number_ms>
  */
 
 public class ServerThread extends Thread {

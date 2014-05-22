@@ -135,7 +135,9 @@ public class WorldRenderer implements Disposable {
         worldController.getWorldCamera().viewportHeight = Gdx.graphics.getHeight();
         worldController.getWorldCamera().update();
 
-        hudBatch = new SpriteBatch(); // Resize hud
+        // Resize hud
+        hudBatch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
     }
 
     @Override

@@ -40,7 +40,10 @@ public class RTSProtocolManager {
 
     public boolean handleNetworkMessage(final String message, final SocketType source) {
         return handleNetworkMessageMotd(message)
-                || handleNetworkMessageMoveUnit(message, source);
+                || handleNetworkMessageMoveUnit(message, source)
+                || handleNetworkMessageChat(message, source)
+                || handleNetworkMessagePing(message, source)
+                || handleNetworkMessagePong(message, source);
     }
 
     private boolean handleNetworkMessageMotd(final String message) {
@@ -91,6 +94,18 @@ public class RTSProtocolManager {
         }
 
         return false;
+    }
+
+    private boolean handleNetworkMessageChat(final String message, final SocketType source) {
+        return false; // TODO
+    }
+
+    private boolean handleNetworkMessagePing(final String message, final SocketType source) {
+        return false; // TODO
+    }
+
+    private boolean handleNetworkMessagePong(final String message, final SocketType source) {
+        return false; // TODO
     }
 
 
