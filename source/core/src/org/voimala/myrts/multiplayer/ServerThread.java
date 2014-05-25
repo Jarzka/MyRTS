@@ -58,6 +58,7 @@ public class ServerThread extends Thread {
                 socketHints.connectTimeout = 10000;
                 socketHints.receiveBufferSize = 90000;
                 socketHints.sendBufferSize = 90000;
+                socketHints.tcpNoDelay = true;
                 socket = serverSocket.accept(socketHints);
 
                 Gdx.app.debug(TAG, "Client connected from" + " " + socket.getRemoteAddress());

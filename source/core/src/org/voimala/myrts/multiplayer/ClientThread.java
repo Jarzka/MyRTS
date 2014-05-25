@@ -37,6 +37,7 @@ public class ClientThread extends Thread {
         socketHints.connectTimeout = 10000;
         socketHints.receiveBufferSize = 90000;
         socketHints.sendBufferSize = 90000;
+        socketHints.tcpNoDelay = true;
         this.ip = ip;
         this.port = port;
         this.socketType = SocketType.SERVER_SOCKET;
