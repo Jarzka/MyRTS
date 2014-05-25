@@ -1,4 +1,4 @@
-package org.voimala.myrts.input;
+package org.voimala.myrts.scenes.gameplay.input;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -6,10 +6,10 @@ import org.voimala.myrts.scenes.gameplay.WorldController;
 
 /* This class is used for handling desktop zoom with mouse wheel. */
 
-public class RTSInputProcessor implements InputProcessor{
+public class GameplayInputProcessor implements InputProcessor{
     WorldController worldController = null;
 
-    public RTSInputProcessor(WorldController worldController) {
+    public GameplayInputProcessor(WorldController worldController) {
         this.worldController = worldController;
     }
 

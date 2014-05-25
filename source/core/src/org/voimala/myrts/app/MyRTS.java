@@ -88,30 +88,9 @@ public class MyRTS extends ApplicationAdapter {
             float deltaTime = Gdx.graphics.getDeltaTime();
             deltaTime = fixDeltaTimeMinAndMaxValues(deltaTime);
 
-            if (gameMode == GameMode.SINGLEPLAYER) {
-                updateWorldUsingVariablePhysics(deltaTime);
-            } else if (gameMode == GameMode.MULTIPLAYER) {
-                updateWorldUsingFixedPhysics();
-            }
-
-        }
-
-        // Render frame
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        worldRenderer.render();
-    }
-
-    private void updateWorldUsingVariablePhysics(final float deltaTime) {
-        worldController.update(deltaTime);
-    }
-
-    private void updateWorldUsingFixedPhysics() {
-        if (System.currentTimeMillis() >= lastWorldUpdateTimestamp + 100) {
-            float deltaTime = (float) 0.1;
-            worldController.update(deltaTime);
-
-            lastWorldUpdateTimestamp = System.currentTimeMillis();
+            updateInput(deltaTime);
+            updateWorld(deltaTime);
+            renderWorld();
         }
     }
 
@@ -121,6 +100,37 @@ public class MyRTS extends ApplicationAdapter {
         }
 
         return deltaTime;
+    }
+
+    private void updateInput(final float deltaTime) {
+        worldController.updateInputManager(deltaTime);
+    }
+
+    private void updateWorld(float deltaTime) {
+        if (gameMode == GameMode.SINGLEPLAYER) {
+            updateWorldUsingVariablePhysics(deltaTime);
+        } else if (gameMode == GameMode.MULTIPLAYER) {
+            updateWorldUsingFixedPhysics();
+        }
+    }
+
+    private void updateWorldUsingVariablePhysics(final float deltaTime) {
+        worldController.updateWorld(deltaTime);
+    }
+
+    private void updateWorldUsingFixedPhysics() {
+        if (System.currentTimeMillis() >= lastWorldUpdateTimestamp + 100) {
+            float deltaTime = (float) 0.1;
+            worldController.updateWorld(deltaTime);
+
+            lastWorldUpdateTimestamp = System.currentTimeMillis();
+        }
+    }
+
+    private void renderWorld() {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        worldRenderer.render();
     }
 
     @Override

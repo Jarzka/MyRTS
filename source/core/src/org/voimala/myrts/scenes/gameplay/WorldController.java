@@ -5,16 +5,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.app.MyRTS;
-import org.voimala.myrts.multiplayer.ServerThread;
+import org.voimala.myrts.scenes.gameplay.input.GameplayInputManager;
+import org.voimala.myrts.scenes.gameplay.input.GameplayInputProcessor;
 import org.voimala.myrts.scenes.gameplay.units.Unit;
 import org.voimala.myrts.scenes.gameplay.units.UnitContainer;
 import org.voimala.myrts.scenes.gameplay.units.infantry.M4Unit;
 import org.voimala.myrts.graphics.SpriteContainer;
-import org.voimala.myrts.input.InputManager;
-import org.voimala.myrts.input.RTSInputProcessor;
-import org.voimala.myrts.multiplayer.ClientThread;
 
 public class WorldController {
 
@@ -22,8 +19,8 @@ public class WorldController {
 
     private UnitContainer unitContainer = new UnitContainer();
 
-    private RTSInputProcessor inputHandler = new RTSInputProcessor(this);
-    private InputManager inputManager;
+    private GameplayInputProcessor inputHandler = new GameplayInputProcessor(this);
+    private GameplayInputManager gameplayInputManager;
 
     private MyRTS myRTS;
 
@@ -59,7 +56,7 @@ public class WorldController {
         worldCamera.zoom = 4;
         worldCamera.update();
 
-        inputManager = new InputManager(this);
+        gameplayInputManager = new GameplayInputManager(this);
     }
 
     private void initializeSprites() {
@@ -112,14 +109,18 @@ public class WorldController {
         return unitContainer;
     }
 
+    /* TODO Uncomment when updateInputManager has been moved to scene class
     public void update(float deltaTime) {
-        inputManager.update();
         updateWorld(deltaTime);
+    }*/
+
+    public void updateWorld(final float deltaTime) {
+        updateUnits(deltaTime);
     }
 
-    private void updateWorld(final float deltaTime) {
-        updateUnits(deltaTime);
-
+    // TODO Move to scene class?
+    public void updateInputManager(final float deltaTime) {
+        gameplayInputManager.update();
     }
 
     private void updateUnits(float deltaTime) {
@@ -132,13 +133,8 @@ public class WorldController {
         return worldCamera;
     }
 
-    public InputManager getInputManager() {
-        return inputManager;
-    }
-
-    // TODO Move to another class?
-    public void moveUnit(final Unit unit, final int x, final int y) {
-        unit.getMovement().setPathPoint(new Vector2(x, y));
+    public GameplayInputManager getGameplayInputManager() {
+        return gameplayInputManager;
     }
 
     /** Returns null if unit is not found. */

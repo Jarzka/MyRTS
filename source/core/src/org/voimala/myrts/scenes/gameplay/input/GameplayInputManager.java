@@ -1,15 +1,16 @@
-package org.voimala.myrts.input;
+package org.voimala.myrts.scenes.gameplay.input;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import org.voimala.myrts.scenes.gameplay.CameraManager;
 import org.voimala.myrts.multiplayer.RTSProtocolManager;
 import org.voimala.myrts.scenes.gameplay.WorldController;
 import org.voimala.myrts.scenes.gameplay.units.Unit;
 
-public class InputManager {
+public class GameplayInputManager {
 
     private WorldController worldController;
 
@@ -28,7 +29,7 @@ public class InputManager {
         return unitSelectionRectangle;
     }
 
-    public InputManager(WorldController worldController) {
+    public GameplayInputManager(WorldController worldController) {
         this.worldController = worldController;
         cameraManager = new CameraManager(worldController.getWorldCamera());
     }
