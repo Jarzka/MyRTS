@@ -19,6 +19,7 @@ import org.voimala.myrts.multiplayer.ClientThread;
 public class WorldController {
 
     private static final String TAG = WorldController.class.getName();
+
     private UnitContainer unitContainer = new UnitContainer();
 
     private RTSInputProcessor inputHandler = new RTSInputProcessor(this);
@@ -116,8 +117,9 @@ public class WorldController {
         updateWorld(deltaTime);
     }
 
-    private void updateWorld(float deltaTime) {
+    private void updateWorld(final float deltaTime) {
         updateUnits(deltaTime);
+
     }
 
     private void updateUnits(float deltaTime) {

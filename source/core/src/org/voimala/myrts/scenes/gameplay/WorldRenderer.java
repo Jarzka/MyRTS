@@ -127,6 +127,10 @@ public class WorldRenderer implements Disposable {
                 String.valueOf(Gdx.graphics.getFramesPerSecond()) + "fps",
                 10,
                 Gdx.graphics.getHeight() - 10 - font.getLineHeight());
+        font.draw(hudBatch,
+                "Tick: 0",
+                10,
+                Gdx.graphics.getHeight() - 10 - font.getLineHeight() * 2);
         hudBatch.end();
     }
 

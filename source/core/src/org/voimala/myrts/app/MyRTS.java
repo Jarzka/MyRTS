@@ -5,6 +5,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import org.voimala.myrts.multiplayer.RTSProtocolManager;
+import org.voimala.myrts.scenes.gameplay.GameMode;
 import org.voimala.myrts.scenes.gameplay.WorldController;
 import org.voimala.myrts.scenes.gameplay.WorldRenderer;
 import org.voimala.myrts.multiplayer.ClientThread;
@@ -25,6 +26,9 @@ public class MyRTS extends ApplicationAdapter {
 
     private ServerThread serverThread;
     private ClientThread clientThread;
+
+    private GameMode gameMode = GameMode.MULTIPLAYER;
+    private long lastWorldUpdateTimestamp = 0;
 
     private HashMap<String, String> commandLineArguments = new HashMap<String, String>();
 
@@ -82,19 +86,41 @@ public class MyRTS extends ApplicationAdapter {
         // Update game world
         if (!paused) {
             float deltaTime = Gdx.graphics.getDeltaTime();
+            deltaTime = fixDeltaTimeMinAndMaxValues(deltaTime);
 
-            // Set deltaTime min and max values
-            if (deltaTime > 0.06) {
-                deltaTime = (float) 0.06;
+            if (gameMode == GameMode.SINGLEPLAYER) {
+                updateWorldUsingVariablePhysics(deltaTime);
+            } else if (gameMode == GameMode.MULTIPLAYER) {
+                updateWorldUsingFixedPhysics();
             }
 
-            worldController.update(deltaTime);
         }
 
         // Render frame
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         worldRenderer.render();
+    }
+
+    private void updateWorldUsingVariablePhysics(final float deltaTime) {
+        worldController.update(deltaTime);
+    }
+
+    private void updateWorldUsingFixedPhysics() {
+        if (System.currentTimeMillis() >= lastWorldUpdateTimestamp + 100) {
+            float deltaTime = (float) 0.1;
+            worldController.update(deltaTime);
+
+            lastWorldUpdateTimestamp = System.currentTimeMillis();
+        }
+    }
+
+    private float fixDeltaTimeMinAndMaxValues(float deltaTime) {
+        if (deltaTime > 0.06) {
+            deltaTime = (float) 0.06;
+        }
+
+        return deltaTime;
     }
 
     @Override
