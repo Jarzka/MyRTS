@@ -11,19 +11,6 @@ import org.voimala.myrts.app.MyRTS;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/*
- *
- * Message template
- * <MESSAGE_TYPE|parameter1|parameter2>
- *
- * <UNIT_MOVE|id|x|y>
- * <MOTD|message>
- * <CHAT|nick|message>
- * <PING>
- * <PONG>
- * <LATENCY|number_ms>
- */
-
 public class ServerThread extends Thread {
     private static final String TAG = ServerThread.class.getName();
     private ServerSocketHints serverSocketHints;
