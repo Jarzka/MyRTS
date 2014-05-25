@@ -12,6 +12,7 @@ import org.voimala.myrts.multiplayer.ClientThread;
 import org.voimala.myrts.multiplayer.ServerThread;
 
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 public class MyRTS extends ApplicationAdapter {
 
@@ -28,6 +29,7 @@ public class MyRTS extends ApplicationAdapter {
     private ClientThread clientThread;
 
     private GameMode gameMode = GameMode.MULTIPLAYER;
+    private long fixedPhysicsFps = 10;
     private long lastWorldUpdateTimestamp = 0;
 
     private HashMap<String, String> commandLineArguments = new HashMap<String, String>();
@@ -119,8 +121,9 @@ public class MyRTS extends ApplicationAdapter {
     }
 
     private void updateWorldUsingFixedPhysics() {
-        if (System.currentTimeMillis() >= lastWorldUpdateTimestamp + 100) {
-            float deltaTime = (float) 0.1;
+        // Update game world when 1 / fixedPhysicsFps seconds have passed.
+        if (System.currentTimeMillis() >= lastWorldUpdateTimestamp + (long) (((float) 1 / (float) fixedPhysicsFps) * 1000)) {
+            float deltaTime = (float) 1 / (float) fixedPhysicsFps;
             worldController.updateWorld(deltaTime);
 
             lastWorldUpdateTimestamp = System.currentTimeMillis();
