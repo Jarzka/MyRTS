@@ -30,6 +30,9 @@ public class WorldController {
 
     public final int TILE_SIZE_PIXELS = 256;
 
+    private long currentSimTick = 1; // "Communication turn" in multiplayer game.
+    private long SimTickDurationMs = 100;
+
     public WorldController(final MyRTS myRTS) {
         this.myRTS = myRTS;
         initialize();

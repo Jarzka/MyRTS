@@ -120,7 +120,7 @@ public class WorldRenderer implements Disposable {
         BitmapFont font = new BitmapFont();
         font.setColor(Color.WHITE);
         font.draw(hudBatch,
-                "Project named \"MyRTS\", early alpha version",
+                "Project \"MyRTS\", early alpha version",
                 10,
                 Gdx.graphics.getHeight() - 10);
         font.draw(hudBatch,
@@ -128,9 +128,17 @@ public class WorldRenderer implements Disposable {
                 10,
                 Gdx.graphics.getHeight() - 10 - font.getLineHeight());
         font.draw(hudBatch,
-                "Tick: 0",
+                "World Update Tick: " + worldController.getMyRTS().getWorldUpdateTick(),
                 10,
                 Gdx.graphics.getHeight() - 10 - font.getLineHeight() * 2);
+        font.draw(hudBatch,
+                "Render Tick: " + worldController.getMyRTS().getRenderTick(),
+                10,
+                Gdx.graphics.getHeight() - 10 - font.getLineHeight() * 3);
+        font.draw(hudBatch,
+                "SimTick: 0",
+                10,
+                Gdx.graphics.getHeight() - 10 - font.getLineHeight() * 4);
         hudBatch.end();
     }
 

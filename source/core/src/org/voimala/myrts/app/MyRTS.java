@@ -12,7 +12,6 @@ import org.voimala.myrts.multiplayer.ClientThread;
 import org.voimala.myrts.multiplayer.ServerThread;
 
 import java.util.HashMap;
-import java.util.logging.Logger;
 
 public class MyRTS extends ApplicationAdapter {
 
@@ -29,8 +28,9 @@ public class MyRTS extends ApplicationAdapter {
     private ClientThread clientThread;
 
     private GameMode gameMode = GameMode.MULTIPLAYER;
-    private long fixedPhysicsFps = 10;
     private long lastWorldUpdateTimestamp = 0;
+    private long worldUpdateTick = 0;
+    private long renderTick = 0;
 
     private HashMap<String, String> commandLineArguments = new HashMap<String, String>();
 
@@ -118,19 +118,24 @@ public class MyRTS extends ApplicationAdapter {
 
     private void updateWorldUsingVariablePhysics(final float deltaTime) {
         worldController.updateWorld(deltaTime);
+        worldUpdateTick++;
     }
 
     private void updateWorldUsingFixedPhysics() {
         // Update game world when 1 / fixedPhysicsFps seconds have passed.
+        long fixedPhysicsFps = 10;
         if (System.currentTimeMillis() >= lastWorldUpdateTimestamp + (long) (((float) 1 / (float) fixedPhysicsFps) * 1000)) {
             float deltaTime = (float) 1 / (float) fixedPhysicsFps;
             worldController.updateWorld(deltaTime);
+            worldUpdateTick++;
 
             lastWorldUpdateTimestamp = System.currentTimeMillis();
         }
     }
 
     private void renderWorld() {
+        renderTick++;
+
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         worldRenderer.render();
@@ -172,5 +177,13 @@ public class MyRTS extends ApplicationAdapter {
 
     public ClientThread getClientThread() {
         return clientThread;
+    }
+
+    public long getWorldUpdateTick() {
+        return worldUpdateTick;
+    }
+
+    public long getRenderTick() {
+        return renderTick;
     }
 }
