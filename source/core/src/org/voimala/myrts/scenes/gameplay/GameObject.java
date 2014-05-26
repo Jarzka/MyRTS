@@ -1,30 +1,29 @@
 package org.voimala.myrts.scenes.gameplay;
 
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector2;;
 
 public abstract class GameObject implements Cloneable {
 
-    protected String ObjectId; // Every unit should have an unique id
-    protected float x = 0;
-    protected float y = 0;
+    protected String ObjectId; // Every object should have an unique id
+    protected Vector2 position = new Vector2(0, 0);
     protected float angle = 0; // 0 = right, 90 = top, 180 = left, 270 = down. Always between 0 and 360 (inclusive)
     protected float width = 0;
     protected float height = 0;
 
     public float getX() {
-        return x;
+        return position.x;
     }
 
     public void setX(final float x) {
-        this.x = x;
+        position.x = x;
     }
 
     public float getY() {
-        return y;
+        return position.y;
     }
 
     public void setY(final float y) {
-        this.y = y;
+        position.y = y;
     }
 
     public void setPosition(final int x, final int y) {
@@ -52,13 +51,11 @@ public abstract class GameObject implements Cloneable {
 
     private void keepAngleValueInRange() {
         if (angle < 0) {
-            float newAngle = 360 - Math.abs(angle);
-            this.angle = newAngle;
+            this.angle = 360 - Math.abs(angle);
         }
 
         if (angle > 360) {
-            float newAngle = 0 + angle - 360;
-            this.angle = newAngle;
+            this.angle = 0 + angle - 360;
         }
     }
 
