@@ -17,6 +17,7 @@ public class ClientThread extends Thread {
     private String ip;
     private Socket socket;
     private boolean running = true;
+
     private Player player;
     private SocketType socketType;
 
@@ -87,10 +88,21 @@ public class ClientThread extends Thread {
 
     private void connectToTheServer() {
         if (socket == null) {
-            Gdx.app.debug(TAG, "Connecting to the server...");
-            socket = Gdx.net.newClientSocket(Net.Protocol.TCP, ip, port, socketHints);
+            try {
+                Gdx.app.debug(TAG, "Connecting to the server...");
+                socket = Gdx.net.newClientSocket(Net.Protocol.TCP, ip, port, socketHints);
 
-            Gdx.app.debug(TAG, "Connected to the server.");
+                Gdx.app.debug(TAG, "Connected to the server.");
+            } catch (Exception e) {
+                Gdx.app.debug(TAG, "Could not connect to the server: " + e.getMessage());
+                Gdx.app.debug(TAG, "Trying again in a few seconds...");
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    // Continue
+                }
+            }
         }
     }
 
@@ -107,6 +119,7 @@ public class ClientThread extends Thread {
             }
         }
     }
+
 
     public void die() {
         running = false;

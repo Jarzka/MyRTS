@@ -7,7 +7,6 @@ import org.voimala.myrts.app.GameplayStartMethod;
 import org.voimala.myrts.screens.GameScreen;
 
 public class MenuScreen extends GameScreen {
-
     public MenuScreen(GameMain gameMain) {
         super(gameMain);
     }

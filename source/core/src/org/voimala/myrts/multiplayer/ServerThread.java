@@ -30,15 +30,27 @@ public class ServerThread extends Thread {
     }
 
     public void run() {
-        Gdx.app.debug(TAG, "Creating server...");
-        serverSocket = Gdx.net.newServerSocket(Net.Protocol.TCP, port, serverSocketHints);
-        Gdx.app.debug(TAG, "Server created");
+        createServer();
+        acceptConnections();
 
-        // Wait for clients to connect
+        Gdx.app.debug(TAG, "Server stopped.");
+    }
+
+    private void createServer() {
+        try {
+            Gdx.app.debug(TAG, "Creating a server...");
+            serverSocket = Gdx.net.newServerSocket(Net.Protocol.TCP, port, serverSocketHints);
+            Gdx.app.debug(TAG, "Server created");
+        } catch (Exception e) {
+            Gdx.app.debug(TAG, "Error creating a server: " + e.getMessage());
+            running = false;
+        }
+    }
+
+    private void acceptConnections() {
         while (running) {
-            Gdx.app.debug(TAG, "Listening connections...");
-
             try {
+                Gdx.app.debug(TAG, "Listening connections...");
                 SocketHints socketHints = new SocketHints();
                 socketHints.connectTimeout = 10000;
                 socketHints.receiveBufferSize = 90000;
@@ -52,13 +64,11 @@ public class ServerThread extends Thread {
                 connectedClients.add(client);
                 client.start();
 
-                //RTSProtocolManager.getInstance().sendMessageOfTheDay(client);
+                //RTSProtocolManager.getInstance().generateMessageOfTheDay(client); TODO
             } catch (Exception e) {
                 Gdx.app.debug(TAG, "Error accepting client connection: " + e.getMessage());
             }
         }
-
-        Gdx.app.debug(TAG, "Server stopped.");
     }
 
     public void sendMessageToAllClients(final String message) {

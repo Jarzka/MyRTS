@@ -10,6 +10,14 @@ public abstract class GameObject implements Cloneable {
     protected float width = 0;
     protected float height = 0;
 
+    public GameObject clone() throws CloneNotSupportedException {
+        GameObject gameObjectClone = (GameObject) super.clone();
+        Vector2 positionClone = new Vector2(position.x, position.y);
+        gameObjectClone.setPosition(positionClone);
+
+        return gameObjectClone;
+    }
+
     public float getX() {
         return position.x;
     }
@@ -26,9 +34,8 @@ public abstract class GameObject implements Cloneable {
         position.y = y;
     }
 
-    public void setPosition(final int x, final int y) {
-        setX(x);
-        setY(y);
+    public void setPosition(Vector2 position) {
+        this.position = position;
     }
 
     public float getAngle() {

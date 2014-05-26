@@ -24,7 +24,6 @@ public class GameMain extends Game {
         super();
         CommandLineParser.getInstance().setGameMain(this);
         CommandLineParser.getInstance().saveCommandLineArguments(commandLineArguments);
-        CommandLineParser.getInstance().handleCommandLineArguments();
     }
 
     @Override
@@ -32,6 +31,7 @@ public class GameMain extends Game {
         Gdx.app.setLogLevel(GameMain.LOG_LEVEL);
 
         setScreen(new MenuScreen(this));
+        CommandLineParser.getInstance().handleCommandLineArguments();
     }
 
 

@@ -109,31 +109,36 @@ public class RTSProtocolManager {
     }
 
 
-    public void sendUnitMoveCommandToServer(final ClientThread client,
-                                             String unitId,
-                                             final Vector3 mouseLocationInWorld) {
-        client.sendMessage("<UNIT_MOVE|" + unitId + "|" + mouseLocationInWorld.x + "|" + mouseLocationInWorld.y + ">");
+    public String generateMessageMoveUnit(final ClientThread client,
+                                          String unitId,
+                                          final Vector3 mouseLocationInWorld) {
+        // TODO Connection lost?
+        // TODO Use StringBuilder in send methods
+        return "<UNIT_MOVE|" + unitId + "|" + mouseLocationInWorld.x + "|" + mouseLocationInWorld.y + ">";
     }
 
-    public void sendChatMessage(final ClientThread client, final String nick, final String message) {
-        client.sendMessage("<CHAT|" + nick + "|" + message + ">");
+    public String generateMessageChatMessage(final ClientThread client, final String nick, final String message) {
+        return "<CHAT|" + nick + "|" + message + ">";
     }
 
-    public void sendPing(final ClientThread client) {
-        client.sendMessage("<PING>");
-    }
-
-    public void sendPong(final ClientThread client) {
-        client.sendMessage("<PONG>");
-    }
-
-    public void sendMessageOfTheDay(ClientThread client) {
-        String motd = "<MOTD|Welcome to the server.>"; // TODO Hardcoded.
-        Gdx.app.debug(TAG, "Sending message of the day to the client: " + motd);
+    public void sendMessage(final ClientThread client, final String message) {
+        // TODO Connection lost?
         try {
-            client.getSocket().getOutputStream().write(motd.getBytes());
+            client.sendMessage(message);
         } catch (Exception e) {
-            Gdx.app.debug(TAG, "WARNING: Unable to send message to client." + " " + e.getMessage());
+            Gdx.app.debug(TAG, "WARNING: Unable to send move unit command to the network: " + e.getMessage());
         }
+    }
+
+    public String generateMessagePing(final ClientThread client) {
+        return "<PING>";
+    }
+
+    public String generateMessagePong(final ClientThread client) {
+        return "<PONG>";
+    }
+
+    public String generateMessageOfTheDay(ClientThread client) {
+        return "<MOTD|Welcome to the server.>"; // TODO Hardcoded.
     }
 }

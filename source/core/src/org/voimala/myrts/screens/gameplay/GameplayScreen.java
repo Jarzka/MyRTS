@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.GL20;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.multiplayer.RTSProtocolManager;
 import org.voimala.myrts.screens.GameScreen;
+import org.voimala.myrts.screens.gameplay.states.GameplayState;
+import org.voimala.myrts.screens.gameplay.states.GameplayStateInitialize;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
 import org.voimala.myrts.screens.gameplay.world.RenderMode;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
@@ -14,6 +16,8 @@ public class GameplayScreen extends GameScreen {
 
     private WorldController worldController;
     private WorldRenderer worldRenderer;
+
+    private GameplayState currentGameplayState = new GameplayStateInitialize(this);
 
     private GameMode gameMode = GameMode.SINGLEPLAYER;
     private long lastWorldUpdateTimestamp = 0;
@@ -37,6 +41,7 @@ public class GameplayScreen extends GameScreen {
 
     @Override
     public void render(float deltaTime) {
+        // TODO update current state
         deltaTime = fixDeltaTimeMinAndMaxValues(deltaTime);
 
         updateInput(deltaTime);
@@ -134,5 +139,9 @@ public class GameplayScreen extends GameScreen {
 
     public long getRenderTick() {
         return renderTick;
+    }
+
+    public GameMode getGameMode() {
+        return gameMode;
     }
 }

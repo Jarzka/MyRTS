@@ -7,10 +7,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import org.voimala.myrts.multiplayer.NetworkManager;
 import org.voimala.myrts.multiplayer.RTSProtocolManager;
+import org.voimala.myrts.screens.gameplay.world.GameMode;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
 import org.voimala.myrts.screens.gameplay.units.Unit;
 
 public class GameplayInputManager {
+
+    private static final String TAG = GameplayInputManager.class.getName();
 
     private WorldController worldController;
 
@@ -54,10 +57,10 @@ public class GameplayInputManager {
     }
 
     private void handleSingleUnitSelection() {
-        handleDesktopSingleUnitSelection();
+        handleMouseInputSelectSingleUnit();
     }
 
-    private void handleDesktopSingleUnitSelection() {
+    private void handleMouseInputSelectSingleUnit() {
         if (mouseButtonLeftPressedLastFrame && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             unselectAllOwnUnits();
             for (Unit unit : worldController.getUnitContainer().getUnits()) {
@@ -109,10 +112,10 @@ public class GameplayInputManager {
     }
 
     private void handleDrawSelectionRectangle() {
-        handleDesktopDrawSelectionArea();
+        handleMouseInputDrawSelectionArea();
     }
 
-    private void handleDesktopDrawSelectionArea() {
+    private void handleMouseInputDrawSelectionArea() {
         if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             if (unitSelectionRectangle == null) {
                 unitSelectionRectangle = new Rectangle();
@@ -137,14 +140,14 @@ public class GameplayInputManager {
     }
 
     private void handleUnitCommands() {
-        handleDesktopUnitCommands();
+        handleMouseInputUnitCommands();
     }
 
-    private void handleDesktopUnitCommands() {
-        handleDesktopUnitMoveCommand();
+    private void handleMouseInputUnitCommands() {
+        handleMouseInputUnitMoveCommand();
     }
 
-    private void handleDesktopUnitMoveCommand() {
+    private void handleMouseInputUnitMoveCommand() {
         /** It is possible that at least one unit is selected while the player
          * stops moving camera by stopping pressing right mouse button. To prevent this,
          * at least x seconds need to be passed sincle camera movement stopped. */
@@ -153,19 +156,30 @@ public class GameplayInputManager {
                 && !Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
             for (Unit unit : worldController.getUnitContainer().getUnits()) {
                 if (unit.isSelected()) { // TODO CHECK TEAM
-                    Vector3 mouseLocationInWorld = worldController.getWorldCamera().unproject(
-                            new Vector3(Gdx.input.getX(),
-                            Gdx.input.getY(),
-                            0));
-                    RTSProtocolManager.getInstance().sendUnitMoveCommandToServer(
-                            NetworkManager.getInstance().getClientThread(),
-                            unit.getObjectId(),
-                            mouseLocationInWorld);
+                    handleCommandMoveUnit(unit);
                 }
             }
         }
     }
 
+    private void handleCommandMoveUnit(Unit unit) {
+        Vector3 mouseLocationInWorld = worldController.getWorldCamera().unproject(
+                new Vector3(Gdx.input.getX(),
+                Gdx.input.getY(),
+                0));
+
+
+        if (worldController.getGameplayScreen().getGameMode() == GameMode.SINGLEPLAYER) {
+            unit.getMovement().setPathPoint(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y));
+        } else if (worldController.getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
+            String message = RTSProtocolManager.getInstance().generateMessageMoveUnit(
+                    NetworkManager.getInstance().getClientThread(),
+                    unit.getObjectId(),
+                    mouseLocationInWorld);
+            RTSProtocolManager.getInstance().sendMessage(NetworkManager.getInstance().getClientThread(), message);
+
+        }
+    }
 
 
     private void unselectAllOwnUnits() {
