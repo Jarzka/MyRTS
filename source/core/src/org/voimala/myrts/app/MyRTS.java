@@ -142,7 +142,6 @@ public class MyRTS extends ApplicationAdapter {
         if (gameMode == GameMode.SINGLEPLAYER) {
             worldRenderer.render(RenderMode.GAME_STATE);
         } else if (gameMode == GameMode.MULTIPLAYER) {
-            //worldRenderer.render(RenderMode.GAME_STATE);
             worldRenderer.render(RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION);
         }
     }

@@ -158,7 +158,7 @@ public class GameplayInputManager {
                             0));
                     RTSProtocolManager.getInstance().sendUnitMoveCommandToServer(
                             worldController.getMyRTS().getClientThread(),
-                            unit.getUnitId(),
+                            unit.getObjectId(),
                             mouseLocationInWorld);
                 }
             }

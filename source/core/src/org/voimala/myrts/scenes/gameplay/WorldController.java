@@ -143,7 +143,7 @@ public class WorldController {
     /** Returns null if unit is not found. */
     public Unit findUnitById(final String id) {
         for (Unit unit : unitContainer.getUnits()) {
-            if (unit.getUnitId().equals(id)) {
+            if (unit.getObjectId().equals(id)) {
                 return unit;
             }
         }
