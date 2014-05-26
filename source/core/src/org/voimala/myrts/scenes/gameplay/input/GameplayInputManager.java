@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import org.voimala.myrts.scenes.gameplay.CameraManager;
 import org.voimala.myrts.multiplayer.RTSProtocolManager;
 import org.voimala.myrts.scenes.gameplay.WorldController;
 import org.voimala.myrts.scenes.gameplay.units.Unit;

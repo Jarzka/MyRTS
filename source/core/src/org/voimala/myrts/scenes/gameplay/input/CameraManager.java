@@ -1,4 +1,4 @@
-package org.voimala.myrts.scenes.gameplay;
+package org.voimala.myrts.scenes.gameplay.input;
 
 /* Allows the player to move the camera while holding right mouse button. */
 

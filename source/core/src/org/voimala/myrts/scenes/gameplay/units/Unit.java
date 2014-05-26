@@ -2,9 +2,10 @@ package org.voimala.myrts.scenes.gameplay.units;
 
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.exceptions.GameLogicException;
+import org.voimala.myrts.scenes.gameplay.units.movements.CarMovement;
 import org.voimala.myrts.scenes.gameplay.units.movements.Movement;
 
-public abstract class Unit {
+public abstract class Unit implements Cloneable {
 
     protected String unitId; // Every unit should have an unique id
     protected float x = 0;
@@ -13,7 +14,7 @@ public abstract class Unit {
     protected int player = 0;
     protected int team = 0;
     protected Movement movement = null;
-    protected  UnitType type;
+    protected UnitType type;
     protected float width = 0;
     protected float height = 0;
     protected Object collisionMask;
@@ -30,6 +31,17 @@ public abstract class Unit {
         initializeDimensions();
         initializeCollisionMask();
         initializeMovement();
+    }
+
+    @Override
+    public Unit clone() throws CloneNotSupportedException {
+        Unit unitClone = (Unit) super.clone();
+        Movement movementClone = movement.clone();
+        movementClone.setOwner(unitClone);
+        // Object collisionMaskClone = collisionMask.clone(); TODO CLONE COLLISION MASK
+        unitClone.setMovement(movementClone);
+
+        return unitClone;
     }
 
     protected abstract void initializeDimensions();

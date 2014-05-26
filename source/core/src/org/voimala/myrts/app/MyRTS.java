@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import org.voimala.myrts.multiplayer.RTSProtocolManager;
 import org.voimala.myrts.scenes.gameplay.GameMode;
+import org.voimala.myrts.scenes.gameplay.RenderMode;
 import org.voimala.myrts.scenes.gameplay.WorldController;
 import org.voimala.myrts.scenes.gameplay.WorldRenderer;
 import org.voimala.myrts.multiplayer.ClientThread;
@@ -85,7 +86,6 @@ public class MyRTS extends ApplicationAdapter {
 
     @Override
     public void render() {
-        // Update game world
         if (!paused) {
             float deltaTime = Gdx.graphics.getDeltaTime();
             deltaTime = fixDeltaTimeMinAndMaxValues(deltaTime);
@@ -123,7 +123,7 @@ public class MyRTS extends ApplicationAdapter {
 
     private void updateWorldUsingFixedPhysics() {
         // Update game world when 1 / fixedPhysicsFps seconds have passed.
-        long fixedPhysicsFps = 10;
+        long fixedPhysicsFps = 20;
         if (System.currentTimeMillis() >= lastWorldUpdateTimestamp + (long) (((float) 1 / (float) fixedPhysicsFps) * 1000)) {
             float deltaTime = (float) 1 / (float) fixedPhysicsFps;
             worldController.updateWorld(deltaTime);
@@ -138,7 +138,13 @@ public class MyRTS extends ApplicationAdapter {
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        worldRenderer.render();
+
+        if (gameMode == GameMode.SINGLEPLAYER) {
+            worldRenderer.render(RenderMode.GAME_STATE);
+        } else if (gameMode == GameMode.MULTIPLAYER) {
+            //worldRenderer.render(RenderMode.GAME_STATE);
+            worldRenderer.render(RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION);
+        }
     }
 
     @Override
@@ -169,6 +175,10 @@ public class MyRTS extends ApplicationAdapter {
         }
 
         worldRenderer.dispose();
+    }
+
+    public long getLastWorldUpdateTimestamp() {
+        return lastWorldUpdateTimestamp;
     }
 
     public ServerThread getServerThread() {

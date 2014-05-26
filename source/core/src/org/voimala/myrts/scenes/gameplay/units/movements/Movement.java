@@ -7,15 +7,15 @@ import org.voimala.utility.MathHelper;
 
 import java.util.ArrayList;
 
-public abstract class Movement {
-    protected double currentVelocity = 0; /** px/s */
-    protected double maxVelocity = 0; /** px/s */
-    protected double acceleration = 0; /** px/s */
-    protected double deceleration = 0; /** px/s */
-    protected double maxRotationVelocity = 0; /** px/s */
-    protected double currentRotationVelocity = 0; /** px/s */
-    protected double rotationAcceleration = 0; /** px/s */ // TODO
-    protected double rotationDeceleration = 0; /** px/s */ // TODO
+public abstract class Movement implements Cloneable {
+    protected double currentVelocity = 0; /// px/s
+    protected double maxVelocity = 0; /// px/s
+    protected double acceleration = 0; /// px/s
+    protected double deceleration = 0; /// px/s
+    protected double maxRotationVelocity = 0; /// px/s
+    protected double currentRotationVelocity = 0; /// px/s
+    protected double rotationAcceleration = 0; /// px/s
+    protected double rotationDeceleration = 0; /// px/s
     protected Unit ownerUnit = null;
     protected ArrayList<Vector2> pathPoints = new ArrayList<Vector2>();
 
@@ -23,6 +23,29 @@ public abstract class Movement {
         if (maxRotationVelocity < 0) {
             throw new GameLogicException("Rotation speed must be equal or greater than 0.");
         }
+    }
+
+    @Override
+    /** The owner unit of the movement is the same as the original owner.  */
+    public Movement clone() throws CloneNotSupportedException {
+        Movement movementClone = (Movement) super.clone();
+        ArrayList<Vector2> pathPointsClone = clonePathPoints();
+        movementClone.setPathPoints(pathPointsClone);
+
+        return movementClone;
+    }
+
+    protected ArrayList<Vector2> clonePathPoints() {
+        ArrayList<Vector2> pathPointsClone = new ArrayList<Vector2>();
+
+        for (Vector2 point : pathPoints) {
+            Vector2 pointClone = new Vector2();
+            pointClone.x = point.x;
+            pointClone.y = point.y;
+            pathPointsClone.add(pointClone);
+        }
+
+        return pathPointsClone;
     }
 
     private void checkDeceleration(double rotationDeceleration) {
@@ -135,4 +158,11 @@ public abstract class Movement {
         return pathPoints;
     }
 
+    public void setPathPoints(ArrayList<Vector2> pathPoints) {
+        this.pathPoints = pathPoints;
+    }
+
+    public void setOwner(Unit owner) {
+        this.ownerUnit = owner;
+    }
 }

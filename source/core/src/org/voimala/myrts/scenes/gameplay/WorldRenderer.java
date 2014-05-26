@@ -14,10 +14,12 @@ import org.voimala.myrts.graphics.SpriteContainer;
 
 public class WorldRenderer implements Disposable {
 
+    private static final String TAG = WorldRenderer.class.getName();
     private SpriteBatch batch;
     private SpriteBatch hudBatch;
     private WorldController worldController;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
+    private long lastRenderTimestamp = 0;
 
     public WorldRenderer (WorldController worldController) {
         this. worldController = worldController;
@@ -35,20 +37,21 @@ public class WorldRenderer implements Disposable {
     }
 
 
-    public void render () {
+    public void render(final RenderMode renderMode) {
         /* This game uses the standard mathematic circle where 0 degrees point to right,
          * 90 degrees point to up etc. Libgdx seems to use a circle where 0 degrees
          * point to up, 90 degrees point to left etc. WorldRenderer makes the conversion
-         * automatically.
-         */
+         * automatically. */
         batch.setProjectionMatrix(worldController.getWorldCamera().combined);
 
         renderGround();
-        renderUnits();
-        renderUnitEnergyBars();
+        renderUnits(renderMode);
+        renderUnitEnergyBars(renderMode);
         renderHud();
         renderUnitSelectionRectangle();
         renderInfoText();
+
+        lastRenderTimestamp = System.currentTimeMillis();
     }
 
     private void renderGround() {
@@ -63,7 +66,15 @@ public class WorldRenderer implements Disposable {
         }
     }
 
-    private void renderUnits() {
+    private void renderUnits(final RenderMode renderMode) {
+        if (renderMode == RenderMode.GAME_STATE) {
+            renderUnitsAsTheyAre();
+        } else if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
+            renderUnitsWithPhysicsPrediction();
+        }
+    }
+
+    private void renderUnitsAsTheyAre() {
         for (Unit unit : worldController.getUnitContainer().getUnits()) {
             batch.begin();
             Sprite sprite = SpriteContainer.getInstance().getSprite("m4-stopped-0");
@@ -75,7 +86,30 @@ public class WorldRenderer implements Disposable {
         }
     }
 
-    private void renderUnitEnergyBars() {
+    private void renderUnitsWithPhysicsPrediction() {
+        for (Unit unit : worldController.getUnitContainer().getUnits()) {
+            try {
+                Unit unitClone = unit.clone();
+
+                // Find delta time between last world update and current time.
+                float deltaTime = (System.currentTimeMillis() - worldController.getMyRTS().getLastWorldUpdateTimestamp()) / (float) 1000;
+                unitClone.update(deltaTime);
+
+                batch.begin();
+                Sprite sprite = SpriteContainer.getInstance().getSprite("m4-stopped-0");
+                sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2 - 70);
+                sprite.setPosition(unitClone.getX() - sprite.getWidth() / 2, unitClone.getY() - sprite.getWidth() / 2 + 70);
+                sprite.setRotation(unitClone.getAngle() - 90);
+                sprite.draw(batch);
+                batch.end();
+            } catch (CloneNotSupportedException e) {
+                Gdx.app.debug(TAG, "ERROR: " + e.getMessage());
+            }
+        }
+    }
+
+    private void renderUnitEnergyBars(final RenderMode renderMod) {
+        // TODO Rendermode
         for (Unit unit : worldController.getUnitContainer().getUnits()) {
             if (unit.isSelected()) {
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
