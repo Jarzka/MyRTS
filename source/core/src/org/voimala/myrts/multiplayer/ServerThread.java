@@ -23,8 +23,6 @@ public class ServerThread extends Thread {
     public ServerThread(final int port) {
         super(ServerThread.class.getName());
 
-        Gdx.app.setLogLevel(GameMain.LOG_LEVEL);
-
         serverSocketHints = new ServerSocketHints();
         serverSocketHints.acceptTimeout = 100000;
         serverSocketHints.receiveBufferSize = 90000;

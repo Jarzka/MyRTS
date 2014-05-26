@@ -19,16 +19,13 @@ public class NetworkManager {
         return instanceOfThis;
     }
 
-    public void joinGame() {
-        clientThread = new ClientThread(
-                CommandLineParser.getInstance().getCommandLineArguments().get("-ip"),
-                Integer.valueOf(CommandLineParser.getInstance().getCommandLineArguments().get("-port")));
+    public void joinGame(final String ip, final int port) {
+        clientThread = new ClientThread(ip, port);
         clientThread.start();
     }
 
-    public void hostGame() {
-        serverThread = new ServerThread(
-                Integer.valueOf(CommandLineParser.getInstance().getCommandLineArguments().get("-port")));
+    public void hostGame(final int port) {
+        serverThread = new ServerThread(port);
         serverThread.start();
     }
 

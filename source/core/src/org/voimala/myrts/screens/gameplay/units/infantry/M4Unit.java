@@ -16,7 +16,7 @@ public class M4Unit extends Infantry {
     }
 
     protected void initializeCollisionMask() {
-        collisionMask = new Circle(x, y, width / 2);
+        collisionMask = new Circle(position.x, position.y, width / 2);
     }
 
     protected void initializeMovement() {
@@ -43,7 +43,7 @@ public class M4Unit extends Infantry {
     protected void updateCollisionMask() {
         if (collisionMask instanceof Circle) {
             Circle collisionCircle = (Circle) collisionMask;
-            collisionCircle.setPosition(x, y);
+            collisionCircle.setPosition(position.x, position.y);
         }
 
     }

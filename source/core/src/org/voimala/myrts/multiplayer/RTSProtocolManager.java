@@ -83,7 +83,7 @@ public class RTSProtocolManager {
                     }
                 }
             } else if (source == SocketType.PLAYER_SOCKET) {
-                ServerThread server = worldController.getGameMain().getServerThread();
+                ServerThread server = NetworkManager.getInstance().getServerThread();
                 if (server != null) {
                     server.sendMessageToAllClients(message);
                 }

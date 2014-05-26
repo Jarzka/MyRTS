@@ -15,7 +15,7 @@ public class GameplayScreen extends GameScreen {
     private WorldController worldController;
     private WorldRenderer worldRenderer;
 
-    private GameMode gameMode = GameMode.MULTIPLAYER;
+    private GameMode gameMode = GameMode.SINGLEPLAYER;
     private long lastWorldUpdateTimestamp = 0;
     private long worldUpdateTick = 0;
     private long renderTick = 0;
@@ -29,6 +29,10 @@ public class GameplayScreen extends GameScreen {
         worldController = new WorldController(this);
         RTSProtocolManager.getInstance().setWorldController(worldController);
         worldRenderer = new WorldRenderer(worldController);
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
     }
 
     @Override

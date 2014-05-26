@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import org.voimala.myrts.multiplayer.NetworkManager;
 import org.voimala.myrts.multiplayer.RTSProtocolManager;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
 import org.voimala.myrts.screens.gameplay.units.Unit;
@@ -157,7 +158,7 @@ public class GameplayInputManager {
                             Gdx.input.getY(),
                             0));
                     RTSProtocolManager.getInstance().sendUnitMoveCommandToServer(
-                            worldController.getGameMain().getClientThread(),
+                            NetworkManager.getInstance().getClientThread(),
                             unit.getObjectId(),
                             mouseLocationInWorld);
                 }

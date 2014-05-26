@@ -152,7 +152,7 @@ public class WorldController {
         return null;
     }
 
-    public GameMain getGameMain() {
-        return GameMain;
+    public GameplayScreen getGameplayScreen() {
+        return gameplayScreen;
     }
 }

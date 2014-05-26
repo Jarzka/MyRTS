@@ -6,6 +6,8 @@ import com.badlogic.gdx.Gdx;
 import org.voimala.myrts.graphics.SpriteContainer;
 import org.voimala.myrts.multiplayer.NetworkManager;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
+import org.voimala.myrts.screens.gameplay.world.GameMode;
+import org.voimala.myrts.screens.menu.MenuScreen;
 
 public class GameMain extends Game {
 
@@ -20,14 +22,16 @@ public class GameMain extends Game {
 
     public GameMain(String[] commandLineArguments) {
         super();
+        CommandLineParser.getInstance().setGameMain(this);
         CommandLineParser.getInstance().saveCommandLineArguments(commandLineArguments);
+        CommandLineParser.getInstance().handleCommandLineArguments();
     }
 
     @Override
     public void create() {
         Gdx.app.setLogLevel(GameMain.LOG_LEVEL);
 
-        setScreen(new GameplayScreen(this));
+        setScreen(new MenuScreen(this));
     }
 
 
@@ -61,6 +65,29 @@ public class GameMain extends Game {
         SpriteContainer.freeResources();
         NetworkManager.getInstance().quit();
         getScreen().dispose();
+    }
+
+    public void startGame(GameplayStartMethod gameplayStartMethod) {
+        if (gameplayStartMethod == GameplayStartMethod.SINGLEPLAYER) {
+            GameplayScreen gameplayScreen = new GameplayScreen(this);
+            gameplayScreen.setGameMode(GameMode.SINGLEPLAYER);
+            setScreen(gameplayScreen);
+        } else if (gameplayStartMethod == GameplayStartMethod.MULTIPLAYER_HOST) {
+            NetworkManager.getInstance().hostGame(Integer.valueOf(CommandLineParser.getInstance().getCommandLineArguments().get("-port")));
+            NetworkManager.getInstance().joinGame(CommandLineParser.getInstance().getCommandLineArguments().get("-ip"),
+                    Integer.valueOf(CommandLineParser.getInstance().getCommandLineArguments().get("-port")));
+
+            GameplayScreen gameplayScreen = new GameplayScreen(this);
+            gameplayScreen.setGameMode(GameMode.MULTIPLAYER);
+            setScreen(gameplayScreen);
+        } else if (gameplayStartMethod == GameplayStartMethod.MULTIPLAYER_JOIN) {
+            NetworkManager.getInstance().joinGame(CommandLineParser.getInstance().getCommandLineArguments().get("-ip"),
+                    Integer.valueOf(CommandLineParser.getInstance().getCommandLineArguments().get("-port")));
+
+            GameplayScreen gameplayScreen = new GameplayScreen(this);
+            gameplayScreen.setGameMode(GameMode.MULTIPLAYER);
+            setScreen(gameplayScreen);
+        }
     }
 
 }

@@ -92,7 +92,7 @@ public class WorldRenderer implements Disposable {
                 Unit unitClone = unit.clone();
 
                 // Find delta time between last world update and current time.
-                float deltaTime = (System.currentTimeMillis() - worldController.getGameMain().getLastWorldUpdateTimestamp()) / (float) 1000;
+                float deltaTime = (System.currentTimeMillis() - worldController.getGameplayScreen().getLastWorldUpdateTimestamp()) / (float) 1000;
                 unitClone.update(deltaTime);
 
                 batch.begin();
@@ -162,11 +162,11 @@ public class WorldRenderer implements Disposable {
                 10,
                 Gdx.graphics.getHeight() - 10 - font.getLineHeight());
         font.draw(hudBatch,
-                "World Update Tick: " + worldController.getGameMain().getWorldUpdateTick(),
+                "World Update Tick: " + worldController.getGameplayScreen().getWorldUpdateTick(),
                 10,
                 Gdx.graphics.getHeight() - 10 - font.getLineHeight() * 2);
         font.draw(hudBatch,
-                "Render Tick: " + worldController.getGameMain().getRenderTick(),
+                "Render Tick: " + worldController.getGameplayScreen().getRenderTick(),
                 10,
                 Gdx.graphics.getHeight() - 10 - font.getLineHeight() * 3);
         font.draw(hudBatch,
