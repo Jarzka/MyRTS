@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
-import org.voimala.myrts.screens.gameplay.Player;
+import org.voimala.myrts.screens.gameplay.world.Player;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

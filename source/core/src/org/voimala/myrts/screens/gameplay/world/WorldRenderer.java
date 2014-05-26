@@ -1,4 +1,4 @@
-package org.voimala.myrts.screens.gameplay;
+package org.voimala.myrts.screens.gameplay.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

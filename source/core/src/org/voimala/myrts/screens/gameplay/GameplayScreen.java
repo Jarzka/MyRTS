@@ -5,6 +5,10 @@ import com.badlogic.gdx.graphics.GL20;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.multiplayer.RTSProtocolManager;
 import org.voimala.myrts.screens.GameScreen;
+import org.voimala.myrts.screens.gameplay.world.GameMode;
+import org.voimala.myrts.screens.gameplay.world.RenderMode;
+import org.voimala.myrts.screens.gameplay.world.WorldController;
+import org.voimala.myrts.screens.gameplay.world.WorldRenderer;
 
 public class GameplayScreen extends GameScreen {
 
@@ -88,6 +92,7 @@ public class GameplayScreen extends GameScreen {
 
     @Override
     public void resize(int width, int height) {
+        worldRenderer.resize(width, height);
     }
 
     @Override

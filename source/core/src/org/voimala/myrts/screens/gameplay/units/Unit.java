@@ -1,7 +1,7 @@
 package org.voimala.myrts.screens.gameplay.units;
 
 import org.voimala.myrts.exceptions.GameLogicException;
-import org.voimala.myrts.screens.gameplay.GameObject;
+import org.voimala.myrts.screens.gameplay.world.GameObject;
 import org.voimala.myrts.screens.gameplay.units.movements.Movement;
 
 public abstract class Unit extends GameObject {

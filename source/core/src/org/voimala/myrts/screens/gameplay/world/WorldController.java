@@ -1,4 +1,4 @@
-package org.voimala.myrts.screens.gameplay;
+package org.voimala.myrts.screens.gameplay.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import org.voimala.myrts.app.GameMain;
+import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputManager;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputProcessor;
 import org.voimala.myrts.screens.gameplay.units.Unit;

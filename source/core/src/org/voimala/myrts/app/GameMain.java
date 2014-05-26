@@ -5,7 +5,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import org.voimala.myrts.graphics.SpriteContainer;
 import org.voimala.myrts.multiplayer.NetworkManager;
-import org.voimala.myrts.screens.gameplay.GameMode;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
 
 public class GameMain extends Game {

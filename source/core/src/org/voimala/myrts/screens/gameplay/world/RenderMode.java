@@ -1,4 +1,4 @@
-package org.voimala.myrts.screens.gameplay;
+package org.voimala.myrts.screens.gameplay.world;
 
 public enum RenderMode {
     GAME_STATE,

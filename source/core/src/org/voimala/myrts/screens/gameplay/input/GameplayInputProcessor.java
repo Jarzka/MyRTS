@@ -2,7 +2,7 @@ package org.voimala.myrts.screens.gameplay.input;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import org.voimala.myrts.screens.gameplay.WorldController;
+import org.voimala.myrts.screens.gameplay.world.WorldController;
 
 /* This class is used for handling desktop zoom with mouse wheel. */
 
