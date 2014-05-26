@@ -3,9 +3,9 @@ package org.voimala.myrts.multiplayer;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import org.voimala.myrts.app.MyRTS;
-import org.voimala.myrts.scenes.gameplay.WorldController;
-import org.voimala.myrts.scenes.gameplay.units.Unit;
+import org.voimala.myrts.app.GameMain;
+import org.voimala.myrts.screens.gameplay.WorldController;
+import org.voimala.myrts.screens.gameplay.units.Unit;
 
 /** This class is used to send network messages that respect the game's protocol.
  *
@@ -23,7 +23,7 @@ public class RTSProtocolManager {
     private WorldController worldController;
 
     private RTSProtocolManager() {
-        Gdx.app.setLogLevel(MyRTS.LOG_LEVEL);
+        Gdx.app.setLogLevel(GameMain.LOG_LEVEL);
     }
 
     public static RTSProtocolManager getInstance() {
@@ -83,7 +83,7 @@ public class RTSProtocolManager {
                     }
                 }
             } else if (source == SocketType.PLAYER_SOCKET) {
-                ServerThread server = worldController.getMyRTS().getServerThread();
+                ServerThread server = worldController.getGameMain().getServerThread();
                 if (server != null) {
                     server.sendMessageToAllClients(message);
                 }

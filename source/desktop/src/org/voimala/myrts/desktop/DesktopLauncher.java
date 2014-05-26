@@ -2,7 +2,7 @@ package org.voimala.myrts.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import org.voimala.myrts.app.MyRTS;
+import org.voimala.myrts.app.GameMain;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
@@ -13,6 +13,6 @@ public class DesktopLauncher {
         config.backgroundFPS = 80;
         config.foregroundFPS = 80;
         config.vSyncEnabled = true;
-		new LwjglApplication(new MyRTS(arg), config);
+		new LwjglApplication(new GameMain(arg), config);
 	}
 }

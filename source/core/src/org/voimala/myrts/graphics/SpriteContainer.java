@@ -26,4 +26,8 @@ public class SpriteContainer {
     public void addSprite(final String id, final Sprite sprite) {
         sprites.put(id, sprite);
     }
+
+    public static void freeResources() {
+        // TODO
+    }
 }

@@ -6,7 +6,7 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
-import org.voimala.myrts.app.MyRTS;
+import org.voimala.myrts.app.GameMain;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ public class ServerThread extends Thread {
     public ServerThread(final int port) {
         super(ServerThread.class.getName());
 
-        Gdx.app.setLogLevel(MyRTS.LOG_LEVEL);
+        Gdx.app.setLogLevel(GameMain.LOG_LEVEL);
 
         serverSocketHints = new ServerSocketHints();
         serverSocketHints.acceptTimeout = 100000;
