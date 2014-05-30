@@ -1,10 +1,10 @@
 package org.voimala.myrts.screens.gameplay.units;
 
 import org.voimala.myrts.exceptions.GameLogicException;
-import org.voimala.myrts.screens.gameplay.world.GameObject;
+import org.voimala.myrts.screens.gameplay.world.AbstractGameObject;
 import org.voimala.myrts.screens.gameplay.units.movements.Movement;
 
-public abstract class Unit extends GameObject {
+public abstract class Unit extends AbstractGameObject {
 
     protected Object collisionMask;
     protected int player = 0;

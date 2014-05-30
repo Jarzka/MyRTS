@@ -3,11 +3,11 @@ package org.voimala.myrts.screens;
 import com.badlogic.gdx.Screen;
 import org.voimala.myrts.app.GameMain;
 
-public abstract class GameScreen implements Screen {
+public abstract class AbstractGameScreen implements Screen {
 
-    protected GameMain gameMain = null;
+    protected GameMain gameMain;
 
-    public GameScreen(GameMain gameMain) {
+    public AbstractGameScreen (GameMain gameMain) {
         this.gameMain = gameMain;
     }
 }

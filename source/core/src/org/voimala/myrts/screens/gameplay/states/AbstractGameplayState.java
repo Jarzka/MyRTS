@@ -2,11 +2,11 @@ package org.voimala.myrts.screens.gameplay.states;
 
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
 
-public abstract class GameplayState {
+public abstract class AbstractGameplayState {
 
     protected GameplayScreen ownerGameplay = null;
 
-    public GameplayState(GameplayScreen ownerGameplay) {
+    public AbstractGameplayState(GameplayScreen ownerGameplay) {
         this.ownerGameplay = ownerGameplay;
     }
 

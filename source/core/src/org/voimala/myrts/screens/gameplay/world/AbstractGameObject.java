@@ -2,7 +2,7 @@ package org.voimala.myrts.screens.gameplay.world;
 
 import com.badlogic.gdx.math.Vector2;;
 
-public abstract class GameObject implements Cloneable {
+public abstract class AbstractGameObject implements Cloneable {
 
     protected String ObjectId; // Every object should have an unique id
     protected Vector2 position = new Vector2(0, 0);
@@ -10,8 +10,8 @@ public abstract class GameObject implements Cloneable {
     protected float width = 0;
     protected float height = 0;
 
-    public GameObject clone() throws CloneNotSupportedException {
-        GameObject gameObjectClone = (GameObject) super.clone();
+    public AbstractGameObject clone() throws CloneNotSupportedException {
+        AbstractGameObject gameObjectClone = (AbstractGameObject) super.clone();
         Vector2 positionClone = new Vector2(position.x, position.y);
         gameObjectClone.setPosition(positionClone);
 

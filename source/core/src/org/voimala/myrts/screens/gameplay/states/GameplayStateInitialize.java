@@ -2,7 +2,7 @@ package org.voimala.myrts.screens.gameplay.states;
 
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
 
-public class GameplayStateInitialize extends GameplayState {
+public class GameplayStateInitialize extends AbstractGameplayState {
 
     public GameplayStateInitialize(GameplayScreen ownerGameplay) {
         super(ownerGameplay);
