@@ -11,6 +11,8 @@ import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.app.GameplayStartMethod;
 import org.voimala.myrts.screens.AbstractGameScreen;
 import org.voimala.myrts.screens.menu.windows.MainMenuWindow;
+import org.voimala.myrts.screens.menu.windows.MultiplayerWindow;
+import org.voimala.myrts.screens.menu.windows.WindowName;
 
 public class MenuScreen extends AbstractGameScreen {
 
@@ -18,6 +20,7 @@ public class MenuScreen extends AbstractGameScreen {
     Stack uiStack;
     private Skin skin;
     private MainMenuWindow mainMenuWindow;
+    private MultiplayerWindow multiplayerWindow;
 
     public MenuScreen(GameMain gameMain) {
         super(gameMain);
@@ -35,13 +38,18 @@ public class MenuScreen extends AbstractGameScreen {
         uiStack.setSize(Gdx.graphics.getWidth(),
                 Gdx.graphics.getHeight());
         initializeMainMenuWindow();
+        initializeMultiplayerWindow();
     }
 
     private void initializeMainMenuWindow() {
-        mainMenuWindow = new MainMenuWindow("Main Menu", skin);
-        mainMenuWindow.initialize();
+        mainMenuWindow = new MainMenuWindow("Main Menu", skin, this);
         mainMenuWindow.setVisible(true);
         uiStack.add(mainMenuWindow);
+    }
+
+    private void initializeMultiplayerWindow() {
+        multiplayerWindow = new MultiplayerWindow("Multiplayer", skin, this);
+        uiStack.add(multiplayerWindow);
     }
 
     private void initializeSkin() {
@@ -95,5 +103,17 @@ public class MenuScreen extends AbstractGameScreen {
     @Override
     public void dispose() {
 
+    }
+
+    public void showWindow(WindowName windowName) {
+        if (windowName == WindowName.MULTIPLAYER) {
+            multiplayerWindow.setVisible(true);
+        }
+    }
+
+    public void hideWindow(WindowName windowName) {
+        if (windowName == WindowName.MAIN_MENU) {
+            mainMenuWindow.setVisible(false);
+        }
     }
 }

@@ -4,18 +4,22 @@ package org.voimala.myrts.screens.menu.windows;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import org.voimala.myrts.screens.menu.MenuScreen;
 
-public class MainMenuWindow extends Window {
+public class MainMenuWindow extends AbstractMenuWindow {
 
     private Skin skin;
     private Table table;
 
-    public MainMenuWindow(String title, Skin skin) {
-        super(title, skin);
+    public MainMenuWindow(String title, Skin skin, MenuScreen menuScreen) {
+        super(title, skin, menuScreen);
         this.skin = skin;
 
-        //initialize();
+        initialize();
     }
 
     public void initialize() {
@@ -42,6 +46,12 @@ public class MainMenuWindow extends Window {
         TextButton textButtonMultiplayer = new TextButton("Multiplayer", skin);
         textButtonMultiplayer.setWidth(buttonsWidth);
         textButtonMultiplayer.pad(buttonsPadding);
+        textButtonMultiplayer.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                onMultiplayerButtonClicked();
+            }
+        });
         table.add(textButtonMultiplayer);
 
         table.row();
@@ -70,19 +80,23 @@ public class MainMenuWindow extends Window {
 
     private void finalizeWindow() {
         // Set size
-        setWidth(300);
+        setWidth(300); // TODO Does not work
         setHeight(500);
 
-        // Visual effects
         setColor(1, 1, 1, 0.8f);
 
-        // Hide options window by default
-        setVisible(false);
-
-        // Let TableLayout recalculate widget sizes and positions
         pack();
-
-        // Set position
         setPosition(0, 0);
+        setVisible(false);
+    }
+
+    public void onMultiplayerButtonClicked() {
+        menuScreen.showWindow(WindowName.MULTIPLAYER);
+        menuScreen.hideWindow(WindowName.MAIN_MENU);
+    }
+
+    @Override
+    public WindowName getWindowName() {
+        return WindowName.MAIN_MENU;
     }
 }
