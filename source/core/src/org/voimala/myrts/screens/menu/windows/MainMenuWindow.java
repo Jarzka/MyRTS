@@ -35,12 +35,13 @@ public class MainMenuWindow extends AbstractMenuWindow {
         int buttonsWidth = 150;
         int buttonsHeight = 50;
         int buttonsPadding = 10;
+        int buttonRowPadding = 2;
 
         table.row();
         TextButton textButtonSingleplayer = new TextButton("Singleplayer", skin);
         textButtonSingleplayer.pad(buttonsPadding);
         textButtonSingleplayer.setDisabled(true);
-        table.add(textButtonSingleplayer).size(buttonsWidth, buttonsHeight);
+        table.add(textButtonSingleplayer).size(buttonsWidth, buttonsHeight).pad(buttonRowPadding);
 
         table.row();
         TextButton textButtonMultiplayer = new TextButton("Multiplayer", skin);
@@ -51,25 +52,25 @@ public class MainMenuWindow extends AbstractMenuWindow {
                 onMultiplayerButtonClicked();
             }
         });
-        table.add(textButtonMultiplayer).size(buttonsWidth, buttonsHeight);
+        table.add(textButtonMultiplayer).size(buttonsWidth, buttonsHeight).pad(buttonRowPadding);
 
         table.row();
         TextButton textButtonSettings = new TextButton("Settings", skin);
         textButtonSettings.setDisabled(true);
         textButtonSettings.pad(buttonsPadding);
-        table.add(textButtonSettings).size(buttonsWidth, buttonsHeight);
+        table.add(textButtonSettings).size(buttonsWidth, buttonsHeight).pad(buttonRowPadding);
 
         table.row();
         TextButton textButtonCredits = new TextButton("Credits", skin);
         textButtonCredits.setDisabled(true);
         textButtonCredits.pad(buttonsPadding);
-        table.add(textButtonCredits).size(buttonsWidth, buttonsHeight);
+        table.add(textButtonCredits).size(buttonsWidth, buttonsHeight).pad(buttonRowPadding);
 
         table.row();
         TextButton textButtonQuit = new TextButton("Quit", skin);
         textButtonQuit.pad(buttonsPadding);
         textButtonQuit.setDisabled(true);
-        table.add(textButtonQuit).size(buttonsWidth, buttonsHeight);
+        table.add(textButtonQuit).size(buttonsWidth, buttonsHeight).pad(buttonRowPadding);
 
         this.add(table);
     }
@@ -77,7 +78,7 @@ public class MainMenuWindow extends AbstractMenuWindow {
     private void finalizeWindow() {
         // Set size
         setWidth(200);
-        setHeight(300);
+        setHeight(320);
 
         setColor(1, 1, 1, 0.8f);
 
