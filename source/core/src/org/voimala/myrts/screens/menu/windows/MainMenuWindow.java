@@ -30,21 +30,20 @@ public class MainMenuWindow extends AbstractMenuWindow {
     private void buildWidgets() {
         table = new Table();
 
-        table.pad(10, 10, 0, 10);
+        table.pad(10);
 
-        int buttonsWidth = 200;
+        int buttonsWidth = 150;
+        int buttonsHeight = 50;
         int buttonsPadding = 10;
 
         table.row();
         TextButton textButtonSingleplayer = new TextButton("Singleplayer", skin);
-        textButtonSingleplayer.setWidth(buttonsWidth);
         textButtonSingleplayer.pad(buttonsPadding);
         textButtonSingleplayer.setDisabled(true);
-        table.add(textButtonSingleplayer);
+        table.add(textButtonSingleplayer).size(buttonsWidth, buttonsHeight);
 
         table.row();
         TextButton textButtonMultiplayer = new TextButton("Multiplayer", skin);
-        textButtonMultiplayer.setWidth(buttonsWidth);
         textButtonMultiplayer.pad(buttonsPadding);
         textButtonMultiplayer.addListener(new ChangeListener() {
             @Override
@@ -52,41 +51,39 @@ public class MainMenuWindow extends AbstractMenuWindow {
                 onMultiplayerButtonClicked();
             }
         });
-        table.add(textButtonMultiplayer);
+        table.add(textButtonMultiplayer).size(buttonsWidth, buttonsHeight);
 
         table.row();
         TextButton textButtonSettings = new TextButton("Settings", skin);
-        textButtonSettings.setWidth(buttonsWidth);
         textButtonSettings.setDisabled(true);
         textButtonSettings.pad(buttonsPadding);
-        table.add(textButtonSettings);
+        table.add(textButtonSettings).size(buttonsWidth, buttonsHeight);
 
         table.row();
         TextButton textButtonCredits = new TextButton("Credits", skin);
-        textButtonCredits.setWidth(buttonsWidth);
         textButtonCredits.setDisabled(true);
         textButtonCredits.pad(buttonsPadding);
-        table.add(textButtonCredits);
+        table.add(textButtonCredits).size(buttonsWidth, buttonsHeight);
 
         table.row();
         TextButton textButtonQuit = new TextButton("Quit", skin);
-        textButtonQuit.setWidth(buttonsWidth);
         textButtonQuit.pad(buttonsPadding);
         textButtonQuit.setDisabled(true);
-        table.add(textButtonQuit);
+        table.add(textButtonQuit).size(buttonsWidth, buttonsHeight);
 
         this.add(table);
     }
 
     private void finalizeWindow() {
         // Set size
-        setWidth(300); // TODO Does not work
-        setHeight(500);
+        setWidth(200);
+        setHeight(300);
 
         setColor(1, 1, 1, 0.8f);
 
-        pack();
-        setPosition(0, 0);
+        //pack();
+        setPosition(Gdx.graphics.getWidth() / 2 - getWidth() / 2,
+                Gdx.graphics.getHeight() / 2 - getHeight() / 2);
         setVisible(false);
     }
 

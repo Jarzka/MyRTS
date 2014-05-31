@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.app.GameplayStartMethod;
 import org.voimala.myrts.screens.AbstractGameScreen;
@@ -33,10 +34,9 @@ public class MenuScreen extends AbstractGameScreen {
 
     private void initializeWindows() {
         stage.clear();
-        uiStack = new Stack();
-        stage.addActor(uiStack);
-        uiStack.setSize(Gdx.graphics.getWidth(),
-                Gdx.graphics.getHeight());
+        //uiStack = new Stack();
+        //stage.addActor(uiStack);
+        //stage.setViewport(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         initializeMainMenuWindow();
         initializeMultiplayerWindow();
     }
@@ -44,12 +44,12 @@ public class MenuScreen extends AbstractGameScreen {
     private void initializeMainMenuWindow() {
         mainMenuWindow = new MainMenuWindow("Main Menu", skin, this);
         mainMenuWindow.setVisible(true);
-        uiStack.add(mainMenuWindow);
+        stage.addActor(mainMenuWindow);
     }
 
     private void initializeMultiplayerWindow() {
         multiplayerWindow = new MultiplayerWindow("Multiplayer", skin, this);
-        uiStack.add(multiplayerWindow);
+        stage.addActor(multiplayerWindow);
     }
 
     private void initializeSkin() {
@@ -74,7 +74,7 @@ public class MenuScreen extends AbstractGameScreen {
 
     @Override
     public void resize(int width, int height) {
-        // TODO
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
