@@ -4,12 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.app.GameplayStartMethod;
 import org.voimala.myrts.screens.AbstractGameScreen;
+import org.voimala.myrts.screens.menu.windows.MainMenuWindow;
 
 public class MenuScreen extends AbstractGameScreen {
 
@@ -33,7 +34,6 @@ public class MenuScreen extends AbstractGameScreen {
         stage.addActor(uiStack);
         uiStack.setSize(Gdx.graphics.getWidth(),
                 Gdx.graphics.getHeight());
-
         initializeMainMenuWindow();
     }
 
@@ -66,9 +66,7 @@ public class MenuScreen extends AbstractGameScreen {
 
     @Override
     public void resize(int width, int height) {
-        /*stage.setViewport(new Viewport() {
-                          }Gdx.graphics.getWidth(),
-                Gdx.graphics.getHeight(), false);*/ // TODO
+        // TODO
     }
 
     @Override

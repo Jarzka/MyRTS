@@ -44,7 +44,7 @@ public class WorldController {
         initializePointer();
         initializeCamera();
         initializeInputProcessor();
-        initializeSprites();
+        initializeSprites(); // TODO Move to WorldRenderer?
         initializeMap();
     }
 

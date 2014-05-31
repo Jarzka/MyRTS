@@ -1,4 +1,4 @@
-package org.voimala.myrts.screens.menu;
+package org.voimala.myrts.screens.menu.windows;
 
 
 import com.badlogic.gdx.Gdx;
@@ -81,8 +81,6 @@ public class MainMenuWindow extends Window {
 
         // Let TableLayout recalculate widget sizes and positions
         pack();
-
-        setMovable(false); // TODO Set to true when rendering is fixed.
 
         // Set position
         setPosition(0, 0);
