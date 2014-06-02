@@ -13,10 +13,9 @@ import org.voimala.myrts.screens.menu.MenuScreen;
 public class MainMenuWindow extends AbstractMenuWindow {
 
     private Skin skin;
-    private Table table;
 
-    public MainMenuWindow(String title, Skin skin, MenuScreen menuScreen) {
-        super(title, skin, menuScreen);
+    public MainMenuWindow(Skin skin, MenuScreen menuScreen) {
+        super("Main Menu", skin, menuScreen);
         this.skin = skin;
 
         initialize();
@@ -28,7 +27,7 @@ public class MainMenuWindow extends AbstractMenuWindow {
     }
 
     private void buildWidgets() {
-        table = new Table();
+        Table table = new Table();
 
         table.pad(10);
 
@@ -76,16 +75,20 @@ public class MainMenuWindow extends AbstractMenuWindow {
     }
 
     private void finalizeWindow() {
-        // Set size
+        setDefaultSizeAndPosition();
+        setDefaultStyle();
+        setVisible(false);
+    }
+
+    private void setDefaultSizeAndPosition() {
         setWidth(200);
         setHeight(320);
-
-        setColor(1, 1, 1, 0.8f);
-
-        //pack();
         setPosition(Gdx.graphics.getWidth() / 2 - getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - getHeight() / 2);
-        setVisible(false);
+    }
+
+    private void setDefaultStyle() {
+        setColor(1, 1, 1, 0.8f);
     }
 
     public void onMultiplayerButtonClicked() {

@@ -12,9 +12,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.app.GameplayStartMethod;
 import org.voimala.myrts.screens.AbstractGameScreen;
-import org.voimala.myrts.screens.menu.windows.MainMenuWindow;
-import org.voimala.myrts.screens.menu.windows.MultiplayerWindow;
-import org.voimala.myrts.screens.menu.windows.WindowName;
+import org.voimala.myrts.screens.menu.windows.*;
 
 public class MenuScreen extends AbstractGameScreen {
 
@@ -23,6 +21,8 @@ public class MenuScreen extends AbstractGameScreen {
     private Skin skin;
     private MainMenuWindow mainMenuWindow;
     private MultiplayerWindow multiplayerWindow;
+    private MultiplayerLobbyWindow multiplayerLobbyWindow;
+    private JoinByIPWindow joinByIPWindow;
 
     public MenuScreen(GameMain gameMain) {
         super(gameMain);
@@ -35,22 +35,31 @@ public class MenuScreen extends AbstractGameScreen {
 
     private void initializeWindows() {
         stage.clear();
-        //uiStack = new Stack();
-        //stage.addActor(uiStack);
-        //stage.setViewport(new StretchViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
         initializeMainMenuWindow();
         initializeMultiplayerWindow();
+        initializeMultiplayerLobbyWindow();
+        initializeJoinByIpWindow();
     }
 
     private void initializeMainMenuWindow() {
-        mainMenuWindow = new MainMenuWindow("Main Menu", skin, this);
+        mainMenuWindow = new MainMenuWindow(skin, this);
         mainMenuWindow.setVisible(true);
         stage.addActor(mainMenuWindow);
     }
 
     private void initializeMultiplayerWindow() {
-        multiplayerWindow = new MultiplayerWindow("Multiplayer", skin, this);
+        multiplayerWindow = new MultiplayerWindow(skin, this);
         stage.addActor(multiplayerWindow);
+    }
+
+    private void initializeMultiplayerLobbyWindow() {
+        multiplayerLobbyWindow = new MultiplayerLobbyWindow(skin, this);
+        stage.addActor(multiplayerLobbyWindow);
+    }
+
+    private void initializeJoinByIpWindow() {
+        joinByIPWindow = new JoinByIPWindow(skin, this);
+        stage.addActor(joinByIPWindow);
     }
 
     private void initializeSkin() {
@@ -63,7 +72,7 @@ public class MenuScreen extends AbstractGameScreen {
     public void render(float deltaTime) {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        
+
         handleInput();
 
         stage.act(deltaTime);
@@ -110,14 +119,27 @@ public class MenuScreen extends AbstractGameScreen {
     }
 
     public void showWindow(WindowName windowName) {
-        if (windowName == WindowName.MULTIPLAYER) {
+        if (windowName == WindowName.MAIN_MENU) {
+            mainMenuWindow.setVisible(true);
+        }
+        else if (windowName == WindowName.MULTIPLAYER) {
             multiplayerWindow.setVisible(true);
+        } else if (windowName == WindowName.JOIN_BY_IP) {
+            joinByIPWindow.setVisible(true);
+        } else if (windowName == WindowName.MULTIPLAYER_LOBBY) {
+            multiplayerLobbyWindow.setVisible(true);
         }
     }
 
     public void hideWindow(WindowName windowName) {
         if (windowName == WindowName.MAIN_MENU) {
             mainMenuWindow.setVisible(false);
+        } else if (windowName == WindowName.MULTIPLAYER) {
+            multiplayerWindow.setVisible(false);
+        } else if (windowName == WindowName.JOIN_BY_IP) {
+            joinByIPWindow.setVisible(false);
+        } else if (windowName == WindowName.MULTIPLAYER_LOBBY) {
+            multiplayerLobbyWindow.setVisible(false);
         }
     }
 }
