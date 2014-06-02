@@ -26,7 +26,7 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
     private void buildWidgets() {
         Table table = new Table();
 
-        table.pad(10, 10, 0, 10);
+        table.pad(10);
 
         // TODO
 

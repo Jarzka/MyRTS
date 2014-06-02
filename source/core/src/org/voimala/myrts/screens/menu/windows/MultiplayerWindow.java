@@ -63,7 +63,7 @@ public class MultiplayerWindow extends AbstractMenuWindow {
             }
         });
         table.add(textButtonCreateServer).size(buttonsWidth, buttonsHeight).pad(buttonRowPadding);
-        
+
         table.row();
         TextButton textButtonBack = new TextButton("< Back", skin);
         textButtonBack.pad(buttonsPadding);
@@ -73,7 +73,7 @@ public class MultiplayerWindow extends AbstractMenuWindow {
                 onBackClicked();
             }
         });
-        table.add(textButtonBack).size(buttonsWidth / 2, buttonsHeight / 2).padTop(buttonRowPadding * 3);
+        table.add(textButtonBack).size(buttonsWidth / 2, buttonsHeight / 2).padTop(buttonRowPadding * 3).left();
 
         this.add(table);
     }
