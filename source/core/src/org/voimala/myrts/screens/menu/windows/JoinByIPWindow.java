@@ -35,28 +35,17 @@ public class JoinByIPWindow extends AbstractMenuWindow {
 
         table.row();
         Label labelIp = new Label("IP:", skin);
-        table.addActor(labelIp);
+        table.add(labelIp).width(50).right();
         TextField textFieldIp = new TextArea("localhost", skin);
-        table.add(textFieldIp).width(280);
+        table.add(textFieldIp).width(200).colspan(2).left();
 
         table.row();
         Label labelPort = new Label("Port:", skin);
-        table.addActor(labelPort);
+        table.add(labelPort).width(50).right();
         TextField textFieldPort = new TextArea("52828", skin);
-        table.add(textFieldPort).width(100);
+        table.add(textFieldPort).width(100).colspan(2).left();
 
-        table.row();
-        TextButton textButtonConnect = new TextButton("Connect", skin);
-        textButtonConnect.pad(buttonsPadding);
-        textButtonConnect.addListener(new ChangeListener() {
-            @Override
-            public void changed(ChangeEvent event, Actor actor) {
-                //onJoinClicked(); // TODO
-            }
-        });
-        table.add(textButtonConnect).size(buttonsWidth, buttonsHeight / 2).pad(buttonRowPadding);
-
-        table.row();
+        table.row().padTop(buttonRowPadding * 5);
         TextButton textButtonBack = new TextButton("< Back", skin);
         textButtonBack.pad(buttonsPadding);
         textButtonBack.addListener(new ChangeListener() {
@@ -65,9 +54,20 @@ public class JoinByIPWindow extends AbstractMenuWindow {
                 onBackClicked();
             }
         });
-        table.add(textButtonBack).size(buttonsWidth / 2, buttonsHeight / 2).padTop(buttonRowPadding * 3);
+        table.add(textButtonBack).size(buttonsWidth / 2, buttonsHeight / 2).left();
+
+        TextButton textButtonConnect = new TextButton("Connect", skin);
+        textButtonConnect.pad(buttonsPadding);
+        textButtonConnect.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                //onJoinClicked(); // TODO
+            }
+        });
+        table.add(textButtonConnect).size(buttonsWidth, buttonsHeight / 2).right();
 
         this.add(table);
+        table.debug();
     }
 
     private void finalizeWindow() {
@@ -83,7 +83,7 @@ public class JoinByIPWindow extends AbstractMenuWindow {
 
     private void setDefaultSizeAndPosition() {
         setWidth(300);
-        setHeight(180);
+        setHeight(150);
         setPosition(Gdx.graphics.getWidth() / 2 - getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - getHeight() / 2);
     }
