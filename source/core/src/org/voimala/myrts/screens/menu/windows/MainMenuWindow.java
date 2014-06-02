@@ -92,8 +92,8 @@ public class MainMenuWindow extends AbstractMenuWindow {
     }
 
     public void onMultiplayerButtonClicked() {
+        menuScreen.hideWindow(getWindowName());
         menuScreen.showWindow(WindowName.MULTIPLAYER);
-        menuScreen.hideWindow(WindowName.MAIN_MENU);
     }
 
     @Override

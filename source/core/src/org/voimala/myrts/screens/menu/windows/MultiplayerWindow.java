@@ -31,31 +31,19 @@ public class MultiplayerWindow extends AbstractMenuWindow {
 
         table.pad(10, 10, 0, 10);
 
-        int buttonsWidth = 200;
+        int buttonsWidth = 150;
+        int buttonsHeight = 50;
         int buttonsPadding = 10;
-
-        table.row();
-        TextButton textButtonCreateServer = new TextButton("Create server", skin);
-        textButtonCreateServer.setWidth(buttonsWidth);
-        textButtonCreateServer.pad(buttonsPadding);
-        textButtonCreateServer.addListener(new ChangeListener() {
-            @Override
-            public void changed (ChangeEvent event, Actor actor) {
-                onCreateServerClicked();
-            }
-        });
-        table.add(textButtonCreateServer);
+        int buttonRowPadding = 2;
 
         table.row();
         TextButton textButtonBrowseServers = new TextButton("Browse servers", skin);
-        textButtonBrowseServers.setWidth(buttonsWidth);
         textButtonBrowseServers.pad(buttonsPadding);
         textButtonBrowseServers.setDisabled(true);
-        table.add(textButtonBrowseServers);
+        table.add(textButtonBrowseServers).size(buttonsWidth, buttonsHeight).pad(buttonRowPadding);
 
         table.row();
         TextButton textButtonJoinByIP = new TextButton("Join by IP", skin);
-        textButtonJoinByIP.setWidth(buttonsWidth);
         textButtonJoinByIP.pad(buttonsPadding);
         textButtonJoinByIP.addListener(new ChangeListener() {
             @Override
@@ -63,7 +51,29 @@ public class MultiplayerWindow extends AbstractMenuWindow {
                 onJoinByIpClicked();
             }
         });
-        table.add(textButtonJoinByIP);
+        table.add(textButtonJoinByIP).size(buttonsWidth, buttonsHeight).pad(buttonRowPadding);
+
+        table.row();
+        TextButton textButtonCreateServer = new TextButton("Create server", skin);
+        textButtonCreateServer.pad(buttonsPadding);
+        textButtonCreateServer.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                onCreateServerClicked();
+            }
+        });
+        table.add(textButtonCreateServer).size(buttonsWidth, buttonsHeight).pad(buttonRowPadding);
+        
+        table.row();
+        TextButton textButtonBack = new TextButton("< Back", skin);
+        textButtonBack.pad(buttonsPadding);
+        textButtonBack.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                onBackClicked();
+            }
+        });
+        table.add(textButtonBack).size(buttonsWidth / 2, buttonsHeight / 2).padTop(buttonRowPadding * 3);
 
         this.add(table);
     }
@@ -76,7 +86,7 @@ public class MultiplayerWindow extends AbstractMenuWindow {
 
     private void setDefaultSizeAndPosition() {
         setWidth(200);
-        setHeight(180);
+        setHeight(250);
         setPosition(Gdx.graphics.getWidth() / 2 - getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - getHeight() / 2);
     }
@@ -86,15 +96,20 @@ public class MultiplayerWindow extends AbstractMenuWindow {
     }
 
     private void onJoinByIpClicked() {
-        menuScreen.hideWindow(WindowName.MULTIPLAYER);
+        menuScreen.hideWindow(getWindowName());
         menuScreen.showWindow(WindowName.JOIN_BY_IP);
     }
 
     private void onCreateServerClicked() {
-        menuScreen.hideWindow(WindowName.MULTIPLAYER);
+        menuScreen.hideWindow(getWindowName());
         /* TODO Normally we would show the "Create server" window, but it will be skipped
         while the menu is still in its early development phase */
         menuScreen.showWindow(WindowName.MULTIPLAYER_LOBBY);
+    }
+
+    private void onBackClicked() {
+        menuScreen.hideWindow(getWindowName());
+        menuScreen.showWindow(WindowName.MAIN_MENU);
     }
 
     @Override
