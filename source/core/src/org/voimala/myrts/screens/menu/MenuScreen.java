@@ -84,7 +84,7 @@ public class MenuScreen extends AbstractGameScreen {
 
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, false); // TODO Does not work for some reason.
+        stage.getViewport().update(width, height, true);
     }
 
     @Override
