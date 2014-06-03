@@ -61,20 +61,23 @@ public class MainMenuWindow extends AbstractMenuWindow {
 
         table.row();
         TextButton textButtonSettings = new TextButton("Settings", skin);
-        textButtonSettings.setDisabled(true);
         textButtonSettings.pad(buttonsPadding);
         table.add(textButtonSettings).size(buttonsWidth, buttonsHeight).pad(buttonRowPadding);
 
         table.row();
         TextButton textButtonCredits = new TextButton("Credits", skin);
-        textButtonCredits.setDisabled(true);
         textButtonCredits.pad(buttonsPadding);
         table.add(textButtonCredits).size(buttonsWidth, buttonsHeight).pad(buttonRowPadding);
 
         table.row();
         TextButton textButtonQuit = new TextButton("Quit", skin);
         textButtonQuit.pad(buttonsPadding);
-        textButtonQuit.setDisabled(true);
+        textButtonQuit.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                onQuitClicked();
+            }
+        });
         table.add(textButtonQuit).size(buttonsWidth, buttonsHeight).pad(buttonRowPadding);
 
         this.add(table);
@@ -106,6 +109,10 @@ public class MainMenuWindow extends AbstractMenuWindow {
     public void onMultiplayerButtonClicked() {
         menuScreen.hideWindow(getWindowName());
         menuScreen.showWindow(WindowName.MULTIPLAYER);
+    }
+
+    public void onQuitClicked() {
+        System.exit(1);
     }
 
     @Override

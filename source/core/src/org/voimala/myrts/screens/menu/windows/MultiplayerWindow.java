@@ -39,7 +39,6 @@ public class MultiplayerWindow extends AbstractMenuWindow {
         table.row();
         TextButton textButtonBrowseServers = new TextButton("Browse servers", skin);
         textButtonBrowseServers.pad(buttonsPadding);
-        textButtonBrowseServers.setDisabled(true);
         table.add(textButtonBrowseServers).size(buttonsWidth, buttonsHeight).pad(buttonRowPadding);
 
         table.row();
