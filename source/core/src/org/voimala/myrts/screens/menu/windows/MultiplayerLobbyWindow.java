@@ -28,15 +28,13 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
         Table table = new Table();
 
         table.pad(10);
-
-        table.row();
-
         table.columnDefaults(0).width(40);
         table.columnDefaults(1).width(200);
         table.columnDefaults(2).width(100);
         table.columnDefaults(3).width(100);
         table.columnDefaults(4).width(100);
 
+        table.row();
         Label labelNumber = new Label("#", skin);
         table.add(labelNumber).left();
         Label labelSlot = new Label("Slot", skin);

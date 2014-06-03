@@ -37,7 +37,7 @@ public class JoinByIPWindow extends AbstractMenuWindow {
         Label labelIp = new Label("IP:", skin);
         table.add(labelIp).width(50).right();
         TextField textFieldIp = new TextArea("localhost", skin);
-        table.add(textFieldIp).width(200).colspan(2).left();
+        table.add(textFieldIp).width(190).colspan(2).left();
 
         table.row();
         Label labelPort = new Label("Port:", skin);
