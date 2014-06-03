@@ -16,15 +16,6 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
     private String[] colorValues;
     private String[] teamValues;
 
-    private SelectBox selectBoxSlot1;
-    private SelectBox selectBoxSlot2;
-    private SelectBox selectBoxSlot3;
-    private SelectBox selectBoxSlot4;
-    private SelectBox selectBoxSlot5;
-    private SelectBox selectBoxSlot6;
-    private SelectBox selectBoxSlot7;
-    private SelectBox selectBoxSlot8;
-
     public MultiplayerLobbyWindow(Skin skin, MenuScreen menuScreen) {
         super("Multiplayer Lobby", skin, menuScreen);
         this.skin = skin;
@@ -46,8 +37,9 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
         table.columnDefaults(1).width(200);
         table.columnDefaults(2).width(100);
         table.columnDefaults(3).width(100);
-        table.columnDefaults(4).width(100);
+        table.columnDefaults(4).width(30);
 
+        // Build the heading
         table.row();
         Label labelNumber = new Label("#", skin);
         table.add(labelNumber).left();
@@ -60,72 +52,26 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
         Label labelTeam = new Label("Team", skin);
         table.add(labelTeam).left();
 
-        table.row();
-        Label labelNumber1 = new Label("1", skin);
-        table.add(labelNumber1).left();
-        selectBoxSlot1 = new SelectBox(skin);
-        selectBoxSlot1.setItems(slotValues);
-        table.add(selectBoxSlot1);
-        SelectBox selectBoxFaction1 = new SelectBox(skin);
-        selectBoxFaction1.setItems(factionValues);
-        table.add(selectBoxFaction1);
-        SelectBox selectBoxColor1 = new SelectBox(skin);
-        selectBoxColor1.setItems(colorValues);
-        table.add(selectBoxColor1);
-        SelectBox selectBoxTeam1 = new SelectBox(skin);
-        selectBoxTeam1.setItems(teamValues);
-        table.add(selectBoxTeam1);
+        // Build slot rows
+        for (int i = 1; i <= 8; i++) {
+            table.row();
+            Label labelNum = new Label(String.valueOf(i), skin);
+            table.add(labelNum).left();
+            SelectBox selectBoxSlot = new SelectBox(skin);
+            selectBoxSlot.setItems(slotValues);
+            table.add(selectBoxSlot);
+            SelectBox selectBoxFaction = new SelectBox(skin);
+            selectBoxFaction.setItems(factionValues);
+            table.add(selectBoxFaction);
+            SelectBox selectBoxColor = new SelectBox(skin);
+            selectBoxColor.setItems(colorValues);
+            table.add(selectBoxColor);
+            SelectBox selectBoxTeam = new SelectBox(skin);
+            selectBoxTeam.setItems(teamValues);
+            table.add(selectBoxTeam);
+        }
 
-        table.row();
-        Label labelNumber2 = new Label("2", skin);
-        table.add(labelNumber2).left();
-        selectBoxSlot2 = new SelectBox(skin);
-        selectBoxSlot2.setItems(slotValues);
-        table.add(selectBoxSlot2);
-
-        table.row();
-        Label labelNumber3 = new Label("3", skin);
-        table.add(labelNumber3).left();
-        selectBoxSlot3 = new SelectBox(skin);
-        selectBoxSlot3.setItems(slotValues);
-        table.add(selectBoxSlot3);
-
-        table.row();
-        Label labelNumber4 = new Label("4", skin);
-        table.add(labelNumber4).left();
-        selectBoxSlot4 = new SelectBox(skin);
-        selectBoxSlot4.setItems(slotValues);
-        table.add(selectBoxSlot4);
-
-        table.row();
-        Label labelNumber5 = new Label("5", skin);
-        table.add(labelNumber5).left();
-        selectBoxSlot5 = new SelectBox(skin);
-        selectBoxSlot5.setItems(slotValues);
-        table.add(selectBoxSlot5);
-
-        table.row();
-        Label labelNumber6 = new Label("6", skin);
-        table.add(labelNumber6).left();
-        selectBoxSlot6 = new SelectBox(skin);
-        selectBoxSlot6.setItems(slotValues);
-        table.add(selectBoxSlot6);
-
-        table.row();
-        Label labelNumber7 = new Label("7", skin);
-        table.add(labelNumber7).left();
-        selectBoxSlot7 = new SelectBox(skin);
-        selectBoxSlot7.setItems(slotValues);
-        table.add(selectBoxSlot7);
-
-        table.row();
-        Label labelNumber8 = new Label("8", skin);
-        table.add(labelNumber8).left();
-        selectBoxSlot8 = new SelectBox(skin);
-        selectBoxSlot8.setItems(slotValues);
-        table.add(selectBoxSlot8);
-
-        // TODO
+        // TODO How to refer to selectboxes later?
 
         this.add(table);
     }
