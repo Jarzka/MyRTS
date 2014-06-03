@@ -2,12 +2,17 @@ package org.voimala.myrts.screens.menu;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.app.GameplayStartMethod;
@@ -73,21 +78,13 @@ public class MenuScreen extends AbstractGameScreen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        handleInput();
-
         stage.act(deltaTime);
         stage.draw();
     }
 
-    private void handleInput() {
-        if (Gdx.input.isKeyPressed(Input.Keys.ENTER)) {
-            gameMain.startGame(GameplayStartMethod.SINGLEPLAYER);
-        }
-    }
-
     @Override
     public void resize(int width, int height) {
-        stage.getViewport().update(width, height, true);
+        stage.getViewport().update(width, height, false); // TODO Does not work for some reason.
     }
 
     @Override
@@ -98,7 +95,7 @@ public class MenuScreen extends AbstractGameScreen {
 
     @Override
     public void show () {
-        stage = new Stage();
+        stage = new Stage(new ScreenViewport());
         Gdx.input.setInputProcessor(stage);
         initialize();
     }

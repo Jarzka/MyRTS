@@ -177,8 +177,8 @@ public class WorldRenderer implements Disposable {
     }
 
     public void resize(int width, int height) {
-        worldController.getWorldCamera().viewportWidth = Gdx.graphics.getWidth();
-        worldController.getWorldCamera().viewportHeight = Gdx.graphics.getHeight();
+        worldController.getWorldCamera().viewportWidth = width;
+        worldController.getWorldCamera().viewportHeight = height;
         worldController.getWorldCamera().update();
 
         // Resize hud

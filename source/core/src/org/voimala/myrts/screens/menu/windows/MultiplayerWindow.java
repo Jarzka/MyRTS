@@ -73,7 +73,7 @@ public class MultiplayerWindow extends AbstractMenuWindow {
                 onBackClicked();
             }
         });
-        table.add(textButtonBack).size(buttonsWidth / 2, buttonsHeight / 2).padTop(buttonRowPadding * 3).left();
+        table.add(textButtonBack).size(buttonsWidth / 2, buttonsHeight / 2).padTop(buttonRowPadding * 3);
 
         this.add(table);
     }

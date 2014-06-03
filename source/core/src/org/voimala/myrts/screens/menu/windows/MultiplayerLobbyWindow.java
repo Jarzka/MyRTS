@@ -2,6 +2,7 @@ package org.voimala.myrts.screens.menu.windows;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -28,6 +29,25 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
 
         table.pad(10);
 
+        table.row();
+
+        table.columnDefaults(0).width(40);
+        table.columnDefaults(1).width(200);
+        table.columnDefaults(2).width(100);
+        table.columnDefaults(3).width(100);
+        table.columnDefaults(4).width(100);
+
+        Label labelNumber = new Label("#", skin);
+        table.add(labelNumber).left();
+        Label labelSlot = new Label("Slot", skin);
+        table.add(labelSlot).left();
+        Label labelFaction = new Label("Faction", skin);
+        table.add(labelFaction).left();
+        Label labelColor = new Label("Color", skin);
+        table.add(labelColor).left();
+        Label labelTeam = new Label("Team", skin);
+        table.add(labelTeam).left();
+
         // TODO
 
         this.add(table);
@@ -40,8 +60,8 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
     }
 
     private void setDefaultSizeAndPosition() {
-        setWidth(200);
-        setHeight(180);
+        setWidth(800);
+        setHeight(600);
         setPosition(Gdx.graphics.getWidth() / 2 - getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - getHeight() / 2);
     }

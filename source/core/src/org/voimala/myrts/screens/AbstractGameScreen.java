@@ -11,4 +11,8 @@ public abstract class AbstractGameScreen implements Screen {
     public AbstractGameScreen (GameMain gameMain) {
         this.gameMain = gameMain;
     }
+
+    public GameMain getGameMain() {
+        return gameMain;
+    }
 }
