@@ -21,6 +21,8 @@ public class WorldRenderer implements Disposable {
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
     private long lastRenderTimestamp = 0;
 
+    private BitmapFont defaultFont;
+
     public WorldRenderer (WorldController worldController) {
         this. worldController = worldController;
 
@@ -28,7 +30,13 @@ public class WorldRenderer implements Disposable {
     }
 
     private void initialize () {
+        initializeFonts();
         initializeBatches();
+    }
+
+    private void initializeFonts() {
+        defaultFont = new BitmapFont();
+        defaultFont.setColor(Color.WHITE);
     }
 
     private void initializeBatches() {
@@ -49,7 +57,7 @@ public class WorldRenderer implements Disposable {
         renderUnitEnergyBars(renderMode);
         renderHud();
         renderUnitSelectionRectangle();
-        renderInfoText();
+        renderInfoText(); // TODO CAUSES MEMORY LEAK
 
         lastRenderTimestamp = System.currentTimeMillis();
     }
@@ -108,7 +116,7 @@ public class WorldRenderer implements Disposable {
         }
     }
 
-    private void renderUnitEnergyBars(final RenderMode renderMod) {
+    private void renderUnitEnergyBars(final RenderMode renderMode) {
         // TODO Rendermode
         for (Unit unit : worldController.getUnitContainer().getUnits()) {
             if (unit.isSelected()) {
@@ -151,28 +159,26 @@ public class WorldRenderer implements Disposable {
 
     private void renderInfoText() {
         hudBatch.begin();
-        BitmapFont font = new BitmapFont();
-        font.setColor(Color.WHITE);
-        font.draw(hudBatch,
+        defaultFont.draw(hudBatch,
                 "Project \"MyRTS\", early alpha version",
                 10,
                 Gdx.graphics.getHeight() - 10);
-        font.draw(hudBatch,
+        defaultFont.draw(hudBatch,
                 String.valueOf(Gdx.graphics.getFramesPerSecond()) + "fps",
                 10,
-                Gdx.graphics.getHeight() - 10 - font.getLineHeight());
-        font.draw(hudBatch,
+                Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight());
+        defaultFont.draw(hudBatch,
                 "World Update Tick: " + worldController.getGameplayScreen().getWorldUpdateTick(),
                 10,
-                Gdx.graphics.getHeight() - 10 - font.getLineHeight() * 2);
-        font.draw(hudBatch,
+                Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 2);
+        defaultFont.draw(hudBatch,
                 "Render Tick: " + worldController.getGameplayScreen().getRenderTick(),
                 10,
-                Gdx.graphics.getHeight() - 10 - font.getLineHeight() * 3);
-        font.draw(hudBatch,
+                Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 3);
+        defaultFont.draw(hudBatch,
                 "SimTick: 0",
                 10,
-                Gdx.graphics.getHeight() - 10 - font.getLineHeight() * 4);
+                Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 4);
         hudBatch.end();
     }
 
@@ -188,7 +194,7 @@ public class WorldRenderer implements Disposable {
 
     @Override
     public void dispose() {
-
+        defaultFont.dispose();
     }
 
 }

@@ -75,7 +75,7 @@ public class GameplayScreen extends AbstractGameScreen {
     }
 
     private void updateWorldUsingFixedPhysics() {
-        // Update game world when 1 / fixedPhysicsFps seconds have passed.
+        // Update game world when 1 / fixedPhysicsFps seconds have passed. Use a constant delta time.
         long fixedPhysicsFps = 20;
         if (System.currentTimeMillis() >= lastWorldUpdateTimestamp + (long) (((float) 1 / (float) fixedPhysicsFps) * 1000)) {
             float deltaTime = (float) 1 / (float) fixedPhysicsFps;
@@ -87,6 +87,7 @@ public class GameplayScreen extends AbstractGameScreen {
     }
 
     private void renderWorld() {
+        // TODO Check Vsync?
         renderTick++;
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
