@@ -1,10 +1,5 @@
 package org.voimala.myrts.app;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
-import org.voimala.myrts.multiplayer.NetworkManager;
-import org.voimala.myrts.screens.gameplay.GameplayScreen;
-
 import java.util.HashMap;
 
 public class CommandLineParser {

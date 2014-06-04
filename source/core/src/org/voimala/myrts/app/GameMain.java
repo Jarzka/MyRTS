@@ -4,7 +4,7 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import org.voimala.myrts.graphics.SpriteContainer;
-import org.voimala.myrts.multiplayer.NetworkManager;
+import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
 import org.voimala.myrts.screens.menu.MenuScreen;

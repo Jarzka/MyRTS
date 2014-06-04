@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import org.voimala.myrts.app.GameMain;
+import org.voimala.myrts.networking.ConnectionState;
+import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.screens.AbstractGameScreen;
 import org.voimala.myrts.screens.menu.windows.*;
 
@@ -20,7 +22,7 @@ public class MenuScreen extends AbstractGameScreen {
     private MultiplayerWindow multiplayerWindow;
     private MultiplayerLobbyWindow multiplayerLobbyWindow;
     private JoinByIPWindow joinByIPWindow;
-    private ServerConnection serverConnection;
+    private ServerConnectionWindow serverConnectionWindow;
 
     public MenuScreen(GameMain gameMain) {
         super(gameMain);
@@ -62,8 +64,8 @@ public class MenuScreen extends AbstractGameScreen {
     }
 
     private void initializeConnectingToTheServerWindow() {
-        serverConnection = new ServerConnection(skin, this);
-        stage.addActor(serverConnection);
+        serverConnectionWindow = new ServerConnectionWindow(skin, this);
+        stage.addActor(serverConnectionWindow);
     }
 
     private void initializeSkin() {
@@ -77,8 +79,27 @@ public class MenuScreen extends AbstractGameScreen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        handleNetworkState();
+
         stage.act(deltaTime);
         stage.draw();
+    }
+
+    private void handleNetworkState() {
+        if (NetworkManager.getInstance().getClientConnectionState() == ConnectionState.NOT_CONNECTED) {
+            // The player is free to use the menu
+        } else if (NetworkManager.getInstance().getClientConnectionState() == ConnectionState.CONNECTING_TO_THE_SERVER) {
+            if (!serverConnectionWindow.isVisible()) {
+                hideAllWindows();
+                showWindow(WindowName.SERVER_CONNECTION);
+            }
+            serverConnectionWindow.setMessage("Connecting to the server...");
+        } else if (NetworkManager.getInstance().getClientConnectionState() == ConnectionState.CONNECTED) {
+            if (!multiplayerLobbyWindow.isVisible()) {
+                hideAllWindows();
+                showWindow(WindowName.MULTIPLAYER_LOBBY);
+            }
+        }
     }
 
     @Override
@@ -114,7 +135,15 @@ public class MenuScreen extends AbstractGameScreen {
 
     }
 
-    public void showWindow(WindowName windowName) {
+    public void hideAllWindows() {
+        mainMenuWindow.setVisible(false);
+        multiplayerWindow.setVisible(false);
+        joinByIPWindow.setVisible(false);
+        multiplayerLobbyWindow.setVisible(false);
+        serverConnectionWindow.setVisible(false);
+    }
+
+    public void showWindow(final WindowName windowName) {
         if (windowName == WindowName.MAIN_MENU) {
             mainMenuWindow.setVisible(true);
         }
@@ -125,11 +154,11 @@ public class MenuScreen extends AbstractGameScreen {
         } else if (windowName == WindowName.MULTIPLAYER_LOBBY) {
             multiplayerLobbyWindow.setVisible(true);
         } else if (windowName == WindowName.SERVER_CONNECTION) {
-            serverConnection.setVisible(true);
+            serverConnectionWindow.setVisible(true);
         }
     }
 
-    public void hideWindow(WindowName windowName) {
+    public void hideWindow(final WindowName windowName) {
         if (windowName == WindowName.MAIN_MENU) {
             mainMenuWindow.setVisible(false);
         } else if (windowName == WindowName.MULTIPLAYER) {
@@ -139,7 +168,11 @@ public class MenuScreen extends AbstractGameScreen {
         } else if (windowName == WindowName.MULTIPLAYER_LOBBY) {
             multiplayerLobbyWindow.setVisible(false);
         } else if (windowName == WindowName.SERVER_CONNECTION) {
-            serverConnection.setVisible(false);
+            serverConnectionWindow.setVisible(false);
         }
+    }
+
+    public void setServerConnectionWindowMessage(final String string) {
+        serverConnectionWindow.setMessage("Creating server...");
     }
 }

@@ -1,14 +1,13 @@
-package org.voimala.myrts.multiplayer;
-
-import org.voimala.myrts.app.CommandLineParser;
+package org.voimala.myrts.networking;
 
 public class NetworkManager {
 
     private ServerThread serverThread;
     private ClientThread clientThread;
 
+    public final int DEFAULT_PORT = 52829;
+
     private boolean isHost = false;
-    private boolean isClientSocketConnected = false;
 
     private static NetworkManager instanceOfThis;
 
@@ -27,14 +26,12 @@ public class NetworkManager {
         clientThread.start();
     }
 
-    /** Hosts a new game if not already hosted. */
+    /** Hosts a new game if it is not already hosted by creating a new server thread. */
     public void hostGame(final int port) {
         if (serverThread == null) {
-            isHost = true;
             serverThread = new ServerThread(port);
             serverThread.start();
         }
-
     }
 
     /** @return Returns null if thread is not in use. */
@@ -63,12 +60,17 @@ public class NetworkManager {
         return isHost;
     }
 
-    public boolean isClientSocketConnected() {
+    /** Warning: only server thread should call this method! */
+    public void setHost(boolean isHost) {
+        this.isHost = isHost;
+    }
+
+    public ConnectionState getClientConnectionState() {
         if (clientThread == null) {
-            return false;
+            return ConnectionState.NOT_CONNECTED;
         }
 
-        return clientThread.getSocket().isConnected();
+        return clientThread.getConnectionState();
     }
 
 }

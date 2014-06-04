@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.screens.menu.MenuScreen;
 
 public class MultiplayerWindow extends AbstractMenuWindow {
@@ -99,10 +100,18 @@ public class MultiplayerWindow extends AbstractMenuWindow {
     }
 
     private void onCreateServerClicked() {
-        menuScreen.hideWindow(getWindowName());
         /* TODO Normally we would show the "Create server" window, but it will be skipped
         while the menu is still in its early development phase */
-        menuScreen.showWindow(WindowName.SERVER_CONNECTION);
+        createServer();
+        connectToLocalHost();
+    }
+
+    private void createServer() {
+        NetworkManager.getInstance().hostGame(NetworkManager.getInstance().DEFAULT_PORT);
+    }
+
+    private void connectToLocalHost() {
+        NetworkManager.getInstance().joinGame("localhost", NetworkManager.getInstance().DEFAULT_PORT);
     }
 
     private void onBackClicked() {

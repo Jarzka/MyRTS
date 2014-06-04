@@ -1,4 +1,4 @@
-package org.voimala.myrts.multiplayer;
+package org.voimala.myrts.networking;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;

@@ -1,4 +1,4 @@
-package org.voimala.myrts.multiplayer;
+package org.voimala.myrts.networking;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
@@ -6,7 +6,6 @@ import com.badlogic.gdx.net.ServerSocket;
 import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
-import org.voimala.myrts.app.GameMain;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,10 +29,13 @@ public class ServerThread extends Thread {
     }
 
     public void run() {
+        NetworkManager.getInstance().setHost(true);
+
         createServer();
         acceptConnections();
 
         Gdx.app.debug(TAG, "Server stopped.");
+        NetworkManager.getInstance().setHost(false);
     }
 
     private void createServer() {

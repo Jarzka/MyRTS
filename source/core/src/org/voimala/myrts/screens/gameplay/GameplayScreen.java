@@ -3,7 +3,7 @@ package org.voimala.myrts.screens.gameplay;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import org.voimala.myrts.app.GameMain;
-import org.voimala.myrts.multiplayer.RTSProtocolManager;
+import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.AbstractGameScreen;
 import org.voimala.myrts.screens.gameplay.states.AbstractGameplayState;
 import org.voimala.myrts.screens.gameplay.states.GameplayStateInitialize;

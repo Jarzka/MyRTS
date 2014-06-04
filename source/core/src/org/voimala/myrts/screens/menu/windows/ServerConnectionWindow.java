@@ -5,13 +5,17 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import org.voimala.myrts.networking.ConnectionState;
+import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.screens.menu.MenuScreen;
 
-public class ServerConnection extends AbstractMenuWindow {
+public class ServerConnectionWindow extends AbstractMenuWindow {
 
     private Skin skin;
+    private Label labelMessage;
+    private String message = "Connecting to the server..."; // Default message
 
-    public ServerConnection(Skin skin, MenuScreen menuScreen) {
+    public ServerConnectionWindow(Skin skin, MenuScreen menuScreen) {
         super("Server connection", skin, menuScreen);
         this.skin = skin;
 
@@ -34,8 +38,8 @@ public class ServerConnection extends AbstractMenuWindow {
         int buttonRowPadding = 2;
 
         table.row();
-        Label labelIp = new Label("Connecting to the server...", skin);
-        table.add(labelIp);
+        labelMessage = new Label(message, skin);
+        table.add(labelMessage);
 
         table.row();
         TextButton textButtonCancel = new TextButton("Cancel", skin);
@@ -58,21 +62,11 @@ public class ServerConnection extends AbstractMenuWindow {
         setVisible(false);
     }
 
-    private void onBackClicked() {
-        menuScreen.hideWindow(getWindowName());
-        menuScreen.showWindow(WindowName.MULTIPLAYER);
-    }
-
     private void setDefaultSizeAndPosition() {
         setWidth(300);
         setHeight(140);
         setPosition(Gdx.graphics.getWidth() / 2 - getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - getHeight() / 2);
-    }
-
-    private void onConnectionEstablished() {
-        menuScreen.hideWindow(getWindowName());
-        menuScreen.showWindow(WindowName.MULTIPLAYER_LOBBY);
     }
 
     private void onCancelClicked() {
@@ -87,5 +81,14 @@ public class ServerConnection extends AbstractMenuWindow {
     @Override
     public WindowName getWindowName() {
         return WindowName.SERVER_CONNECTION;
+    }
+
+    public void setMessage(final String message) {
+        this.message = message;
+        labelMessage.setText(message);
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

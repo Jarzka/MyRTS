@@ -1,4 +1,4 @@
-package org.voimala.myrts.multiplayer;
+package org.voimala.myrts.networking;
 
 public enum SocketType {
     SERVER_SOCKET,

@@ -1,4 +1,4 @@
-package org.voimala.myrts.multiplayer;
+package org.voimala.myrts.networking;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
@@ -17,6 +17,7 @@ public class ClientThread extends Thread {
     private String ip;
     private Socket socket;
     private boolean running = true;
+    private ConnectionState connectionState = ConnectionState.NOT_CONNECTED;
 
     private Player player;
     private SocketType socketType;
@@ -46,9 +47,12 @@ public class ClientThread extends Thread {
     }
 
     public void run() {
-        connectToTheServer();
+        if (socketType == SocketType.SERVER_SOCKET) {
+            connectToTheServer();
+        }
 
         while (running) {
+            connectionState = ConnectionState.CONNECTED;
             if (socketType == SocketType.SERVER_SOCKET) {
                 Gdx.app.debug(TAG, "Listening messages from the server.");
             } else if (socketType == SocketType.PLAYER_SOCKET) {
@@ -83,25 +87,27 @@ public class ClientThread extends Thread {
             }
         }
 
+        connectionState = ConnectionState.NOT_CONNECTED;
         Gdx.app.debug(TAG, "Socket disconnected.");
     }
 
     private void connectToTheServer() {
-        if (socket == null) {
+        this.connectionState = ConnectionState.CONNECTING_TO_THE_SERVER;
+
+        try {
+            Gdx.app.debug(TAG, "Connecting to the server...");
+            socket = Gdx.net.newClientSocket(Net.Protocol.TCP, ip, port, socketHints);
+            connectionState = ConnectionState.CONNECTED;
+            Gdx.app.debug(TAG, "Connected to the server.");
+        } catch (Exception e) {
+            connectionState = ConnectionState.NOT_CONNECTED;
+            Gdx.app.debug(TAG, "Could not connect to the server: " + e.getMessage());
+            Gdx.app.debug(TAG, "Trying again in a few seconds...");
+
             try {
-                Gdx.app.debug(TAG, "Connecting to the server...");
-                socket = Gdx.net.newClientSocket(Net.Protocol.TCP, ip, port, socketHints);
-
-                Gdx.app.debug(TAG, "Connected to the server.");
-            } catch (Exception e) {
-                Gdx.app.debug(TAG, "Could not connect to the server: " + e.getMessage());
-                Gdx.app.debug(TAG, "Trying again in a few seconds...");
-
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e1) {
-                    // Continue
-                }
+                Thread.sleep(1000);
+            } catch (InterruptedException e1) {
+                // Continue
             }
         }
     }
@@ -127,5 +133,9 @@ public class ClientThread extends Thread {
 
     public Socket getSocket() {
         return socket;
+    }
+
+    public ConnectionState getConnectionState() {
+        return connectionState;
     }
 }

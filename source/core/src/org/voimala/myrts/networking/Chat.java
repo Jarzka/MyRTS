@@ -1,4 +1,4 @@
-package org.voimala.myrts.multiplayer;
+package org.voimala.myrts.networking;
 
 import java.util.ArrayList;
 
