@@ -55,6 +55,11 @@ public class ClientThread extends Thread {
             connectToTheServer();
         }
 
+        listenMessagesUntilDisconnected();
+        handleDisconnection();
+    }
+
+    private void listenMessagesUntilDisconnected() {
         while (running) {
             connectionState = ConnectionState.CONNECTED;
             if (socketType == SocketType.SERVER_SOCKET) {
@@ -90,7 +95,9 @@ public class ClientThread extends Thread {
                 running = false;
             }
         }
+    }
 
+    private void handleDisconnection() {
         connectionState = ConnectionState.NOT_CONNECTED;
         if (socketType == SocketType.SERVER_SOCKET && serverThread != null) {
             serverThread.removeClient(this);
