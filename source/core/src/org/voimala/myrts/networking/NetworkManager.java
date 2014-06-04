@@ -22,8 +22,10 @@ public class NetworkManager {
     }
 
     public void joinGame(final String ip, final int port) {
-        clientThread = new ClientThread(ip, port);
-        clientThread.start();
+        if (clientThread == null) {
+            clientThread = new ClientThread(ip, port);
+            clientThread.start();
+        }
     }
 
     /** Hosts a new game if it is not already hosted by creating a new server thread. */
@@ -44,13 +46,16 @@ public class NetworkManager {
         return clientThread;
     }
 
-    public void quit() {
+    /** Stops the server and disconnects the client */
+    public void disconnectAll() {
         if (clientThread != null) {
             clientThread.die();
+            clientThread = null;
         }
 
         if (serverThread != null) {
             serverThread.die();
+            serverThread = null;
         }
 
         isHost = false;

@@ -87,7 +87,10 @@ public class MenuScreen extends AbstractGameScreen {
 
     private void handleNetworkState() {
         if (NetworkManager.getInstance().getClientConnectionState() == ConnectionState.NOT_CONNECTED) {
-            // The player is free to use the menu
+            if (multiplayerLobbyWindow.isVisible()) {
+                hideAllWindows();
+                showWindow(WindowName.MAIN_MENU);
+            }
         } else if (NetworkManager.getInstance().getClientConnectionState() == ConnectionState.CONNECTING_TO_THE_SERVER) {
             if (!serverConnectionWindow.isVisible()) {
                 hideAllWindows();

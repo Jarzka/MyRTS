@@ -16,7 +16,6 @@ public class ServerThread extends Thread {
     private ServerSocket serverSocket;
     private boolean running = true;
     private int port = 0;
-    private Socket socket;
     private ArrayList<ClientThread> connectedClients = new ArrayList<ClientThread>();
 
     public ServerThread(final int port) {
@@ -58,11 +57,11 @@ public class ServerThread extends Thread {
                 socketHints.receiveBufferSize = 90000;
                 socketHints.sendBufferSize = 90000;
                 socketHints.tcpNoDelay = true;
-                socket = serverSocket.accept(socketHints);
+                Socket clientSocket = serverSocket.accept(socketHints);
 
-                Gdx.app.debug(TAG, "Client connected from" + " " + socket.getRemoteAddress());
+                Gdx.app.debug(TAG, "Client connected from" + " " + clientSocket.getRemoteAddress());
 
-                ClientThread client = new ClientThread(socket);
+                ClientThread client = new ClientThread(this, clientSocket);
                 connectedClients.add(client);
                 client.start();
 
@@ -89,5 +88,10 @@ public class ServerThread extends Thread {
         }
 
         running = false;
+        serverSocket.dispose();
+    }
+
+    public void removeClient(final ClientThread clientThread) {
+        connectedClients.remove(clientThread);
     }
 }

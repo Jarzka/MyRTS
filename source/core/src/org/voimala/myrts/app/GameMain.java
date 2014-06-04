@@ -63,7 +63,7 @@ public class GameMain extends Game {
     @Override
     public void dispose() {
         SpriteContainer.freeResources();
-        NetworkManager.getInstance().quit();
+        NetworkManager.getInstance().disconnectAll();
         getScreen().dispose();
     }
 

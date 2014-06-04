@@ -4,6 +4,8 @@ package org.voimala.myrts.screens.menu.windows;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.screens.menu.MenuScreen;
 
 public class MultiplayerLobbyWindow extends AbstractMenuWindow {
@@ -97,6 +99,12 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
         TextButton buttonStart = new TextButton("Start", skin);
         table.add(buttonStart).bottom().left().width((int) (buttonsWidth * 0.8)).height(buttonsHeight / 2).pad(buttonsPadding);
         TextButton buttonDisconnect = new TextButton("Disconnect", skin);
+        buttonDisconnect.addListener(new ChangeListener() {
+            @Override
+            public void changed (ChangeEvent event, Actor actor) {
+                onDisconnectClicked();
+            }
+        });
         table.add(buttonDisconnect).bottom().right().width((int) (buttonsWidth * 0.8)).height(buttonsHeight / 2).pad(buttonsPadding);
 
         this.add(table);
@@ -145,6 +153,10 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
         setHeight(600);
         setPosition(Gdx.graphics.getWidth() / 2 - getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - getHeight() / 2);
+    }
+
+    private void onDisconnectClicked() {
+        NetworkManager.getInstance().disconnectAll();
     }
 
     private void setDefaultStyle() {

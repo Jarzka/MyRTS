@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import com.sun.corba.se.spi.activation.Server;
 import org.voimala.myrts.screens.gameplay.world.Player;
 
 import java.io.IOException;
@@ -19,13 +20,16 @@ public class ClientThread extends Thread {
     private boolean running = true;
     private ConnectionState connectionState = ConnectionState.NOT_CONNECTED;
 
+    private ServerThread serverThread;
+
     private Player player;
     private SocketType socketType;
 
     /** Used when the server creates a new thread for the connected client. */
-    public ClientThread(final Socket socket) {
+    public ClientThread(final ServerThread serverThread, final Socket socket) {
         super(ClientThread.class.getName());
 
+        this.serverThread = serverThread;
         this.socket = socket;
         this.socketType = SocketType.PLAYER_SOCKET;
         player = new Player();
@@ -88,6 +92,10 @@ public class ClientThread extends Thread {
         }
 
         connectionState = ConnectionState.NOT_CONNECTED;
+        if (socketType == SocketType.SERVER_SOCKET && serverThread != null) {
+            serverThread.removeClient(this);
+        }
+
         Gdx.app.debug(TAG, "Socket disconnected.");
     }
 
@@ -129,6 +137,7 @@ public class ClientThread extends Thread {
 
     public void die() {
         running = false;
+        socket.dispose();
     }
 
     public Socket getSocket() {
