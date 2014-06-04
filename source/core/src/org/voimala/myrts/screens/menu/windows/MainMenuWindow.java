@@ -28,14 +28,14 @@ public class MainMenuWindow extends AbstractMenuWindow {
     }
 
     private void buildWidgets() {
-        Table table = new Table();
-
-        table.pad(10);
-
-        int buttonsWidth = 150;
+        int buttonsWidth = 150; // TODO Move to a single class
         int buttonsHeight = 50;
         int buttonsPadding = 10;
         int buttonRowPadding = 2;
+
+        Table table = new Table();
+
+        table.pad(10);
 
         table.row();
         TextButton textButtonSingleplayer = new TextButton("Singleplayer", skin);

@@ -2,16 +2,15 @@ package org.voimala.myrts.screens.menu.windows;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import org.voimala.myrts.screens.menu.MenuScreen;
-
-import java.util.ArrayList;
 
 public class MultiplayerLobbyWindow extends AbstractMenuWindow {
 
     private Skin skin;
 
-    private String[] slotValues;
+    private String[] playerValues;
     private String[] factionValues;
     private String[] colorValues;
     private String[] teamValues;
@@ -24,27 +23,33 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
     }
 
     public void initialize() {
-        initializeSelectBoxValues();
+        initializeSelectBoxArrayValues();
         buildWidgets();
         finalizeWindow();
     }
 
     private void buildWidgets() {
+        int buttonsWidth = 150;
+        int buttonsHeight = 50;
+        int buttonsPadding = 10;
+        int buttonRowPadding = 2;
+
         Table table = new Table();
 
         table.pad(10);
-        table.columnDefaults(0).width(30);
+        table.columnDefaults(0).width(25);
         table.columnDefaults(1).width(200);
         table.columnDefaults(2).width(100);
         table.columnDefaults(3).width(100);
-        table.columnDefaults(4).width(30);
+        table.columnDefaults(4).width(45);
+        table.columnDefaults(5).width(100);
 
         // Build the heading
         table.row();
         Label labelNumber = new Label("#", skin);
         table.add(labelNumber).left();
-        Label labelSlot = new Label("Slot", skin);
-        table.add(labelSlot).left();
+        Label labelPlayer = new Label("Player", skin);
+        table.add(labelPlayer).left();
         Label labelFaction = new Label("Faction", skin);
         table.add(labelFaction).left();
         Label labelColor = new Label("Color", skin);
@@ -57,30 +62,51 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
             table.row();
             Label labelNum = new Label(String.valueOf(i), skin);
             table.add(labelNum).left();
-            SelectBox selectBoxSlot = new SelectBox(skin);
-            selectBoxSlot.setItems(slotValues);
-            table.add(selectBoxSlot);
+            SelectBox selectBoxPlayer = new SelectBox(skin);
+            selectBoxPlayer.setItems(playerValues);
+            selectBoxPlayer.setName("player" + String.valueOf(i));
+            table.add(selectBoxPlayer).left();
             SelectBox selectBoxFaction = new SelectBox(skin);
             selectBoxFaction.setItems(factionValues);
-            table.add(selectBoxFaction);
+            selectBoxFaction.setName("faction" + String.valueOf(i));
+            table.add(selectBoxFaction).left();
             SelectBox selectBoxColor = new SelectBox(skin);
             selectBoxColor.setItems(colorValues);
-            table.add(selectBoxColor);
+            selectBoxColor.setSelectedIndex(i - 1);
+            selectBoxColor.setName("color" + String.valueOf(i));
+            table.add(selectBoxColor).left();
             SelectBox selectBoxTeam = new SelectBox(skin);
             selectBoxTeam.setItems(teamValues);
-            table.add(selectBoxTeam);
+            selectBoxTeam.setName("team" + String.valueOf(i));
+            table.add(selectBoxTeam).left();
+            CheckBox checkBoxReady = new CheckBox("Ready", skin);
+            checkBoxReady.setName("ready" + String.valueOf(i));
+            table.add(checkBoxReady).left();
         }
 
-        // TODO How to refer to selectboxes later?
+        // Chat
+        table.row();
+        List textAreaChatMessages = new List(skin);
+        ScrollPane scroll = new ScrollPane(textAreaChatMessages, skin);
+        textAreaChatMessages.setItems(teamValues); // TODO For testing purposes only
+        table.add(scroll).left().width(500).height(200).padTop(20).colspan(5);
+        table.row();
+        TextField textFieldComposeMessage = new TextField("", skin);
+        table.add(textFieldComposeMessage).left().width(500).colspan(5);
+
+        TextButton buttonStart = new TextButton("Start", skin);
+        table.add(buttonStart).bottom().left().width((int) (buttonsWidth * 0.8)).height(buttonsHeight / 2).pad(buttonsPadding);
+        TextButton buttonDisconnect = new TextButton("Disconnect", skin);
+        table.add(buttonDisconnect).bottom().right().width((int) (buttonsWidth * 0.8)).height(buttonsHeight / 2).pad(buttonsPadding);
 
         this.add(table);
     }
 
-    private void initializeSelectBoxValues() {
-        slotValues = new String[3];
-        slotValues[0] = "Open";
-        slotValues[1] = "Closed";
-        slotValues[2] = "Test AI";
+    private void initializeSelectBoxArrayValues() {
+        playerValues = new String[3];
+        playerValues[0] = "Open";
+        playerValues[1] = "Closed";
+        playerValues[2] = "Test AI";
 
         factionValues = new String[2];
         factionValues[0] = "Good";
@@ -115,8 +141,8 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
     }
 
     private void setDefaultSizeAndPosition() {
-        setWidth(800);
-        setHeight(480);
+        setWidth(900);
+        setHeight(600);
         setPosition(Gdx.graphics.getWidth() / 2 - getWidth() / 2,
                 Gdx.graphics.getHeight() / 2 - getHeight() / 2);
     }
