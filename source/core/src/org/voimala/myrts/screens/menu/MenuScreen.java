@@ -1,21 +1,13 @@
 package org.voimala.myrts.screens.menu;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import org.voimala.myrts.app.GameMain;
-import org.voimala.myrts.app.GameplayStartMethod;
 import org.voimala.myrts.screens.AbstractGameScreen;
 import org.voimala.myrts.screens.menu.windows.*;
 
@@ -28,6 +20,7 @@ public class MenuScreen extends AbstractGameScreen {
     private MultiplayerWindow multiplayerWindow;
     private MultiplayerLobbyWindow multiplayerLobbyWindow;
     private JoinByIPWindow joinByIPWindow;
+    private ServerConnection serverConnection;
 
     public MenuScreen(GameMain gameMain) {
         super(gameMain);
@@ -44,6 +37,7 @@ public class MenuScreen extends AbstractGameScreen {
         initializeMultiplayerWindow();
         initializeMultiplayerLobbyWindow();
         initializeJoinByIpWindow();
+        initializeConnectingToTheServerWindow();
     }
 
     private void initializeMainMenuWindow() {
@@ -65,6 +59,11 @@ public class MenuScreen extends AbstractGameScreen {
     private void initializeJoinByIpWindow() {
         joinByIPWindow = new JoinByIPWindow(skin, this);
         stage.addActor(joinByIPWindow);
+    }
+
+    private void initializeConnectingToTheServerWindow() {
+        serverConnection = new ServerConnection(skin, this);
+        stage.addActor(serverConnection);
     }
 
     private void initializeSkin() {
@@ -125,6 +124,8 @@ public class MenuScreen extends AbstractGameScreen {
             joinByIPWindow.setVisible(true);
         } else if (windowName == WindowName.MULTIPLAYER_LOBBY) {
             multiplayerLobbyWindow.setVisible(true);
+        } else if (windowName == WindowName.SERVER_CONNECTION) {
+            serverConnection.setVisible(true);
         }
     }
 
@@ -137,6 +138,8 @@ public class MenuScreen extends AbstractGameScreen {
             joinByIPWindow.setVisible(false);
         } else if (windowName == WindowName.MULTIPLAYER_LOBBY) {
             multiplayerLobbyWindow.setVisible(false);
+        } else if (windowName == WindowName.SERVER_CONNECTION) {
+            serverConnection.setVisible(false);
         }
     }
 }
