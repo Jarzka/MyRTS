@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import org.voimala.myrts.networking.ClientThread;
+import org.voimala.myrts.networking.ListenSocketThread;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
@@ -178,9 +178,9 @@ public class GameplayInputManager {
             String message = RTSProtocolManager.getInstance().createNetworkMessageMoveUnit(
                     unit.getObjectId(),
                     mouseLocationInWorld);
-            ClientThread clientThread = NetworkManager.getInstance().getClientThread();
-            if (clientThread != null) {
-                clientThread.sendMessage(message);
+            ListenSocketThread listenSocketThread = NetworkManager.getInstance().getListenSocketThread();
+            if (listenSocketThread != null) {
+                listenSocketThread.sendMessage(message);
             }
         }
     }

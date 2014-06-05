@@ -7,7 +7,6 @@ import com.badlogic.gdx.net.ServerSocketHints;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -17,9 +16,10 @@ public class ServerThread extends Thread {
     private ServerSocket serverSocket;
     private boolean running = true;
     private int port = 0;
-    private ArrayList<ClientThread> connectedClients = new ArrayList<ClientThread>();
+    private ArrayList<ListenSocketThread> connectedClients = new ArrayList<ListenSocketThread>();
     private HashMap<Integer, SlotContent> slots = new HashMap<Integer, SlotContent>();
     private String motd = "Welcome to the server!";
+    private String serverChatName = "Server";
 
     public ServerThread(final int port) {
         super(ServerThread.class.getName());
@@ -72,26 +72,33 @@ public class ServerThread extends Thread {
                 socketHints.sendBufferSize = 90000;
                 socketHints.tcpNoDelay = true;
                 Socket clientSocket = serverSocket.accept(socketHints);
-
                 Gdx.app.debug(TAG, "Client connected from" + " " + clientSocket.getRemoteAddress());
-
-                ClientThread client = new ClientThread(this, clientSocket);
-                connectedClients.add(client);
-                assignSlotToPlayer(client);
-                client.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageOfTheDay(motd));
-                client.start();
+                handleNewClientConnection(clientSocket);
             } catch (Exception e) {
                 Gdx.app.debug(TAG, "Error accepting client connection: " + e.getMessage());
             }
         }
     }
 
-    private void assignSlotToPlayer(ClientThread client) {
+    private void handleNewClientConnection(final Socket clientSocket) {
+        ListenSocketThread client = new ListenSocketThread(this, clientSocket);
+        connectedClients.add(client);
+
+        assignSlotToPlayer(client);
+        client.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageOfTheDay(motd));
+
+        client.start();
+    }
+
+    private void assignSlotToPlayer(ListenSocketThread client) {
         // Find the next free slot
         for (int i = 1; i <= 8; i++) {
             if (slots.get(i) == SlotContent.OPEN) {
                 client.getPlayerInfo().setNumber(i);
-                client.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageSlot(i));
+                client.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(
+                        i,
+                        "PLAYER",
+                        client.getPlayerInfo().getName()));
                 break;
             }
         }
@@ -101,17 +108,18 @@ public class ServerThread extends Thread {
     }
 
     public void sendMessageToAllClients(final String message) {
-        try {
-            for (ClientThread client : connectedClients) {
+        for (ListenSocketThread client : connectedClients) {
+            try {
                 client.getSocket().getOutputStream().write(message.getBytes());
+            } catch (Exception e) {
+                Gdx.app.debug(TAG, "WARNING: Unable to send message to client" + " "
+                        + client.getPlayerInfo().getName() + ". " + e.getMessage());
             }
-        } catch (IOException e) {
-            Gdx.app.debug(TAG, "WARNING: Unable to send message to client." + " " + e.getMessage());
         }
     }
 
     public void die() {
-        for (ClientThread client : connectedClients) {
+        for (ListenSocketThread client : connectedClients) {
             client.die();
         }
 
@@ -119,7 +127,22 @@ public class ServerThread extends Thread {
         serverSocket.dispose();
     }
 
-    public void removeClient(final ClientThread clientThread) {
-        connectedClients.remove(clientThread);
+    public void removeClient(final ListenSocketThread listenSocketThread) {
+        sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageChatMessage(serverChatName,
+                "Player" + " " + listenSocketThread.getPlayerInfo().getName() + " " + "disconnected."));
+
+        if (slots.get(listenSocketThread.getPlayerInfo().getNumber()) != null) {
+            slots.put(listenSocketThread.getPlayerInfo().getNumber(), SlotContent.OPEN);
+        }
+
+        connectedClients.remove(listenSocketThread);
+    }
+
+    public void updateSlots() {
+        // TODO
+    }
+
+    public String getServerChatName() {
+        return serverChatName;
     }
 }

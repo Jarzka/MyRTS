@@ -181,7 +181,7 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
     }
 
     private void sendChatMessage() {
-        NetworkManager.getInstance().getClientThread().sendMessage(
+        NetworkManager.getInstance().getListenSocketThread().sendMessage(
                 RTSProtocolManager.getInstance().createNetworkMessageChatMessage(
                         GameMain.getInstance().getPlayer().getName(), textFieldComposeMessage.getText()));
         textFieldComposeMessage.setText("");

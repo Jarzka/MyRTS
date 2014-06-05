@@ -3,7 +3,7 @@ package org.voimala.myrts.networking;
 public class NetworkManager {
 
     private ServerThread serverThread;
-    private ClientThread clientThread;
+    private ListenSocketThread listenSocketThread;
 
     public final int DEFAULT_PORT = 52829;
 
@@ -22,9 +22,9 @@ public class NetworkManager {
     }
 
     public void joinGame(final String ip, final int port) {
-        if (clientThread == null) {
-            clientThread = new ClientThread(ip, port);
-            clientThread.start();
+        if (listenSocketThread == null) {
+            listenSocketThread = new ListenSocketThread(ip, port);
+            listenSocketThread.start();
         }
     }
 
@@ -42,8 +42,8 @@ public class NetworkManager {
     }
 
     /** @return Returns null if thread is not in use. */
-    public ClientThread getClientThread() {
-        return clientThread;
+    public ListenSocketThread getListenSocketThread() {
+        return listenSocketThread;
     }
 
     /** Stops the server and disconnects the client */
@@ -53,9 +53,9 @@ public class NetworkManager {
     }
 
     public void disconnectClientThread() {
-        if (clientThread != null) {
-            clientThread.die();
-            clientThread = null;
+        if (listenSocketThread != null) {
+            listenSocketThread.die();
+            listenSocketThread = null;
         }
 
         Chat.getInstance().clearAllChatMessages();
@@ -80,11 +80,11 @@ public class NetworkManager {
     }
 
     public ConnectionState getClientConnectionState() {
-        if (clientThread == null) {
+        if (listenSocketThread == null) {
             return ConnectionState.NOT_CONNECTED;
         }
 
-        return clientThread.getConnectionState();
+        return listenSocketThread.getConnectionState();
     }
 
 }

@@ -4,14 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
+import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.screens.gameplay.world.Player;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class ClientThread extends Thread {
+public class ListenSocketThread extends Thread {
 
-    private static final String TAG = ClientThread.class.getName();
+    private static final String TAG = ListenSocketThread.class.getName();
     private SocketHints socketHints;
     private int port = 0;
     private String ip;
@@ -25,8 +26,8 @@ public class ClientThread extends Thread {
     private SocketType socketType;
 
     /** Used when the server creates a new thread for the connected client. */
-    public ClientThread(final ServerThread serverThread, final Socket socket) {
-        super(ClientThread.class.getName());
+    public ListenSocketThread(final ServerThread serverThread, final Socket socket) {
+        super(ListenSocketThread.class.getName());
 
         this.serverThread = serverThread;
         this.socket = socket;
@@ -35,8 +36,8 @@ public class ClientThread extends Thread {
     }
 
     /** Used for connecting to the server. */
-    public ClientThread(final String ip, final int port) {
-        super(ClientThread.class.getName());
+    public ListenSocketThread(final String ip, final int port) {
+        super(ListenSocketThread.class.getName());
 
         socketHints = new SocketHints();
         socketHints.connectTimeout = 10000;
@@ -77,12 +78,6 @@ public class ClientThread extends Thread {
                 // Read one character from buffer or wait until there is a message in the buffer
                 inputStream.read(readCharacter);
 
-                /* Old version, works but is this necessary?
-                if (inputStream.read(readCharacter) == -1) {
-                    break;
-                }
-                */
-
                 constructMessage.append(readCharacter[0]);
 
                 if (readCharacter[0] == '>') { // End of the message reached, handle message
@@ -92,7 +87,8 @@ public class ClientThread extends Thread {
                         Gdx.app.debug(TAG, "Got message from the player: " + constructMessage);
                     }
 
-                    RTSProtocolManager.getInstance().handleNetworkMessage(constructMessage.toString(), socketType);
+                    RTSProtocolManager.getInstance().handleNetworkMessage(constructMessage.toString(),
+                            this);
                     constructMessage = new StringBuilder();
                 }
             } catch (Exception e) {
@@ -104,7 +100,7 @@ public class ClientThread extends Thread {
 
     private void handleDisconnection() {
         connectionState = ConnectionState.NOT_CONNECTED;
-        if (socketType == SocketType.SERVER_SOCKET && serverThread != null) {
+        if (socketType == SocketType.PLAYER_SOCKET && serverThread != null) {
             serverThread.removeClient(this);
         }
 
@@ -119,6 +115,9 @@ public class ClientThread extends Thread {
             socket = Gdx.net.newClientSocket(Net.Protocol.TCP, ip, port, socketHints);
             connectionState = ConnectionState.CONNECTED;
             Gdx.app.debug(TAG, "Connected to the server.");
+            sendMessage(RTSProtocolManager.getInstance().createNetworkMessageNewConnectionInfo(
+                    GameMain.getInstance().getPlayer().getName()));
+            Gdx.app.debug(TAG, "Sending player information.");
         } catch (Exception e) {
             connectionState = ConnectionState.NOT_CONNECTED;
             Gdx.app.debug(TAG, "Could not connect to the server: " + e.getMessage());
@@ -162,5 +161,9 @@ public class ClientThread extends Thread {
 
     public Player getPlayerInfo() {
         return player;
+    }
+
+    public SocketType getSocketType() {
+        return socketType;
     }
 }

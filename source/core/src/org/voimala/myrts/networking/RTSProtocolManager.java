@@ -31,13 +31,14 @@ public class RTSProtocolManager {
         this.worldController = worldController;
     }
 
-    public boolean handleNetworkMessage(final String message, final SocketType source) {
+    public boolean handleNetworkMessage(final String message, final ListenSocketThread listenSocketThread) {
         return handleNetworkMessageMotd(message)
-                || handleNetworkMessageMoveUnit(message, source)
-                || handleNetworkMessageChat(message, source)
-                || handleNetworkMessagePing(message, source)
-                || handleNetworkMessagePong(message, source)
-                || handleNetworkMessageSlot(message, source);
+                || handleNetworkMessageMoveUnit(message, listenSocketThread.getSocketType())
+                || handleNetworkMessageChat(message, listenSocketThread.getSocketType())
+                || handleNetworkMessagePing(message, listenSocketThread.getSocketType())
+                || handleNetworkMessagePong(message, listenSocketThread.getSocketType())
+                || handleNetworkMessageSlot(message, listenSocketThread.getSocketType())
+                || handleNetworkMessageNewConnectionInfo(message, listenSocketThread);
     }
 
     private boolean handleNetworkMessageMotd(final String message) {
@@ -125,7 +126,29 @@ public class RTSProtocolManager {
             if (source == SocketType.SERVER_SOCKET) {
                 String messageSplitted[] = splitNetworkMessage(message);
                 GameMain.getInstance().getPlayer().setNumber(Integer.valueOf(messageSplitted[1]));
-                Gdx.app.debug(TAG, "This player plays now on slot" + " " + messageSplitted[1]);
+                Gdx.app.debug(TAG, "Slot" + " " + messageSplitted[1] + " " + "content changed to" + " " + messageSplitted[2]);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean handleNetworkMessageNewConnectionInfo(final String message, final ListenSocketThread listenSocketThread) {
+        if (message.startsWith("<NEW_CONNECTION_INFO|")) {
+            if (listenSocketThread.getSocketType() == SocketType.PLAYER_SOCKET) {
+                String messageSplitted[] = splitNetworkMessage(message);
+                listenSocketThread.getPlayerInfo().setName(messageSplitted[1]);
+
+                ServerThread serverThread = NetworkManager.getInstance().getServerThread();
+                if (serverThread != null) {
+                    serverThread.updateSlots();
+                    serverThread.sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageChatMessage(
+                            serverThread.getServerChatName(),
+                            messageSplitted[1] + " " + "connected."));
+
+                }
+
                 return true;
             }
         }
@@ -155,7 +178,29 @@ public class RTSProtocolManager {
         return "<MOTD|" + motd + ">";
     }
 
-    public String createNetworkMessageSlot(final int slot) {
-        return "<SLOT|" + String.valueOf(slot) + ">";
+    public String createNetworkMessageSlotContent(final int slotNumber, final String content) {
+        return createNetworkMessageSlotContent(slotNumber, content, "");
+    }
+
+    public String createNetworkMessageNewConnectionInfo(final String nick) {
+        return "<NEW_CONNECTION_INFO|" + nick + ">";
+    }
+
+    /** @param playerName if content is PLAYER, this variable should contain the player's nick name. */
+    public String createNetworkMessageSlotContent(final int slotNumber, final String content, final String playerName) {
+        StringBuilder buildMessage = new StringBuilder();
+        buildMessage.append("<SLOT|");
+        buildMessage.append(String.valueOf(slotNumber));
+        buildMessage.append("|");
+        buildMessage.append(content);
+
+        if (content.equals("PLAYER")) {
+            buildMessage.append("|");
+            buildMessage.append(playerName);
+        }
+
+        buildMessage.append(">");
+
+        return buildMessage.toString();
     }
 }
