@@ -9,6 +9,7 @@ import com.badlogic.gdx.net.SocketHints;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ServerThread extends Thread {
     private static final String TAG = ServerThread.class.getName();
@@ -17,10 +18,23 @@ public class ServerThread extends Thread {
     private boolean running = true;
     private int port = 0;
     private ArrayList<ClientThread> connectedClients = new ArrayList<ClientThread>();
+    private HashMap<Integer, SlotContent> slots = new HashMap<Integer, SlotContent>();
+    private String motd = "Welcome to the server!";
 
     public ServerThread(final int port) {
         super(ServerThread.class.getName());
 
+        initializeGameSlots();
+        initializeSocketSettings(port);
+    }
+
+    private void initializeGameSlots() {
+        for (int i = 1; i <= 8; i++) {
+            slots.put(i, SlotContent.OPEN);
+        }
+    }
+
+    private void initializeSocketSettings(int port) {
         serverSocketHints = new ServerSocketHints();
         serverSocketHints.acceptTimeout = 100000;
         serverSocketHints.receiveBufferSize = 90000;
@@ -63,13 +77,27 @@ public class ServerThread extends Thread {
 
                 ClientThread client = new ClientThread(this, clientSocket);
                 connectedClients.add(client);
+                assignSlotToPlayer(client);
+                client.sendMessage(RTSProtocolManager.getInstance().generateMessageOfTheDay(motd));
                 client.start();
-
-                //RTSProtocolManager.getInstance().generateMessageOfTheDay(client); TODO
             } catch (Exception e) {
                 Gdx.app.debug(TAG, "Error accepting client connection: " + e.getMessage());
             }
         }
+    }
+
+    private void assignSlotToPlayer(ClientThread client) {
+        // Find the next free slot
+        for (int i = 1; i <= 8; i++) {
+            if (slots.get(i) == SlotContent.OPEN) {
+                client.getPlayerInfo().setNumber(i);
+                client.sendMessage(RTSProtocolManager.getInstance().generateMessageSlot(i));
+                break;
+            }
+        }
+
+        // No free slot found
+        // TODO
     }
 
     public void sendMessageToAllClients(final String message) {

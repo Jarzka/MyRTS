@@ -57,7 +57,7 @@ public class WorldRenderer implements Disposable {
         renderUnitEnergyBars(renderMode);
         renderHud();
         renderUnitSelectionRectangle();
-        renderInfoText(); // TODO CAUSES MEMORY LEAK
+        renderInfoText();
 
         lastRenderTimestamp = System.currentTimeMillis();
     }

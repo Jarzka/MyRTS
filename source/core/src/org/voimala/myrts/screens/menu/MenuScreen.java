@@ -24,10 +24,6 @@ public class MenuScreen extends AbstractGameScreen {
     private JoinByIPWindow joinByIPWindow;
     private ServerConnectionWindow serverConnectionWindow;
 
-    public MenuScreen(GameMain gameMain) {
-        super(gameMain);
-    }
-
     private void initialize() {
         initializeSkin();
         initializeWindows();

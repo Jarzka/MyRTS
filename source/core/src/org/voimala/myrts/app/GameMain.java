@@ -20,17 +20,23 @@ public class GameMain extends Game {
     private NetworkManager networkManager = null;
     private CommandLineParser commandLineParser = null;
 
-    public GameMain(String[] commandLineArguments) {
-        super();
-        CommandLineParser.getInstance().setGameMain(this);
-        CommandLineParser.getInstance().saveCommandLineArguments(commandLineArguments);
+    private static GameMain instanceOfThis;
+
+    private GameMain() {}
+
+    public static GameMain getInstance() {
+        if (instanceOfThis == null) {
+            instanceOfThis = new GameMain();
+        }
+
+        return instanceOfThis;
     }
 
     @Override
     public void create() {
         Gdx.app.setLogLevel(GameMain.LOG_LEVEL);
 
-        setScreen(new MenuScreen(this));
+        setScreen(new MenuScreen());
         CommandLineParser.getInstance().handleCommandLineArguments();
     }
 
@@ -69,7 +75,7 @@ public class GameMain extends Game {
 
     public void startGame(GameplayStartMethod gameplayStartMethod) {
         if (gameplayStartMethod == GameplayStartMethod.SINGLEPLAYER) {
-            GameplayScreen gameplayScreen = new GameplayScreen(this);
+            GameplayScreen gameplayScreen = new GameplayScreen();
             gameplayScreen.setGameMode(GameMode.SINGLEPLAYER);
             setScreen(gameplayScreen);
         } else if (gameplayStartMethod == GameplayStartMethod.MULTIPLAYER_HOST) {
@@ -77,14 +83,14 @@ public class GameMain extends Game {
             NetworkManager.getInstance().joinGame(CommandLineParser.getInstance().getCommandLineArguments().get("-ip"),
                     Integer.valueOf(CommandLineParser.getInstance().getCommandLineArguments().get("-port")));
 
-            GameplayScreen gameplayScreen = new GameplayScreen(this);
+            GameplayScreen gameplayScreen = new GameplayScreen();
             gameplayScreen.setGameMode(GameMode.MULTIPLAYER);
             setScreen(gameplayScreen);
         } else if (gameplayStartMethod == GameplayStartMethod.MULTIPLAYER_JOIN) {
             NetworkManager.getInstance().joinGame(CommandLineParser.getInstance().getCommandLineArguments().get("-ip"),
                     Integer.valueOf(CommandLineParser.getInstance().getCommandLineArguments().get("-port")));
 
-            GameplayScreen gameplayScreen = new GameplayScreen(this);
+            GameplayScreen gameplayScreen = new GameplayScreen();
             gameplayScreen.setGameMode(GameMode.MULTIPLAYER);
             setScreen(gameplayScreen);
         }

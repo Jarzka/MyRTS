@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import org.voimala.myrts.networking.ClientThread;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
@@ -170,14 +171,18 @@ public class GameplayInputManager {
 
 
         if (worldController.getGameplayScreen().getGameMode() == GameMode.SINGLEPLAYER) {
+            // Process command locally
             unit.getMovement().setPathPoint(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y));
         } else if (worldController.getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
+            // Send command to the server
             String message = RTSProtocolManager.getInstance().generateMessageMoveUnit(
                     NetworkManager.getInstance().getClientThread(),
                     unit.getObjectId(),
                     mouseLocationInWorld);
-            RTSProtocolManager.getInstance().sendMessage(NetworkManager.getInstance().getClientThread(), message);
-
+            ClientThread clientThread = NetworkManager.getInstance().getClientThread();
+            if (clientThread != null) {
+                clientThread.sendMessage(message);
+            }
         }
     }
 

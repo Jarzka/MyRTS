@@ -2,9 +2,18 @@ package org.voimala.myrts.screens.gameplay.world;
 
 public class Player {
 
-    private String name;
-    private int number;
-    private int team;
+    private String name = "Unnamed Player";
+    private int number = -1;
+    private int team = -1;
+
+    public Player() {
+
+    }
+
+    public Player(final String name, final int number) {
+        this.name = name;
+        this.number = number;
+    }
 
     public String getName() {
         return name;

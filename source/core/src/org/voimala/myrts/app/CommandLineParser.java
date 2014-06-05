@@ -7,7 +7,6 @@ public class CommandLineParser {
     private static final String TAG = CommandLineParser.class.getName();
     private HashMap<String, String> commandLineArguments = new HashMap<String, String>();
     private static CommandLineParser instanceOfThis = null;
-    private GameMain gameMain = null;
 
     private CommandLineParser() {}
 
@@ -17,10 +16,6 @@ public class CommandLineParser {
         }
 
         return instanceOfThis;
-    }
-
-    public void setGameMain(GameMain gameMain) {
-        this.gameMain = gameMain;
     }
 
     public void saveCommandLineArguments(String[] commandLineArguments) {
@@ -35,6 +30,7 @@ public class CommandLineParser {
 
 
     public void handleCommandLineArguments() {
+        /* These command line arguments are not used atm.
         if (commandLineArguments.get("-multiplayer") != null) {
             if (commandLineArguments.get("-multiplayer").equals("host")) {
                 gameMain.startGame(GameplayStartMethod.MULTIPLAYER_HOST);
@@ -42,6 +38,7 @@ public class CommandLineParser {
                 gameMain.startGame(GameplayStartMethod.MULTIPLAYER_JOIN);
             }
         }
+        */
     }
 
     public HashMap<String, String> getCommandLineArguments() {

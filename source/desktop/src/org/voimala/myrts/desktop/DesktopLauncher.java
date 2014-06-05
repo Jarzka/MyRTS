@@ -19,6 +19,7 @@ public class DesktopLauncher {
         config.backgroundFPS = 120;
         config.foregroundFPS = 120;
         config.vSyncEnabled = false;
-		new LwjglApplication(new GameMain(arg), config);
+
+		new LwjglApplication(GameMain.getInstance(), config);
 	}
 }

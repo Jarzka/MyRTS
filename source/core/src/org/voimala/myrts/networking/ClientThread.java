@@ -160,4 +160,8 @@ public class ClientThread extends Thread {
     public ConnectionState getConnectionState() {
         return connectionState;
     }
+
+    public Player getPlayerInfo() {
+        return player;
+    }
 }

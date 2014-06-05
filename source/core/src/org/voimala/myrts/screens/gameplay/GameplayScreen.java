@@ -24,8 +24,7 @@ public class GameplayScreen extends AbstractGameScreen {
     private long worldUpdateTick = 0;
     private long renderTick = 0;
 
-    public GameplayScreen(GameMain gameMain) {
-        super(gameMain);
+    public GameplayScreen() {
         initialize();
     }
 

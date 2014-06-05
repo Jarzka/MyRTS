@@ -43,7 +43,8 @@ public class RTSProtocolManager {
                 || handleNetworkMessageMoveUnit(message, source)
                 || handleNetworkMessageChat(message, source)
                 || handleNetworkMessagePing(message, source)
-                || handleNetworkMessagePong(message, source);
+                || handleNetworkMessagePong(message, source)
+                || handleNetworkMessageSlot(message, source);
     }
 
     private boolean handleNetworkMessageMotd(final String message) {
@@ -108,6 +109,18 @@ public class RTSProtocolManager {
         return false; // TODO
     }
 
+    private boolean handleNetworkMessageSlot(final String message, final SocketType source) {
+        if (message.startsWith("<SLOT|")) {
+            if (source == SocketType.SERVER_SOCKET) {
+                String messageSplitted[] = splitNetworkMessage(message);
+                // TODO
+                Gdx.app.debug(TAG, "This player plays now on slot" + " " + messageSplitted[1]);
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public String generateMessageMoveUnit(final ClientThread client,
                                           String unitId,
@@ -117,28 +130,23 @@ public class RTSProtocolManager {
         return "<UNIT_MOVE|" + unitId + "|" + mouseLocationInWorld.x + "|" + mouseLocationInWorld.y + ">";
     }
 
-    public String generateMessageChatMessage(final ClientThread client, final String nick, final String message) {
+    public String generateMessageChatMessage(final String nick, final String message) {
         return "<CHAT|" + nick + "|" + message + ">";
     }
 
-    public void sendMessage(final ClientThread client, final String message) {
-        // TODO Connection lost?
-        try {
-            client.sendMessage(message);
-        } catch (Exception e) {
-            Gdx.app.debug(TAG, "WARNING: Unable to send move unit command to the network: " + e.getMessage());
-        }
-    }
-
-    public String generateMessagePing(final ClientThread client) {
+    public String generateMessagePing() {
         return "<PING>";
     }
 
-    public String generateMessagePong(final ClientThread client) {
+    public String generateMessagePong() {
         return "<PONG>";
     }
 
-    public String generateMessageOfTheDay(ClientThread client) {
-        return "<MOTD|Welcome to the server.>"; // TODO Hardcoded.
+    public String generateMessageOfTheDay(final String motd) {
+        return "<MOTD|" + motd + ">";
+    }
+
+    public String generateMessageSlot(final int slot) {
+        return "<SLOT|" + String.valueOf(slot) + ">";
     }
 }
