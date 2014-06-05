@@ -6,6 +6,7 @@ public class NetworkManager {
     private ListenSocketThread listenSocketThread;
 
     public final int DEFAULT_PORT = 52829;
+    public final long NETWORK_MESSAGE_MAX_LENGTH_CHARACTERS = 262144;
 
     private boolean isHost = false;
 

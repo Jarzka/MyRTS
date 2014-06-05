@@ -32,13 +32,19 @@ public class RTSProtocolManager {
     }
 
     public boolean handleNetworkMessage(final String message, final ListenSocketThread listenSocketThread) {
-        return handleNetworkMessageMotd(message)
+        if (handleNetworkMessageMotd(message)
                 || handleNetworkMessageMoveUnit(message, listenSocketThread.getSocketType())
                 || handleNetworkMessageChat(message, listenSocketThread.getSocketType())
                 || handleNetworkMessagePing(message, listenSocketThread.getSocketType())
                 || handleNetworkMessagePong(message, listenSocketThread.getSocketType())
                 || handleNetworkMessageSlot(message, listenSocketThread.getSocketType())
-                || handleNetworkMessageNewConnectionInfo(message, listenSocketThread);
+                || handleNetworkMessageNewConnectionInfo(message, listenSocketThread)) {
+            Gdx.app.debug(TAG, "Message handled successfully.");
+            return true;
+        } else {
+            Gdx.app.debug(TAG, "WARNING: Unable to handle message: " + message);
+            return false;
+        }
     }
 
     private boolean handleNetworkMessageMotd(final String message) {
@@ -125,7 +131,17 @@ public class RTSProtocolManager {
         if (message.startsWith("<SLOT|")) {
             if (source == SocketType.SERVER_SOCKET) {
                 String messageSplitted[] = splitNetworkMessage(message);
-                GameMain.getInstance().getPlayer().setNumber(Integer.valueOf(messageSplitted[1]));
+                if (messageSplitted[2].equals("OPEN")) {
+
+                } else if (messageSplitted[2].equals("CLOSED")) {
+
+                } else if (messageSplitted[2].equals("PLAYER")) {
+                    // TODO Update local player object?
+                    //GameMain.getInstance().getPlayer().setNumber(Integer.valueOf(messageSplitted[1]));
+                } else if (messageSplitted[2].equals("AI_TEST")) {
+
+                }
+
                 Gdx.app.debug(TAG, "Slot" + " " + messageSplitted[1] + " " + "content changed to" + " " + messageSplitted[2]);
                 return true;
             }
@@ -135,14 +151,14 @@ public class RTSProtocolManager {
     }
 
     private boolean handleNetworkMessageNewConnectionInfo(final String message, final ListenSocketThread listenSocketThread) {
-        if (message.startsWith("<NEW_CONNECTION_INFO|")) {
+        if (message.startsWith("<NEW_CONNECTION_INFO|")) { // TODO Player ID
             if (listenSocketThread.getSocketType() == SocketType.PLAYER_SOCKET) {
                 String messageSplitted[] = splitNetworkMessage(message);
                 listenSocketThread.getPlayerInfo().setName(messageSplitted[1]);
 
                 ServerThread serverThread = NetworkManager.getInstance().getServerThread();
                 if (serverThread != null) {
-                    serverThread.updateSlots();
+                    serverThread.sendUpdatedSlotInfo();
                     serverThread.sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageChatMessage(
                             serverThread.getServerChatName(),
                             messageSplitted[1] + " " + "connected."));
@@ -183,7 +199,7 @@ public class RTSProtocolManager {
     }
 
     public String createNetworkMessageNewConnectionInfo(final String nick) {
-        return "<NEW_CONNECTION_INFO|" + nick + ">";
+        return "<NEW_CONNECTION_INFO|" + nick + ">"; // TODO Player id
     }
 
     /** @param playerName if content is PLAYER, this variable should contain the player's nick name. */

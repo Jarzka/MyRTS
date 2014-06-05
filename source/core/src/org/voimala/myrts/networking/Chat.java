@@ -29,12 +29,17 @@ public class Chat {
         String[] messages = new String[Chat.getInstance().getChatMessages().size()];
 
         for (int i = 0; i < chatMessages.size(); i++) {
-            StringBuilder constructMessage = new StringBuilder();
-            constructMessage.append(chatMessages.get(i).getAuthor());
-            constructMessage.append(": ");
-            constructMessage.append(chatMessages.get(i).getMessage());
-
-            messages[i] = constructMessage.toString();
+            if (chatMessages.get(i).getAuthor().toLowerCase().equals("server")) {
+                StringBuilder constructMessage = new StringBuilder();
+                constructMessage.append(chatMessages.get(i).getMessage());
+                messages[i] = constructMessage.toString();
+            } else {
+                StringBuilder constructMessage = new StringBuilder();
+                constructMessage.append(chatMessages.get(i).getAuthor());
+                constructMessage.append(": ");
+                constructMessage.append(chatMessages.get(i).getMessage());
+                messages[i] = constructMessage.toString();
+            }
         }
 
         return messages;

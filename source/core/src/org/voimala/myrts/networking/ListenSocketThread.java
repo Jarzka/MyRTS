@@ -76,9 +76,17 @@ public class ListenSocketThread extends Thread {
         while (running) {
             try {
                 // Read one character from buffer or wait until there is a message in the buffer
-                inputStream.read(readCharacter);
+                if (inputStream.read(readCharacter) == -1) {
+                    continue;
+                }
 
                 constructMessage.append(readCharacter[0]);
+
+                // Message is too long?
+                if (constructMessage.length() > NetworkManager.getInstance().NETWORK_MESSAGE_MAX_LENGTH_CHARACTERS) {
+                    constructMessage = new StringBuilder();
+                    Gdx.app.debug(TAG, "WARNING: Network message was too long and was rejected!");
+                }
 
                 if (readCharacter[0] == '>') { // End of the message reached, handle message
                     if (socketType == SocketType.SERVER_SOCKET) {
@@ -104,6 +112,7 @@ public class ListenSocketThread extends Thread {
             serverThread.removeClient(this);
         }
 
+        this.socket.dispose();
         Gdx.app.debug(TAG, "Socket disconnected.");
     }
 

@@ -110,7 +110,7 @@ public class ServerThread extends Thread {
     public void sendMessageToAllClients(final String message) {
         for (ListenSocketThread client : connectedClients) {
             try {
-                client.getSocket().getOutputStream().write(message.getBytes());
+                client.sendMessage(message);
             } catch (Exception e) {
                 Gdx.app.debug(TAG, "WARNING: Unable to send message to client" + " "
                         + client.getPlayerInfo().getName() + ". " + e.getMessage());
@@ -129,7 +129,7 @@ public class ServerThread extends Thread {
 
     public void removeClient(final ListenSocketThread listenSocketThread) {
         sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageChatMessage(serverChatName,
-                "Player" + " " + listenSocketThread.getPlayerInfo().getName() + " " + "disconnected."));
+                listenSocketThread.getPlayerInfo().getName() + " " + "disconnected."));
 
         if (slots.get(listenSocketThread.getPlayerInfo().getNumber()) != null) {
             slots.put(listenSocketThread.getPlayerInfo().getNumber(), SlotContent.OPEN);
@@ -138,8 +138,32 @@ public class ServerThread extends Thread {
         connectedClients.remove(listenSocketThread);
     }
 
-    public void updateSlots() {
-        // TODO
+    public void sendUpdatedSlotInfo() {
+        for (int i = 1; i <= slots.size(); i++) {
+            if (slots.get(i) == SlotContent.OPEN) {
+                sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(i, "OPEN"));
+            } if (slots.get(i) == SlotContent.CLOSED) {
+                sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(i, "CLOSED"));
+            } if (slots.get(i) == SlotContent.PLAYER) {
+                ListenSocketThread client = findPlayerWhoPlaysInSlot(i);
+                sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(i,
+                        "PLAYER",
+                        client.getPlayerInfo().getName()));
+            } if (slots.get(i) == SlotContent.AI_TEST) {
+                sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(i, "AI_TEST"));
+            }
+        }
+    }
+
+    /** Returns null if player is not found. */
+    private ListenSocketThread findPlayerWhoPlaysInSlot(final int slot) {
+        for (ListenSocketThread client : connectedClients) {
+            if (client.getPlayerInfo().getNumber() == slot) {
+                return client;
+            }
+        }
+
+        return null;
     }
 
     public String getServerChatName() {
