@@ -58,7 +58,7 @@ public class ServerThread extends Thread {
             Gdx.app.debug(TAG, "Server created");
         } catch (Exception e) {
             Gdx.app.debug(TAG, "Error creating a server: " + e.getMessage());
-            running = false;
+            running = false; // TODO Multiplayer lobby does not notice this?
         }
     }
 
@@ -78,7 +78,7 @@ public class ServerThread extends Thread {
                 ClientThread client = new ClientThread(this, clientSocket);
                 connectedClients.add(client);
                 assignSlotToPlayer(client);
-                client.sendMessage(RTSProtocolManager.getInstance().generateMessageOfTheDay(motd));
+                client.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageOfTheDay(motd));
                 client.start();
             } catch (Exception e) {
                 Gdx.app.debug(TAG, "Error accepting client connection: " + e.getMessage());
@@ -91,7 +91,7 @@ public class ServerThread extends Thread {
         for (int i = 1; i <= 8; i++) {
             if (slots.get(i) == SlotContent.OPEN) {
                 client.getPlayerInfo().setNumber(i);
-                client.sendMessage(RTSProtocolManager.getInstance().generateMessageSlot(i));
+                client.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageSlot(i));
                 break;
             }
         }

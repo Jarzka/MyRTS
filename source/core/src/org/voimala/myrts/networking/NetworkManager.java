@@ -48,11 +48,20 @@ public class NetworkManager {
 
     /** Stops the server and disconnects the client */
     public void disconnectAll() {
+        disconnectClientThread();
+        disconnectServerThread();
+    }
+
+    public void disconnectClientThread() {
         if (clientThread != null) {
             clientThread.die();
             clientThread = null;
         }
 
+        Chat.getInstance().clearAllChatMessages();
+    }
+
+    public void disconnectServerThread() {
         if (serverThread != null) {
             serverThread.die();
             serverThread = null;

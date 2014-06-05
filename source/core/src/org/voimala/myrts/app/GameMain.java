@@ -7,6 +7,7 @@ import org.voimala.myrts.graphics.SpriteContainer;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
+import org.voimala.myrts.screens.gameplay.world.Player;
 import org.voimala.myrts.screens.menu.MenuScreen;
 
 public class GameMain extends Game {
@@ -19,6 +20,8 @@ public class GameMain extends Game {
 
     private NetworkManager networkManager = null;
     private CommandLineParser commandLineParser = null;
+
+    private Player player = new Player();
 
     private static GameMain instanceOfThis;
 
@@ -94,6 +97,10 @@ public class GameMain extends Game {
             gameplayScreen.setGameMode(GameMode.MULTIPLAYER);
             setScreen(gameplayScreen);
         }
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
 }

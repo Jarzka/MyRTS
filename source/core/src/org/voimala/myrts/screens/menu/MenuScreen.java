@@ -99,6 +99,8 @@ public class MenuScreen extends AbstractGameScreen {
                 showWindow(WindowName.MULTIPLAYER_LOBBY);
             }
         }
+
+        multiplayerLobbyWindow.update();
     }
 
     @Override

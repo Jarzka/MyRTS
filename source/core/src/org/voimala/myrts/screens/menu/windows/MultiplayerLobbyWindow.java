@@ -2,10 +2,14 @@ package org.voimala.myrts.screens.menu.windows;
 
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import org.voimala.myrts.app.GameMain;
+import org.voimala.myrts.networking.Chat;
 import org.voimala.myrts.networking.NetworkManager;
+import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.menu.MenuScreen;
 
 public class MultiplayerLobbyWindow extends AbstractMenuWindow {
@@ -16,6 +20,9 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
     private String[] factionValues;
     private String[] colorValues;
     private String[] teamValues;
+
+    private List textAreaChatMessages;
+    private TextField textFieldComposeMessage;
 
     public MultiplayerLobbyWindow(Skin skin, MenuScreen menuScreen) {
         super("Multiplayer Lobby", skin, menuScreen);
@@ -88,12 +95,11 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
 
         // Chat
         table.row();
-        List textAreaChatMessages = new List(skin);
+        textAreaChatMessages = new List(skin);
         ScrollPane scroll = new ScrollPane(textAreaChatMessages, skin);
-        textAreaChatMessages.setItems(teamValues); // TODO For testing purposes only
         table.add(scroll).left().width(500).height(200).padTop(20).colspan(5);
         table.row();
-        TextField textFieldComposeMessage = new TextField("", skin);
+        textFieldComposeMessage = new TextField("", skin);
         table.add(textFieldComposeMessage).left().width(500).colspan(5);
 
         TextButton buttonStart = new TextButton("Start", skin);
@@ -161,6 +167,28 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
 
     private void setDefaultStyle() {
         setColor(1, 1, 1, 0.8f);
+    }
+
+    public void update() {
+        handleEventSendChatMessage();
+        updateChatMessages();
+    }
+
+    private void handleEventSendChatMessage() {
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER) && textFieldComposeMessage.getText().length() > 0) {
+            sendChatMessage();
+        }
+    }
+
+    private void sendChatMessage() {
+        NetworkManager.getInstance().getClientThread().sendMessage(
+                RTSProtocolManager.getInstance().createNetworkMessageChatMessage(
+                        GameMain.getInstance().getPlayer().getName(), textFieldComposeMessage.getText()));
+        textFieldComposeMessage.setText("");
+    }
+
+    private void updateChatMessages() {
+        textAreaChatMessages.setItems(Chat.getInstance().getChatMessagesForChatBox());
     }
 
     @Override

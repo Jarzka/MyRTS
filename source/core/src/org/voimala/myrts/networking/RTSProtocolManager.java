@@ -50,6 +50,7 @@ public class RTSProtocolManager {
     private boolean handleNetworkMessageMotd(final String message) {
         if (message.startsWith("<MOTD|")) {
             String[] messageSplitted = splitNetworkMessage(message);
+            Chat.getInstance().addChatMessage(new ChatMessage("Server", messageSplitted[1], System.currentTimeMillis()));
             Gdx.app.debug(TAG, "Message of the day: " + messageSplitted[1]);
             return true;
         }
@@ -98,7 +99,16 @@ public class RTSProtocolManager {
     }
 
     private boolean handleNetworkMessageChat(final String message, final SocketType source) {
-        return false; // TODO
+        if (message.startsWith("<CHAT|")) {
+            String[] messageSplitted = splitNetworkMessage(message);
+            Chat.getInstance().addChatMessage(new ChatMessage(messageSplitted[1],
+                    messageSplitted[2],
+                    System.currentTimeMillis()));
+            Gdx.app.debug(TAG, messageSplitted[1] + ": " + messageSplitted[2]);
+            return true;
+        }
+
+        return false;
     }
 
     private boolean handleNetworkMessagePing(final String message, final SocketType source) {
@@ -113,7 +123,7 @@ public class RTSProtocolManager {
         if (message.startsWith("<SLOT|")) {
             if (source == SocketType.SERVER_SOCKET) {
                 String messageSplitted[] = splitNetworkMessage(message);
-                // TODO
+                GameMain.getInstance().getPlayer().setNumber(Integer.valueOf(messageSplitted[1]));
                 Gdx.app.debug(TAG, "This player plays now on slot" + " " + messageSplitted[1]);
                 return true;
             }
@@ -122,31 +132,29 @@ public class RTSProtocolManager {
         return false;
     }
 
-    public String generateMessageMoveUnit(final ClientThread client,
-                                          String unitId,
-                                          final Vector3 mouseLocationInWorld) {
-        // TODO Connection lost?
+    public String createNetworkMessageMoveUnit(String unitId,
+                                               final Vector3 mouseLocationInWorld) {
         // TODO Use StringBuilder in send methods
         return "<UNIT_MOVE|" + unitId + "|" + mouseLocationInWorld.x + "|" + mouseLocationInWorld.y + ">";
     }
 
-    public String generateMessageChatMessage(final String nick, final String message) {
+    public String createNetworkMessageChatMessage(final String nick, final String message) {
         return "<CHAT|" + nick + "|" + message + ">";
     }
 
-    public String generateMessagePing() {
+    public String createNetworkMessagePing() {
         return "<PING>";
     }
 
-    public String generateMessagePong() {
+    public String createNetworkMessagePong() {
         return "<PONG>";
     }
 
-    public String generateMessageOfTheDay(final String motd) {
+    public String createNetworkMessageOfTheDay(final String motd) {
         return "<MOTD|" + motd + ">";
     }
 
-    public String generateMessageSlot(final int slot) {
+    public String createNetworkMessageSlot(final int slot) {
         return "<SLOT|" + String.valueOf(slot) + ">";
     }
 }

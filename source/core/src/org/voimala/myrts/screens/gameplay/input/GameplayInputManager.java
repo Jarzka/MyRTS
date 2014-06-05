@@ -175,8 +175,7 @@ public class GameplayInputManager {
             unit.getMovement().setPathPoint(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y));
         } else if (worldController.getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
             // Send command to the server
-            String message = RTSProtocolManager.getInstance().generateMessageMoveUnit(
-                    NetworkManager.getInstance().getClientThread(),
+            String message = RTSProtocolManager.getInstance().createNetworkMessageMoveUnit(
                     unit.getObjectId(),
                     mouseLocationInWorld);
             ClientThread clientThread = NetworkManager.getInstance().getClientThread();

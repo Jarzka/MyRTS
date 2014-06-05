@@ -5,11 +5,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.screens.menu.MenuScreen;
 
 public class JoinByIPWindow extends AbstractMenuWindow {
 
     private Skin skin;
+
+    private TextField textFieldIp;
+    private TextField textFieldPort;
 
     public JoinByIPWindow(Skin skin, MenuScreen menuScreen) {
         super("Join by IP", skin, menuScreen);
@@ -36,13 +40,13 @@ public class JoinByIPWindow extends AbstractMenuWindow {
         table.row();
         Label labelIp = new Label("IP:", skin);
         table.add(labelIp).width(50).right();
-        TextField textFieldIp = new TextArea("localhost", skin);
+        textFieldIp = new TextArea("localhost", skin);
         table.add(textFieldIp).width(190).colspan(2).left();
 
         table.row();
         Label labelPort = new Label("Port:", skin);
         table.add(labelPort).width(50).right();
-        TextField textFieldPort = new TextArea("52828", skin);
+        textFieldPort = new TextArea(String.valueOf(NetworkManager.getInstance().DEFAULT_PORT), skin);
         table.add(textFieldPort).width(100).colspan(2).left();
 
         table.row().padTop(buttonRowPadding * 5);
@@ -61,13 +65,17 @@ public class JoinByIPWindow extends AbstractMenuWindow {
         textButtonConnect.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
-                //onJoinClicked(); // TODO
+                onJoinClicked();
             }
         });
         table.add(textButtonConnect).size(buttonsWidth, buttonsHeight / 2).right();
 
         this.add(table);
         table.debug();
+    }
+
+    private void onJoinClicked() {
+        NetworkManager.getInstance().joinGame(textFieldIp.getText(), Integer.valueOf(textFieldPort.getText()));
     }
 
     private void finalizeWindow() {
