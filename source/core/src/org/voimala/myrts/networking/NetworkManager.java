@@ -7,6 +7,7 @@ public class NetworkManager {
 
     public final int DEFAULT_PORT = 52829;
     public final long NETWORK_MESSAGE_MAX_LENGTH_CHARACTERS = 262144;
+    public final int SLOTS_MAX = 30;
 
     private boolean isHost = false;
 
