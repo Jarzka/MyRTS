@@ -7,14 +7,7 @@ import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
 import org.voimala.myrts.screens.gameplay.units.Unit;
 
-/** This class is used to send network messages that respect the game's protocol.
- *
- * Protocol
- *
- * Message template
- * <MESSAGE_TYPE|parameter1|parameter2|...>
- *
- */
+/** This class is used to send network messages that respect the game's protocol. */
 
 public class RTSProtocolManager {
 
@@ -74,7 +67,7 @@ public class RTSProtocolManager {
 
     private boolean handleNetworkMessageMoveUnit(String message, final SocketType source) {
         if (message.startsWith("<UNIT_MOVE|")) {
-            if (source == SocketType.SERVER_SOCKET) {
+            if (source == SocketType.SERVER_SOCKET) { // The message came from the server
                 String messageSplitted[] = splitNetworkMessage(message);
                 if (worldController != null) {
                     Unit unit = worldController.findUnitById(messageSplitted[1]);
@@ -84,7 +77,7 @@ public class RTSProtocolManager {
                                         Float.valueOf(messageSplitted[3])));
                     }
                 }
-            } else if (source == SocketType.PLAYER_SOCKET) {
+            } else if (source == SocketType.PLAYER_SOCKET) { // The message came to the server from a player
                 ServerThread server = NetworkManager.getInstance().getServerThread();
                 if (server != null) {
                     server.sendMessageToAllClients(message);
@@ -100,11 +93,19 @@ public class RTSProtocolManager {
 
     private boolean handleNetworkMessageChat(final String message, final SocketType source) {
         if (message.startsWith("<CHAT|")) {
-            String[] messageSplitted = splitNetworkMessage(message);
-            Chat.getInstance().addChatMessage(new ChatMessage(messageSplitted[1],
-                    messageSplitted[2],
-                    System.currentTimeMillis()));
-            Gdx.app.debug(TAG, messageSplitted[1] + ": " + messageSplitted[2]);
+            if (source == SocketType.SERVER_SOCKET) {
+                String[] messageSplitted = splitNetworkMessage(message);
+                Chat.getInstance().addChatMessage(new ChatMessage(messageSplitted[1],
+                        messageSplitted[2],
+                        System.currentTimeMillis()));
+                Gdx.app.debug(TAG, messageSplitted[1] + ": " + messageSplitted[2]);
+            } else if (source == SocketType.PLAYER_SOCKET) {
+                ServerThread serverThread = NetworkManager.getInstance().getServerThread();
+                if (serverThread != null) {
+                    serverThread.sendMessageToAllClients(message);
+                }
+            }
+
             return true;
         }
 
