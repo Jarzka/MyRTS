@@ -77,27 +77,28 @@ public class ListenSocketThread extends Thread {
             try {
                 // Read one character from buffer or wait until there is a message in the buffer
                 if (inputStream.read(readCharacter) == -1) {
-                    continue;
-                }
+                    // Socket disconnected.
+                    running = false;
+                } else {
+                    constructMessage.append(readCharacter[0]);
 
-                constructMessage.append(readCharacter[0]);
-
-                // Message is too long?
-                if (constructMessage.length() > NetworkManager.getInstance().NETWORK_MESSAGE_MAX_LENGTH_CHARACTERS) {
-                    constructMessage = new StringBuilder();
-                    Gdx.app.debug(TAG, "WARNING: Network message was too long and was rejected!");
-                }
-
-                if (readCharacter[0] == '>') { // End of the message reached, handle message
-                    if (socketType == SocketType.SERVER_SOCKET) {
-                        Gdx.app.debug(TAG, "Got message from the server: " + constructMessage); // TODO Dies for some reason
-                    } else if (socketType == SocketType.PLAYER_SOCKET) {
-                        Gdx.app.debug(TAG, "Got message from the player: " + constructMessage);
+                    // Message is too long?
+                    if (constructMessage.length() > NetworkManager.getInstance().NETWORK_MESSAGE_MAX_LENGTH_CHARACTERS) {
+                        constructMessage = new StringBuilder();
+                        Gdx.app.debug(TAG, "WARNING: Network message was too long and was rejected!");
                     }
 
-                    RTSProtocolManager.getInstance().handleNetworkMessage(constructMessage.toString(),
-                            this);
-                    constructMessage = new StringBuilder();
+                    if (readCharacter[0] == '>') { // End of the message reached, handle message
+                        if (socketType == SocketType.SERVER_SOCKET) {
+                            Gdx.app.debug(TAG, "Got message from the server: " + constructMessage); // TODO Dies for some reason
+                        } else if (socketType == SocketType.PLAYER_SOCKET) {
+                            Gdx.app.debug(TAG, "Got message from the player: " + constructMessage);
+                        }
+
+                        RTSProtocolManager.getInstance().handleNetworkMessage(constructMessage.toString(),
+                                this);
+                        constructMessage = new StringBuilder();
+                    }
                 }
             } catch (Exception e) {
                 Gdx.app.debug(TAG, "ERROR: while reading buffer: " + e.getMessage());
