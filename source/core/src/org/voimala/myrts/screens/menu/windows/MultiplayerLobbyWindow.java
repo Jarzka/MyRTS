@@ -199,6 +199,7 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
     }
 
     private void updateLobbyWidgets() {
+        // Only player 1-8 are shown in the UI.
         for (int i = 1; i <= 8; i++) {
             Actor actor = table.findActor("player" + String.valueOf(i));
             if (actor instanceof SelectBox) {
