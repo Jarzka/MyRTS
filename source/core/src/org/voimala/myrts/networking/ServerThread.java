@@ -23,6 +23,7 @@ public class ServerThread extends Thread {
      * CLOSED
      * TEST_AI
      * PLAYER|playerName|networkId
+     * Slots 1-8 are meant for players, other slots are reserved for observers.
      * */
     private HashMap<Integer, String> slots = new HashMap<Integer, String>();
     private String motd = "Welcome to the server!";
@@ -36,7 +37,7 @@ public class ServerThread extends Thread {
     }
 
     private void initializeGameSlots() {
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= NetworkManager.getInstance().SLOTS_MAX; i++) {
             slots.put(i, "OPEN");
         }
     }
@@ -99,7 +100,7 @@ public class ServerThread extends Thread {
 
     private void assignSlotToPlayer(ListenSocketThread client) {
         // Find the next free slot
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= NetworkManager.getInstance().SLOTS_MAX; i++) {
             if (slots.get(i).equals("OPEN")) {
                 StringBuilder contentPlayer = new StringBuilder();
                 contentPlayer.append("PLAYER");
@@ -110,16 +111,11 @@ public class ServerThread extends Thread {
                 slots.put(i, contentPlayer.toString());
                 client.getPlayerInfo().setNumber(i);
                 sendUpdatedSlotInfo();
-                client.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(
-                        i,
-                        "PLAYER",
-                        client.getPlayerInfo().getName(),
-                        client.getPlayerInfo().getNetworkId()));
                 break;
             }
         }
 
-        // No free slot found
+        // Free slot not found?
         // TODO
     }
 
@@ -156,7 +152,7 @@ public class ServerThread extends Thread {
     }
 
     public void sendUpdatedSlotInfo() {
-        for (int i = 1; i <= slots.size(); i++) {
+        for (int i = 1; i <= NetworkManager.getInstance().SLOTS_MAX; i++) {
             if (slots.get(i).equals("OPEN")) {
                 sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(i, slots.get(i)));
             } if (slots.get(i).equals("CLOSED")) {
