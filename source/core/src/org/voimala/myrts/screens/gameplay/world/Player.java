@@ -55,4 +55,8 @@ public class Player {
     public int getNetworkId() {
         return networkId;
     }
+
+    public void setNetworkId(Integer networkId) {
+        this.networkId = networkId;
+    }
 }

@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.networking.Chat;
+import org.voimala.myrts.networking.LocalNetworkInfo;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.menu.MenuScreen;
@@ -23,6 +24,7 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
 
     private List textAreaChatMessages;
     private TextField textFieldComposeMessage;
+    private Table table;
 
     public MultiplayerLobbyWindow(Skin skin, MenuScreen menuScreen) {
         super("Multiplayer Lobby", skin, menuScreen);
@@ -43,7 +45,7 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
         int buttonsPadding = 10;
         int buttonRowPadding = 2;
 
-        Table table = new Table();
+        table = new Table();
 
         table.pad(10);
         table.columnDefaults(0).width(25);
@@ -118,25 +120,17 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
 
     private void initializeSelectBoxArrayValues() {
         playerValues = new String[3];
-        playerValues[0] = "Open";
-        playerValues[1] = "Closed";
-        playerValues[2] = "Test AI";
-
+        playerValues = getSelectBoxPlayerDefaultValus();
         factionValues = new String[2];
-        factionValues[0] = "Good";
-        factionValues[1] = "Bad";
-
+        factionValues = getSelectBoxFactionDefaultValues();
         colorValues = new String[8];
-        colorValues[0] = "Red";
-        colorValues[1] = "Blue";
-        colorValues[2] = "Green";
-        colorValues[3] = "Yellow";
-        colorValues[4] = "Purple";
-        colorValues[5] = "Orange";
-        colorValues[6] = "Black";
-        colorValues[7] = "Pink";
-
+        colorValues = getSelectBoxColorDefaultValues();
         teamValues = new String[9];
+        teamValues =getSelectBoxTeamDefaultValues();
+    }
+
+    private String[] getSelectBoxTeamDefaultValues() {
+        String[] teamValues = new String[9];
         teamValues[0] = "1";
         teamValues[1] = "2";
         teamValues[2] = "3";
@@ -146,6 +140,35 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
         teamValues[6] = "7";
         teamValues[7] = "8";
         teamValues[8] = "-";
+        return teamValues;
+    }
+
+    private String[] getSelectBoxColorDefaultValues() {
+        String[] colorValues = new String[8];
+        colorValues[0] = "Red";
+        colorValues[1] = "Blue";
+        colorValues[2] = "Green";
+        colorValues[3] = "Yellow";
+        colorValues[4] = "Purple";
+        colorValues[5] = "Orange";
+        colorValues[6] = "Black";
+        colorValues[7] = "Pink";
+        return colorValues;
+    }
+
+    private String[] getSelectBoxFactionDefaultValues() {
+        String[] factionValues = new String[2];
+        factionValues[0] = "Good";
+        factionValues[1] = "Bad";
+        return factionValues;
+    }
+
+    private String[] getSelectBoxPlayerDefaultValus() {
+        String[] playerValues = new String[3];
+        playerValues[0] = "Open";
+        playerValues[1] = "Closed";
+        playerValues[2] = "Test AI";
+        return playerValues;
     }
 
     private void finalizeWindow() {
@@ -170,8 +193,36 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
     }
 
     public void update() {
+        updateLobbyWidgets();
         handleEventSendChatMessage();
         updateChatMessages();
+    }
+
+    private void updateLobbyWidgets() {
+        for (int i = 1; i <= 8; i++) {
+            Actor actor = table.findActor("player" + String.valueOf(i));
+            if (actor instanceof SelectBox) {
+                SelectBox slot = (SelectBox) actor;
+                String[] playerSlotValues = getSelectBoxPlayerDefaultValus();
+
+                String slotContent = LocalNetworkInfo.getInstance().getSlots().get(i);
+
+                if (slotContent.equals("OPEN")) {
+                    playerSlotValues[0] = "Open";
+                    slot.setSelectedIndex(0);
+                } else if (slotContent.equals("CLOSED")) {
+                    slot.setSelectedIndex(1);
+                } else if (slotContent.startsWith("PLAYER|")) {
+                    String[] contentSplitted = slotContent.split("\\|");
+                    playerSlotValues[0] = contentSplitted[1];
+                    slot.setSelectedIndex(0);
+                } else if (slotContent.equals("AI_TEST")) {
+                    slot.setSelectedIndex(2);
+                }
+
+                slot.setItems(playerSlotValues);
+            }
+        }
     }
 
     private void handleEventSendChatMessage() {

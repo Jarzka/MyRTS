@@ -126,7 +126,8 @@ public class ListenSocketThread extends Thread {
             connectionState = ConnectionState.CONNECTED;
             Gdx.app.debug(TAG, "Connected to the server.");
             sendMessage(RTSProtocolManager.getInstance().createNetworkMessageNewConnectionInfo(
-                    GameMain.getInstance().getPlayer().getName()));
+                    GameMain.getInstance().getPlayer().getName(),
+                    GameMain.getInstance().getPlayer().getNetworkId()));
             Gdx.app.debug(TAG, "Sending player information.");
         } catch (Exception e) {
             connectionState = ConnectionState.NOT_CONNECTED;
