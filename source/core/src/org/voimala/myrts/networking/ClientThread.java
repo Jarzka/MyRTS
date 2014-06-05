@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.Socket;
 import com.badlogic.gdx.net.SocketHints;
-import com.sun.corba.se.spi.activation.Server;
 import org.voimala.myrts.screens.gameplay.world.Player;
 
 import java.io.IOException;
@@ -53,15 +52,17 @@ public class ClientThread extends Thread {
     public void run() {
         if (socketType == SocketType.SERVER_SOCKET) {
             connectToTheServer();
+        } else if (socketType == SocketType.PLAYER_SOCKET) {
+            // The socket is already connected to a player
+            connectionState = ConnectionState.CONNECTED;
         }
 
-        listenMessagesUntilDisconnected();
+        listenNetworkMessagesUntilDisconnected();
         handleDisconnection();
     }
 
-    private void listenMessagesUntilDisconnected() {
+    private void listenNetworkMessagesUntilDisconnected() {
         while (running) {
-            connectionState = ConnectionState.CONNECTED;
             if (socketType == SocketType.SERVER_SOCKET) {
                 Gdx.app.debug(TAG, "Listening messages from the server.");
             } else if (socketType == SocketType.PLAYER_SOCKET) {
@@ -73,13 +74,18 @@ public class ClientThread extends Thread {
                 char[] readCharacter = new char[1];
                 StringBuilder constructMessage = new StringBuilder();
                 while (true) {
+                    // Read one character from buffer or wait until there is a message in the buffer
+                    inputStream.read(readCharacter);
+
+                    /* Old version, works but is this necessary?
                     if (inputStream.read(readCharacter) == -1) {
                         break;
                     }
+                    */
 
                     constructMessage.append(readCharacter[0]);
 
-                    if (readCharacter[0] == '>') { // End of message reached
+                    if (readCharacter[0] == '>') { // End of the message reached, handle message
                         if (socketType == SocketType.SERVER_SOCKET) {
                             Gdx.app.debug(TAG, "Got message from the server: " + constructMessage); // TODO Dies for some reason
                         } else if (socketType == SocketType.PLAYER_SOCKET) {
