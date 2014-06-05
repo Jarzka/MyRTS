@@ -62,39 +62,38 @@ public class ClientThread extends Thread {
     }
 
     private void listenNetworkMessagesUntilDisconnected() {
+        if (socketType == SocketType.SERVER_SOCKET) {
+            Gdx.app.debug(TAG, "Listening messages from the server.");
+        } else if (socketType == SocketType.PLAYER_SOCKET) {
+            Gdx.app.debug(TAG, "Listening messages from the player.");
+        }
+
+        InputStreamReader inputStream = new InputStreamReader(socket.getInputStream());
+        char[] readCharacter = new char[1]; // Read character will be stored in this array
+        StringBuilder constructMessage = new StringBuilder();
+
         while (running) {
-            if (socketType == SocketType.SERVER_SOCKET) {
-                Gdx.app.debug(TAG, "Listening messages from the server.");
-            } else if (socketType == SocketType.PLAYER_SOCKET) {
-                Gdx.app.debug(TAG, "Listening messages from the player.");
-            }
-
             try {
-                InputStreamReader inputStream = new InputStreamReader(socket.getInputStream());
-                char[] readCharacter = new char[1];
-                StringBuilder constructMessage = new StringBuilder();
-                while (true) {
-                    // Read one character from buffer or wait until there is a message in the buffer
-                    inputStream.read(readCharacter);
+                // Read one character from buffer or wait until there is a message in the buffer
+                inputStream.read(readCharacter);
 
-                    /* Old version, works but is this necessary?
-                    if (inputStream.read(readCharacter) == -1) {
-                        break;
+                /* Old version, works but is this necessary?
+                if (inputStream.read(readCharacter) == -1) {
+                    break;
+                }
+                */
+
+                constructMessage.append(readCharacter[0]);
+
+                if (readCharacter[0] == '>') { // End of the message reached, handle message
+                    if (socketType == SocketType.SERVER_SOCKET) {
+                        Gdx.app.debug(TAG, "Got message from the server: " + constructMessage); // TODO Dies for some reason
+                    } else if (socketType == SocketType.PLAYER_SOCKET) {
+                        Gdx.app.debug(TAG, "Got message from the player: " + constructMessage);
                     }
-                    */
 
-                    constructMessage.append(readCharacter[0]);
-
-                    if (readCharacter[0] == '>') { // End of the message reached, handle message
-                        if (socketType == SocketType.SERVER_SOCKET) {
-                            Gdx.app.debug(TAG, "Got message from the server: " + constructMessage); // TODO Dies for some reason
-                        } else if (socketType == SocketType.PLAYER_SOCKET) {
-                            Gdx.app.debug(TAG, "Got message from the player: " + constructMessage);
-                        }
-
-                        RTSProtocolManager.getInstance().handleNetworkMessage(constructMessage.toString(), socketType);
-                        constructMessage = new StringBuilder();
-                    }
+                    RTSProtocolManager.getInstance().handleNetworkMessage(constructMessage.toString(), socketType);
+                    constructMessage = new StringBuilder();
                 }
             } catch (Exception e) {
                 Gdx.app.debug(TAG, "ERROR: while reading buffer: " + e.getMessage());
