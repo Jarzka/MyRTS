@@ -144,7 +144,12 @@ public class ListenSocketThread extends Thread {
 
     public void sendMessage(final String message) {
         try {
-            Gdx.app.debug(TAG, "Sending message to the server: " + message);
+            if (socketType == SocketType.SERVER_SOCKET) {
+                Gdx.app.debug(TAG, "Sending message to the server: " + message);
+            } else if (socketType == SocketType.PLAYER_SOCKET) {
+                Gdx.app.debug(TAG, "Sending message to the player: " + message);
+            }
+
             socket.getOutputStream().write(message.getBytes());
             socket.getOutputStream().flush();
         } catch (IOException e) {

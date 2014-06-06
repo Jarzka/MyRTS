@@ -179,12 +179,22 @@ public class RTSProtocolManager {
     private boolean handleNetworkMessageNewConnectionInfo(final String message, final ListenSocketThread listenSocketThread) {
         if (message.startsWith("<NEW_CONNECTION_INFO|")) {
             if (listenSocketThread.getSocketType() == SocketType.PLAYER_SOCKET) {
+                // Update client info on the server
                 String messageSplitted[] = splitNetworkMessage(message);
                 listenSocketThread.getPlayerInfo().setName(messageSplitted[1]);
                 listenSocketThread.getPlayerInfo().setNetworkId(Integer.valueOf(messageSplitted[2]));
 
                 ServerThread serverThread = NetworkManager.getInstance().getServerThread();
                 if (serverThread != null) {
+                    // Update slot info
+                    StringBuilder contentPlayer = new StringBuilder();
+                    contentPlayer.append("PLAYER");
+                    contentPlayer.append("|");
+                    contentPlayer.append(listenSocketThread.getPlayerInfo().getName());
+                    contentPlayer.append("|");
+                    contentPlayer.append(listenSocketThread.getPlayerInfo().getNetworkId());
+                    serverThread.changeSlotContent(listenSocketThread.getPlayerInfo().getNumber(), contentPlayer.toString());
+
                     // Send slots states to the connected player
                     for (int i = 1; i <= NetworkManager.getInstance().SLOTS_MAX; i++) {
                         listenSocketThread.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(
@@ -193,9 +203,6 @@ public class RTSProtocolManager {
                     }
 
                     // Inform other players
-                    serverThread.sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(
-                            listenSocketThread.getPlayerInfo().getNumber(),
-                            serverThread.getSlots().get(listenSocketThread.getPlayerInfo().getNumber())));
                     serverThread.sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageChatMessage(
                             serverThread.getServerChatName(),
                             messageSplitted[1] + " " + "connected."));
@@ -253,14 +260,6 @@ public class RTSProtocolManager {
         buildMessage.append(String.valueOf(slotNumber));
         buildMessage.append("|");
         buildMessage.append(content);
-
-        if (content.equals("PLAYER")) {
-            buildMessage.append("|");
-            buildMessage.append(playerName);
-            buildMessage.append("|");
-            buildMessage.append(playerNetworkId);
-        }
-
         buildMessage.append(">");
 
         return buildMessage.toString();

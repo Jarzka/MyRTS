@@ -22,9 +22,11 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
     private String[] colorValues;
     private String[] teamValues;
 
+    private Table table;
     private List textAreaChatMessages;
     private TextField textFieldComposeMessage;
-    private Table table;
+    private TextButton buttonStart;
+    private TextButton buttonDisconnect;
 
     public MultiplayerLobbyWindow(Skin skin, MenuScreen menuScreen) {
         super("Multiplayer Lobby", skin, menuScreen);
@@ -104,9 +106,9 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
         textFieldComposeMessage = new TextField("", skin);
         table.add(textFieldComposeMessage).left().width(500).colspan(5);
 
-        TextButton buttonStart = new TextButton("Start", skin);
+        buttonStart = new TextButton("Start", skin);
         table.add(buttonStart).bottom().left().width((int) (buttonsWidth * 0.8)).height(buttonsHeight / 2).pad(buttonsPadding);
-        TextButton buttonDisconnect = new TextButton("Disconnect", skin);
+        buttonDisconnect = new TextButton("Disconnect", skin);
         buttonDisconnect.addListener(new ChangeListener() {
             @Override
             public void changed (ChangeEvent event, Actor actor) {
@@ -193,12 +195,80 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
     }
 
     public void update() {
-        updateLobbyWidgets();
+        updateLobbyWidgetsState();
         handleEventSendChatMessage();
         updateChatMessages();
     }
 
-    private void updateLobbyWidgets() {
+    private void updateLobbyWidgetsState() {
+        updateAdminState();
+        updatePlayerSlots();
+    }
+
+    private void updateAdminState() {
+        disableAllWidgets();
+
+        // In principle the player can only edit his own "slot row"
+        if (GameMain.getInstance().getPlayer().getNumber() >= 1
+            && GameMain.getInstance().getPlayer().getNumber() <= 8) {
+            ((SelectBox) table.findActor("player" +
+                    String.valueOf(GameMain.getInstance().getPlayer().getNumber()))).setDisabled(false);
+            table.findActor("player"
+                    + String.valueOf(GameMain.getInstance().getPlayer().getNumber())).setColor(1, 1, 1, 1);
+
+            ((SelectBox) table.findActor("faction" +
+                    String.valueOf(GameMain.getInstance().getPlayer().getNumber()))).setDisabled(false);
+            table.findActor("faction"
+                    + String.valueOf(GameMain.getInstance().getPlayer().getNumber())).setColor(1, 1, 1, 1);
+
+            ((SelectBox) table.findActor("color" +
+                    String.valueOf(GameMain.getInstance().getPlayer().getNumber()))).setDisabled(false);
+            table.findActor("color"
+                    + String.valueOf(GameMain.getInstance().getPlayer().getNumber())).setColor(1, 1, 1, 1);
+
+            ((SelectBox) table.findActor("team" +
+                    String.valueOf(GameMain.getInstance().getPlayer().getNumber()))).setDisabled(false);
+            table.findActor("team"
+                    + String.valueOf(GameMain.getInstance().getPlayer().getNumber())).setColor(1, 1, 1, 1);
+
+            ((CheckBox) table.findActor("ready" +
+                    String.valueOf(GameMain.getInstance().getPlayer().getNumber()))).setDisabled(false);
+            table.findActor("ready"
+                    + String.valueOf(GameMain.getInstance().getPlayer().getNumber())).setColor(1, 1, 1, 1);
+        }
+
+        // Enable widgets that only admin can use
+        if (GameMain.getInstance().getPlayer().isAdmin()) {
+            buttonStart.setDisabled(false);
+            buttonStart.setColor(1, 1, 1, 1f);
+        }
+    }
+
+    private void disableAllWidgets() {
+        float disabledWidgetAlpha = 0.3f;
+
+        buttonStart.setDisabled(true);
+        buttonStart.setColor(1, 1, 1, disabledWidgetAlpha);
+
+        for (int i = 1; i <= 8; i++) {
+            ((SelectBox) table.findActor("player" + String.valueOf(i))).setDisabled(true);
+            table.findActor("player" + String.valueOf(i)).setColor(1, 1, 1, disabledWidgetAlpha);
+
+            ((SelectBox) table.findActor("faction" + String.valueOf(i))).setDisabled(true);
+            table.findActor("faction" + String.valueOf(i)).setColor(1, 1, 1, disabledWidgetAlpha);
+
+            ((SelectBox) table.findActor("color" + String.valueOf(i))).setDisabled(true);
+            table.findActor("color" + String.valueOf(i)).setColor(1, 1, 1, disabledWidgetAlpha);
+
+            ((SelectBox) table.findActor("team" + String.valueOf(i))).setDisabled(true);
+            table.findActor("team" + String.valueOf(i)).setColor(1, 1, 1, disabledWidgetAlpha);
+
+            ((CheckBox) table.findActor("ready" + String.valueOf(i))).setDisabled(true);
+            table.findActor("ready" + String.valueOf(i)).setColor(1, 1, 1, disabledWidgetAlpha);
+        }
+    }
+
+    private void updatePlayerSlots() {
         // Only player 1-8 are shown in the UI.
         for (int i = 1; i <= 8; i++) {
             Actor actor = table.findActor("player" + String.valueOf(i));

@@ -93,8 +93,8 @@ public class ServerThread extends Thread {
         connectedClients.add(client);
 
         assignSlotToPlayer(client);
-        handleAdminRights(client);
         client.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageOfTheDay(motd));
+        handleAdminRights(client);
 
         client.start();
     }
@@ -109,7 +109,7 @@ public class ServerThread extends Thread {
                 contentPlayer.append(client.getPlayerInfo().getName());
                 contentPlayer.append("|");
                 contentPlayer.append(client.getPlayerInfo().getNetworkId());
-                slots.put(i, contentPlayer.toString());
+                changeSlotContent(i, contentPlayer.toString());
                 client.getPlayerInfo().setNumber(i);
                 sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(
                         i,
@@ -127,6 +127,7 @@ public class ServerThread extends Thread {
         if (connectedClients.size() == 1) {
             client.getPlayerInfo().setAdmin(true);
             client.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageGiveAdminRights());
+            client.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageChatMessage(serverChatName, "You are now admin."));
         }
     }
 
@@ -159,9 +160,9 @@ public class ServerThread extends Thread {
     }
 
     /** Changed the slot content and sends the info to the players. */
-    private void changeSlotContent(final int slotNumber, final String content) {
+    public void changeSlotContent(final int slotNumber, final String content) {
         if (slots.get(slotNumber) != null) {
-            slots.put(slotNumber, "OPEN");
+            slots.put(slotNumber, content);
             sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(
                     slotNumber,
                     slots.get(slotNumber)));
