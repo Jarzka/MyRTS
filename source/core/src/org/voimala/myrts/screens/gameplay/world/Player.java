@@ -1,6 +1,5 @@
 package org.voimala.myrts.screens.gameplay.world;
 
-import org.voimala.utility.MathHelper;
 import org.voimala.utility.RandomNumberGenerator;
 
 public class Player {
@@ -10,6 +9,7 @@ public class Player {
     private String name = "Unnamed Player";
     private int number = -1; /// Tells in which slot is player is playing
     private int team = -1;
+    private boolean isAdmin = false;
 
     public Player() {
 
@@ -58,5 +58,13 @@ public class Player {
 
     public void setNetworkId(Integer networkId) {
         this.networkId = networkId;
+    }
+
+    public void setAdmin(boolean admin) {
+        this.isAdmin = admin;
+    }
+
+    public boolean isAdmin() {
+        return isAdmin;
     }
 }

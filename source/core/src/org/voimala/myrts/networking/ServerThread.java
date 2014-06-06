@@ -93,6 +93,7 @@ public class ServerThread extends Thread {
         connectedClients.add(client);
 
         assignSlotToPlayer(client);
+        handleAdminRights(client);
         client.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageOfTheDay(motd));
 
         client.start();
@@ -110,13 +111,23 @@ public class ServerThread extends Thread {
                 contentPlayer.append(client.getPlayerInfo().getNetworkId());
                 slots.put(i, contentPlayer.toString());
                 client.getPlayerInfo().setNumber(i);
-                sendUpdatedSlotInfo();
+                sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(
+                        i,
+                        slots.get(i)));
                 break;
             }
         }
 
         // Free slot not found?
         // TODO
+    }
+
+    /** Gives admin rights to the client if he is the first player in the game */
+    private void handleAdminRights(ListenSocketThread client) {
+        if (connectedClients.size() == 1) {
+            client.getPlayerInfo().setAdmin(true);
+            client.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageGiveAdminRights());
+        }
     }
 
     public void sendMessageToAllClients(final String message) {
@@ -143,29 +154,17 @@ public class ServerThread extends Thread {
         sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageChatMessage(serverChatName,
                 listenSocketThread.getPlayerInfo().getName() + " " + "disconnected."));
 
-        if (slots.get(listenSocketThread.getPlayerInfo().getNumber()) != null) {
-            slots.put(listenSocketThread.getPlayerInfo().getNumber(), "OPEN");
-        }
-
+        changeSlotContent(listenSocketThread.getPlayerInfo().getNumber(), "OPEN");
         connectedClients.remove(listenSocketThread);
-        sendUpdatedSlotInfo();
     }
 
-    public void sendUpdatedSlotInfo() {
-        for (int i = 1; i <= NetworkManager.getInstance().SLOTS_MAX; i++) {
-            if (slots.get(i).equals("OPEN")) {
-                sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(i, slots.get(i)));
-            } if (slots.get(i).equals("CLOSED")) {
-                sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(i, slots.get(i)));
-            } if (slots.get(i).startsWith("PLAYER|")) {
-                ListenSocketThread client = findPlayerWhoPlaysInSlot(i);
-                sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(i,
-                        "PLAYER",
-                        client.getPlayerInfo().getName(),
-                        client.getPlayerInfo().getNetworkId()));
-            } if (slots.get(i).equals("AI_TEST")) {
-                sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(i, slots.get(i)));
-            }
+    /** Changed the slot content and sends the info to the players. */
+    private void changeSlotContent(final int slotNumber, final String content) {
+        if (slots.get(slotNumber) != null) {
+            slots.put(slotNumber, "OPEN");
+            sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(
+                    slotNumber,
+                    slots.get(slotNumber)));
         }
     }
 
@@ -182,5 +181,9 @@ public class ServerThread extends Thread {
 
     public String getServerChatName() {
         return serverChatName;
+    }
+
+    public HashMap<Integer, String> getSlots() {
+        return slots;
     }
 }

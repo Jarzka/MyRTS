@@ -18,7 +18,7 @@ public class DesktopLauncher {
          */
         config.backgroundFPS = 120;
         config.foregroundFPS = 120;
-        config.vSyncEnabled = false;
+        config.vSyncEnabled = false; // Affects game world update rate
 
 		new LwjglApplication(GameMain.getInstance(), config);
 	}

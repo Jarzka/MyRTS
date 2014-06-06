@@ -32,18 +32,23 @@ public class RTSProtocolManager {
     }
 
     public boolean handleNetworkMessage(final String message, final ListenSocketThread listenSocketThread) {
-        // TODO Try-catch
-        if (handleNetworkMessageMotd(message)
-                || handleNetworkMessageMoveUnit(message, listenSocketThread.getSocketType())
-                || handleNetworkMessageChat(message, listenSocketThread.getSocketType())
-                || handleNetworkMessagePing(message, listenSocketThread.getSocketType())
-                || handleNetworkMessagePong(message, listenSocketThread.getSocketType())
-                || handleNetworkMessageSlot(message, listenSocketThread.getSocketType())
-                || handleNetworkMessageNewConnectionInfo(message, listenSocketThread)) {
-            Gdx.app.debug(TAG, "Message handled successfully.");
-            return true;
-        } else {
-            Gdx.app.debug(TAG, "WARNING: Unable to handle message: " + message);
+        try {
+            if (handleNetworkMessageMotd(message)
+                    || handleNetworkMessageMoveUnit(message, listenSocketThread.getSocketType())
+                    || handleNetworkMessageChat(message, listenSocketThread.getSocketType())
+                    || handleNetworkMessagePing(message, listenSocketThread.getSocketType())
+                    || handleNetworkMessagePong(message, listenSocketThread.getSocketType())
+                    || handleNetworkMessageSlot(message, listenSocketThread.getSocketType())
+                    || handleNetworkMessageNewConnectionInfo(message, listenSocketThread)
+                    || handleNetworkMessageAdminRights(message, listenSocketThread.getSocketType())) {
+                Gdx.app.debug(TAG, "Message handled successfully.");
+                return true;
+            } else {
+                Gdx.app.debug(TAG, "WARNING: Unable to handle message: " + message);
+                return false;
+            }
+        } catch (Exception e) {
+            Gdx.app.debug(TAG, "WARNING: Network message caused an exception: " + e.getMessage());
             return false;
         }
     }
@@ -153,6 +158,24 @@ public class RTSProtocolManager {
         return false;
     }
 
+    private boolean handleNetworkMessageAdminRights(final String message, final SocketType source) {
+        if (message.startsWith("<ADMIN_RIGHTS|")) {
+            if (source == SocketType.SERVER_SOCKET) {
+                String messageSplitted[] = splitNetworkMessage(message);
+                if (messageSplitted[1].equals("GIVE")) {
+                    Gdx.app.debug(TAG, "Admin rights have been given.");
+                    GameMain.getInstance().getPlayer().setAdmin(true);
+                } else if (messageSplitted[1].equals("REMOVE")) {
+                    GameMain.getInstance().getPlayer().setAdmin(false);
+                    Gdx.app.debug(TAG, "Admin rights have been removed.");
+                }
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private boolean handleNetworkMessageNewConnectionInfo(final String message, final ListenSocketThread listenSocketThread) {
         if (message.startsWith("<NEW_CONNECTION_INFO|")) {
             if (listenSocketThread.getSocketType() == SocketType.PLAYER_SOCKET) {
@@ -162,7 +185,17 @@ public class RTSProtocolManager {
 
                 ServerThread serverThread = NetworkManager.getInstance().getServerThread();
                 if (serverThread != null) {
-                    serverThread.sendUpdatedSlotInfo();
+                    // Send slots states to the connected player
+                    for (int i = 1; i <= NetworkManager.getInstance().SLOTS_MAX; i++) {
+                        listenSocketThread.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(
+                                i,
+                                serverThread.getSlots().get(i)));
+                    }
+
+                    // Inform other players
+                    serverThread.sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(
+                            listenSocketThread.getPlayerInfo().getNumber(),
+                            serverThread.getSlots().get(listenSocketThread.getPlayerInfo().getNumber())));
                     serverThread.sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageChatMessage(
                             serverThread.getServerChatName(),
                             messageSplitted[1] + " " + "connected."));
@@ -196,6 +229,14 @@ public class RTSProtocolManager {
 
     public String createNetworkMessageOfTheDay(final String motd) {
         return "<MOTD|" + motd + ">";
+    }
+
+    public String createNetworkMessageGiveAdminRights() {
+        return "<ADMIN_RIGHTS|GIVE>";
+    }
+
+    public String createNetworkMessageRemoveAdminRights() {
+        return "<ADMIN_RIGHTS|REMOVE>";
     }
 
     public String createNetworkMessageSlotContent(final int slotNumber, final String content) {
