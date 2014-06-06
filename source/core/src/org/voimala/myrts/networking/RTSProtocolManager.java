@@ -40,7 +40,9 @@ public class RTSProtocolManager {
                     || handleNetworkMessagePong(message, listenSocketThread.getSocketType())
                     || handleNetworkMessageSlot(message, listenSocketThread.getSocketType())
                     || handleNetworkMessageNewConnectionInfo(message, listenSocketThread)
-                    || handleNetworkMessageAdminRights(message, listenSocketThread.getSocketType())) {
+                    || handleNetworkMessageAdminRights(message, listenSocketThread.getSocketType())
+                    || handleNetworkMessageAdminStart(message, listenSocketThread)
+                    || handleNetworkMessageStartGame(message, listenSocketThread.getSocketType())) {
                 Gdx.app.debug(TAG, "Message handled successfully.");
                 return true;
             } else {
@@ -176,6 +178,40 @@ public class RTSProtocolManager {
         return false;
     }
 
+    private boolean handleNetworkMessageStartGame(final String message, final SocketType source) {
+        if (message.equals("<COMMAND_AND_CONQUER>")) {
+            if (source == SocketType.SERVER_SOCKET) {
+                // TODO Start game
+                Gdx.app.debug(TAG, "Starting game...");
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private boolean handleNetworkMessageAdminStart(final String message, final ListenSocketThread client) {
+        if (message.equals("<ADMIN|START>")) {
+            if (client.getSocketType() == SocketType.PLAYER_SOCKET) {
+                if (client.getPlayerInfo().isAdmin()) {
+                    String messageSplitted[] = splitNetworkMessage(message);
+                    if (messageSplitted[1].equals("START")) {
+                        Gdx.app.debug(TAG, "Informing players that they can start the game.");
+                        ServerThread serverThread = NetworkManager.getInstance().getServerThread();
+                        if (serverThread != null) {
+                            serverThread.sendMessageToAllClients(createNetworkMessageStartGame());
+                        }
+                    }
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
     private boolean handleNetworkMessageNewConnectionInfo(final String message, final ListenSocketThread listenSocketThread) {
         if (message.startsWith("<NEW_CONNECTION_INFO|")) {
             if (listenSocketThread.getSocketType() == SocketType.PLAYER_SOCKET) {
@@ -197,13 +233,13 @@ public class RTSProtocolManager {
 
                     // Send slots states to the connected player
                     for (int i = 1; i <= NetworkManager.getInstance().SLOTS_MAX; i++) {
-                        listenSocketThread.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageSlotContent(
+                        listenSocketThread.sendMessage(createNetworkMessageSlotContent(
                                 i,
                                 serverThread.getSlots().get(i)));
                     }
 
                     // Inform other players
-                    serverThread.sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageChatMessage(
+                    serverThread.sendMessageToAllClients(createNetworkMessageChatMessage(
                             serverThread.getServerChatName(),
                             messageSplitted[1] + " " + "connected."));
 
@@ -242,8 +278,16 @@ public class RTSProtocolManager {
         return "<ADMIN_RIGHTS|GIVE>";
     }
 
+    public String createNetworkMessageAdminStart() {
+        return "<ADMIN|START>";
+    }
+
     public String createNetworkMessageRemoveAdminRights() {
         return "<ADMIN_RIGHTS|REMOVE>";
+    }
+
+    public String createNetworkMessageStartGame() {
+        return "<COMMAND_AND_CONQUER>";
     }
 
     public String createNetworkMessageSlotContent(final int slotNumber, final String content) {

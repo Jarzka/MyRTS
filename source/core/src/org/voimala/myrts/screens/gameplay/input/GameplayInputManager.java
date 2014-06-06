@@ -178,7 +178,7 @@ public class GameplayInputManager {
             String message = RTSProtocolManager.getInstance().createNetworkMessageMoveUnit(
                     unit.getObjectId(),
                     mouseLocationInWorld);
-            ListenSocketThread listenSocketThread = NetworkManager.getInstance().getListenSocketThread();
+            ListenSocketThread listenSocketThread = NetworkManager.getInstance().getClientThread();
             if (listenSocketThread != null) {
                 listenSocketThread.sendMessage(message);
             }

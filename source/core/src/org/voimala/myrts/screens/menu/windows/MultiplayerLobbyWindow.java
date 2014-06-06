@@ -107,6 +107,12 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
         table.add(textFieldComposeMessage).left().width(500).colspan(5);
 
         buttonStart = new TextButton("Start", skin);
+        buttonStart.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                onStartClicked();
+            }
+        });
         table.add(buttonStart).bottom().left().width((int) (buttonsWidth * 0.8)).height(buttonsHeight / 2).pad(buttonsPadding);
         buttonDisconnect = new TextButton("Disconnect", skin);
         buttonDisconnect.addListener(new ChangeListener() {
@@ -190,6 +196,11 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
         NetworkManager.getInstance().disconnectAll();
     }
 
+    private void onStartClicked() {
+        NetworkManager.getInstance().getClientThread().sendMessage(
+                RTSProtocolManager.getInstance().createNetworkMessageAdminStart());
+    }
+
     private void setDefaultStyle() {
         setColor(1, 1, 1, 0.8f);
     }
@@ -206,7 +217,7 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
     }
 
     private void updateAdminState() {
-        disableAllWidgets();
+        disableAllWidgetsExceptRow(GameMain.getInstance().getPlayer().getNumber());
 
         // In principle the player can only edit his own "slot row"
         if (GameMain.getInstance().getPlayer().getNumber() >= 1
@@ -244,13 +255,17 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
         }
     }
 
-    private void disableAllWidgets() {
+    private void disableAllWidgetsExceptRow(final int row) {
         float disabledWidgetAlpha = 0.3f;
 
         buttonStart.setDisabled(true);
         buttonStart.setColor(1, 1, 1, disabledWidgetAlpha);
 
         for (int i = 1; i <= 8; i++) {
+            if (i == row) {
+                continue;
+            }
+
             ((SelectBox) table.findActor("player" + String.valueOf(i))).setDisabled(true);
             table.findActor("player" + String.valueOf(i)).setColor(1, 1, 1, disabledWidgetAlpha);
 
@@ -266,6 +281,10 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
             ((CheckBox) table.findActor("ready" + String.valueOf(i))).setDisabled(true);
             table.findActor("ready" + String.valueOf(i)).setColor(1, 1, 1, disabledWidgetAlpha);
         }
+    }
+
+    private void disableAllWidgets() {
+        disableAllWidgetsExceptRow(-1);
     }
 
     private void updatePlayerSlots() {
@@ -303,9 +322,10 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
     }
 
     private void sendChatMessage() {
-        NetworkManager.getInstance().getListenSocketThread().sendMessage(
+        NetworkManager.getInstance().getClientThread().sendMessage(
                 RTSProtocolManager.getInstance().createNetworkMessageChatMessage(
-                        GameMain.getInstance().getPlayer().getName(), textFieldComposeMessage.getText()));
+                        GameMain.getInstance().getPlayer().getName(), textFieldComposeMessage.getText())
+        );
         textFieldComposeMessage.setText("");
     }
 

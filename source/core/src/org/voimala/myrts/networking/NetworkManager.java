@@ -44,7 +44,7 @@ public class NetworkManager {
     }
 
     /** @return Returns null if thread is not in use. */
-    public ListenSocketThread getListenSocketThread() {
+    public ListenSocketThread getClientThread() {
         return listenSocketThread;
     }
 
