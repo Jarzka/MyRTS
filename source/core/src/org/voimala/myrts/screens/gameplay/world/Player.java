@@ -6,7 +6,7 @@ public class Player {
 
     /// Every player should have an unique network id. Get number between 0 and Integer max value.
     private int networkId = RandomNumberGenerator.random(0, (int) (Math.pow(2, 31) - 2));
-    private String name = "Unnamed Player";
+    private String name = "Player" + RandomNumberGenerator.random(0, 10000);
     private int number = -1; /// Tells in which slot is player is playing
     private int team = -1;
     private boolean isAdmin = false;

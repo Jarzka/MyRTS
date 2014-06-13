@@ -75,7 +75,9 @@ public class JoinByIPWindow extends AbstractMenuWindow {
     }
 
     private void onJoinClicked() {
-        NetworkManager.getInstance().joinGame(textFieldIp.getText(), Integer.valueOf(textFieldPort.getText()));
+        NetworkManager.getInstance().setJoinIp(textFieldIp.getText());
+        NetworkManager.getInstance().setJoinPort(Integer.valueOf(textFieldPort.getText()));
+        NetworkManager.getInstance().joinGame();
     }
 
     private void finalizeWindow() {

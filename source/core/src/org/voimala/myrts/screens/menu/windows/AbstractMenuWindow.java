@@ -15,4 +15,5 @@ public abstract class AbstractMenuWindow extends Window {
     }
 
     public abstract WindowName getWindowName();
+
 }

@@ -111,7 +111,9 @@ public class MultiplayerWindow extends AbstractMenuWindow {
     }
 
     private void connectToLocalHost() {
-        NetworkManager.getInstance().joinGame("localhost", NetworkManager.getInstance().DEFAULT_PORT);
+        NetworkManager.getInstance().setJoinIp("localhost");
+        NetworkManager.getInstance().setJoinPort(NetworkManager.getInstance().DEFAULT_PORT);
+        NetworkManager.getInstance().joinGame();
     }
 
     private void onBackClicked() {

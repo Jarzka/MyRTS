@@ -10,6 +10,8 @@ public class NetworkManager {
     public final int SLOTS_MAX = 30;
 
     private boolean isHost = false;
+    private int joinPort;
+    private String joinIp;
 
     private static NetworkManager instanceOfThis;
 
@@ -23,9 +25,9 @@ public class NetworkManager {
         return instanceOfThis;
     }
 
-    public void joinGame(final String ip, final int port) {
+    public void joinGame() {
         if (listenSocketThread == null) {
-            listenSocketThread = new ListenSocketThread(ip, port);
+            listenSocketThread = new ListenSocketThread(joinIp, joinPort);
             listenSocketThread.start();
         }
     }
@@ -87,6 +89,14 @@ public class NetworkManager {
         }
 
         return listenSocketThread.getConnectionState();
+    }
+
+    public void setJoinPort(final int port) {
+        this.joinPort = port;
+    }
+
+    public void setJoinIp(final String ip) {
+        this.joinIp = ip;
     }
 
 }

@@ -2,14 +2,13 @@ package org.voimala.myrts.screens.menu.windows;
 
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import org.voimala.myrts.app.GameMain;
-import org.voimala.myrts.app.GameplayStartMethod;
+import org.voimala.myrts.screens.gameplay.world.GameMode;
 import org.voimala.myrts.screens.menu.MenuScreen;
 
 public class MainMenuWindow extends AbstractMenuWindow {
@@ -104,7 +103,7 @@ public class MainMenuWindow extends AbstractMenuWindow {
     public void onSingleplayerButtonClicked() {
         /* TODO Normally we would show the "Singleplayer window", but it will be skipped
          * as long as the main menu is still in development. */
-        GameMain.getInstance().startGame(GameplayStartMethod.SINGLEPLAYER);
+        GameMain.getInstance().setNextScreenToGameplay();
     }
 
     public void onMultiplayerButtonClicked() {

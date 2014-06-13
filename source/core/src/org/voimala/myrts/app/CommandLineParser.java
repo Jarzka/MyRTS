@@ -33,9 +33,9 @@ public class CommandLineParser {
         /* These command line arguments are not used atm.
         if (commandLineArguments.get("-multiplayer") != null) {
             if (commandLineArguments.get("-multiplayer").equals("host")) {
-                gameMain.startGame(GameplayStartMethod.MULTIPLAYER_HOST);
+                gameMain.setNextScreenToGameplay(GameplayStartMethod.MULTIPLAYER);
             } else if (commandLineArguments.get("-multiplayer").equals("join")) {
-                gameMain.startGame(GameplayStartMethod.MULTIPLAYER_JOIN);
+                gameMain.setNextScreenToGameplay(GameplayStartMethod.MULTIPLAYER_JOIN);
             }
         }
         */

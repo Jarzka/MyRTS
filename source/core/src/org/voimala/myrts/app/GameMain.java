@@ -3,8 +3,11 @@ package org.voimala.myrts.app;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import org.voimala.myrts.graphics.SpriteContainer;
+import org.voimala.myrts.networking.ConnectionState;
 import org.voimala.myrts.networking.NetworkManager;
+import org.voimala.myrts.screens.ScreenName;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
 import org.voimala.myrts.screens.gameplay.world.Player;
@@ -18,12 +21,11 @@ public class GameMain extends Game {
 
     private boolean paused = false;
 
-    private NetworkManager networkManager = null;
-    private CommandLineParser commandLineParser = null;
-
     private Player player = new Player();
 
     private static GameMain instanceOfThis;
+
+    private ScreenName nextScreen = null; /* If not null, change the screen to this. */
 
     private GameMain() {}
 
@@ -49,6 +51,26 @@ public class GameMain extends Game {
         if (!paused) {
             getScreen().render(Gdx.graphics.getDeltaTime());
         }
+
+        checkNextScreen();
+    }
+
+    private void checkNextScreen() {
+        if (nextScreen == ScreenName.GAMEPLAY) {
+            startGame();
+            nextScreen = null;
+        }
+    }
+
+    private void startGame() {
+        GameplayScreen gameplayScreen = new GameplayScreen();
+        if (NetworkManager.getInstance().getClientConnectionState() == ConnectionState.CONNECTED) {
+            gameplayScreen.setGameMode(GameMode.MULTIPLAYER);
+        } else {
+            gameplayScreen.setGameMode(GameMode.SINGLEPLAYER);
+        }
+
+        setScreen(gameplayScreen);
     }
 
 
@@ -59,7 +81,7 @@ public class GameMain extends Game {
 
     @Override
     public void pause() {
-        /* TODO This is called on the desktop when the windows is minimized.
+        /* TODO This is called on the desktop when the window is minimized.
          * This is not the desired case. */
         //paused = true;
     }
@@ -76,27 +98,8 @@ public class GameMain extends Game {
         getScreen().dispose();
     }
 
-    public void startGame(GameplayStartMethod gameplayStartMethod) {
-        if (gameplayStartMethod == GameplayStartMethod.SINGLEPLAYER) {
-            GameplayScreen gameplayScreen = new GameplayScreen();
-            gameplayScreen.setGameMode(GameMode.SINGLEPLAYER);
-            setScreen(gameplayScreen);
-        } else if (gameplayStartMethod == GameplayStartMethod.MULTIPLAYER_HOST) {
-            NetworkManager.getInstance().hostGame(Integer.valueOf(CommandLineParser.getInstance().getCommandLineArguments().get("-port")));
-            NetworkManager.getInstance().joinGame(CommandLineParser.getInstance().getCommandLineArguments().get("-ip"),
-                    Integer.valueOf(CommandLineParser.getInstance().getCommandLineArguments().get("-port")));
-
-            GameplayScreen gameplayScreen = new GameplayScreen();
-            gameplayScreen.setGameMode(GameMode.MULTIPLAYER);
-            setScreen(gameplayScreen);
-        } else if (gameplayStartMethod == GameplayStartMethod.MULTIPLAYER_JOIN) {
-            NetworkManager.getInstance().joinGame(CommandLineParser.getInstance().getCommandLineArguments().get("-ip"),
-                    Integer.valueOf(CommandLineParser.getInstance().getCommandLineArguments().get("-port")));
-
-            GameplayScreen gameplayScreen = new GameplayScreen();
-            gameplayScreen.setGameMode(GameMode.MULTIPLAYER);
-            setScreen(gameplayScreen);
-        }
+    public void setNextScreenToGameplay() {
+        nextScreen = ScreenName.GAMEPLAY;
     }
 
     public Player getPlayer() {
