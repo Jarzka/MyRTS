@@ -10,5 +10,5 @@ public abstract class AbstractGameplayState {
         this.ownerGameplay = ownerGameplay;
     }
 
-    public abstract void update();
+    public abstract void update(final float deltaTime);
 }

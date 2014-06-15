@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputManager;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputProcessor;
+import org.voimala.myrts.screens.gameplay.states.AbstractGameplayState;
 import org.voimala.myrts.screens.gameplay.units.Unit;
 import org.voimala.myrts.screens.gameplay.units.UnitContainer;
 import org.voimala.myrts.screens.gameplay.units.infantry.M4Unit;
@@ -42,7 +43,7 @@ public class WorldController {
     private void initialize() {
         initializeCamera();
         initializeInputProcessor();
-        initializeMap();
+        initializeMap(); // TODO Move to GameplayInitialize state or screen
     }
 
     private void initializeCamera() {
@@ -93,16 +94,10 @@ public class WorldController {
         return unitContainer;
     }
 
-    /* TODO Uncomment when updateInputManager has been moved to scene class
-    public void update(float deltaTime) {
-        updateWorld(deltaTime);
-    }*/
-
     public void updateWorld(final float deltaTime) {
         updateUnits(deltaTime);
     }
 
-    // TODO Move to scene class?
     public void updateInputManager(final float deltaTime) {
         gameplayInputManager.update();
     }

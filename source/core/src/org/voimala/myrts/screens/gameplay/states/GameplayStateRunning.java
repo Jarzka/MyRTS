@@ -9,8 +9,10 @@ public class GameplayStateRunning extends AbstractGameplayState {
     }
 
     @Override
-    public void update() {
-
+    public void update(float deltaTime) {
+        ownerGameplay.updateInput(deltaTime);
+        ownerGameplay.updateWorld(deltaTime);
+        ownerGameplay.renderWorld();
     }
 
 }

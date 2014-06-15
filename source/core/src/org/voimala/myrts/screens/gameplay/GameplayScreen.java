@@ -6,7 +6,7 @@ import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.AbstractGameScreen;
 import org.voimala.myrts.screens.gameplay.states.AbstractGameplayState;
-import org.voimala.myrts.screens.gameplay.states.GameplayStateInitialize;
+import org.voimala.myrts.screens.gameplay.states.GameplayStateRunning;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
 import org.voimala.myrts.screens.gameplay.world.RenderMode;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
@@ -17,7 +17,7 @@ public class GameplayScreen extends AbstractGameScreen {
     private WorldController worldController;
     private WorldRenderer worldRenderer;
 
-    private AbstractGameplayState currentAbstractGameplayState = new GameplayStateInitialize(this);
+    private AbstractGameplayState currentState = new GameplayStateRunning(this);
 
     private GameMode gameMode = GameMode.SINGLEPLAYER;
     private long lastWorldUpdateTimestamp = 0;
@@ -40,14 +40,12 @@ public class GameplayScreen extends AbstractGameScreen {
 
     @Override
     public void render(float deltaTime) {
-        deltaTime = fixDeltaTimeMinAndMaxValues(deltaTime);
-
-        updateInput(deltaTime);
-        updateWorld(deltaTime);
-        renderWorld();
+        currentState.update(deltaTime);
     }
 
     private float fixDeltaTimeMinAndMaxValues(float deltaTime) {
+        deltaTime = fixDeltaTimeMinAndMaxValues(deltaTime);
+
         if (deltaTime > 0.06) {
             deltaTime = (float) 0.06;
         }
@@ -55,11 +53,11 @@ public class GameplayScreen extends AbstractGameScreen {
         return deltaTime;
     }
 
-    private void updateInput(final float deltaTime) {
+    public void updateInput(final float deltaTime) {
         worldController.updateInputManager(deltaTime);
     }
 
-    private void updateWorld(float deltaTime) {
+    public void updateWorld(float deltaTime) {
         if (gameMode == GameMode.SINGLEPLAYER) {
             updateWorldUsingVariablePhysics(deltaTime);
         } else if (gameMode == GameMode.MULTIPLAYER) {
@@ -84,7 +82,7 @@ public class GameplayScreen extends AbstractGameScreen {
         }
     }
 
-    private void renderWorld() {
+    public void renderWorld() {
         renderTick++;
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -141,5 +139,9 @@ public class GameplayScreen extends AbstractGameScreen {
 
     public GameMode getGameMode() {
         return gameMode;
+    }
+
+    public void setState(final AbstractGameplayState newState) {
+        currentState = newState;
     }
 }

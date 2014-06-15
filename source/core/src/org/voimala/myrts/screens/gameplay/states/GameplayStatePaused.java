@@ -9,7 +9,7 @@ public class GameplayStatePaused extends AbstractGameplayState {
     }
 
     @Override
-    public void update() {
+    public void update(float deltaTime) {
 
     }
 
