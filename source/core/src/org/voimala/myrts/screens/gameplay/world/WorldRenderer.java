@@ -109,37 +109,23 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnits(final RenderMode renderMode) {
-        if (renderMode == RenderMode.GAME_STATE) {
-            renderUnits();
-        } else if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
-            renderUnitsWithPhysicsPrediction(); // TODO Too much code duplication
-        }
-    }
-
-    private void renderUnits() {
-        for (Unit unit : worldController.getUnitContainer().getUnits()) {
-            batch.begin();
-            Sprite sprite = SpriteContainer.getInstance().getSprite("m4-stopped-0");
-            sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2 - 70);
-            sprite.setPosition(unit.getX() - sprite.getWidth() / 2, unit.getY() - sprite.getWidth() / 2 + 70);
-            sprite.setRotation(unit.getAngle() - 90);
-            sprite.draw(batch);
-            batch.end();
-        }
-    }
-
-    private void renderUnitsWithPhysicsPrediction() {
         for (Unit unit : worldController.getUnitContainer().getUnits()) {
             try {
-                Unit unitClone = unit.clone();
-                float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
-                unitClone.update(deltaTime);
+                Unit unitToRender = unit;
+
+                if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
+                    Unit unitClone = unit.clone();
+                    float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
+                    unitClone.update(deltaTime);
+                    unitToRender = unitClone;
+                }
+
 
                 batch.begin();
                 Sprite sprite = SpriteContainer.getInstance().getSprite("m4-stopped-0");
                 sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2 - 70);
-                sprite.setPosition(unitClone.getX() - sprite.getWidth() / 2, unitClone.getY() - sprite.getWidth() / 2 + 70);
-                sprite.setRotation(unitClone.getAngle() - 90);
+                sprite.setPosition(unitToRender.getX() - sprite.getWidth() / 2, unitToRender.getY() - sprite.getWidth() / 2 + 70);
+                sprite.setRotation(unitToRender.getAngle() - 90);
                 sprite.draw(batch);
                 batch.end();
             } catch (CloneNotSupportedException e) {
@@ -149,49 +135,24 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnitEnergyBars(final RenderMode renderMode) {
-        if (renderMode == RenderMode.GAME_STATE) {
-            renderUnitEnergyBars();
-        } else if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
-            renderUnitEnergyBarsWithPhysicsPrediction();
-        }
-    }
-
-    private void renderUnitEnergyBars() {
-        for (Unit unit : worldController.getUnitContainer().getUnits()) {
-            if (unit.isSelected()) {
-                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                shapeRenderer.setColor(Color.WHITE);
-                Vector3 unitTopLeftWorldCoordinates = new Vector3(unit.getX() - unit.getWidth() / 2,
-                        unit.getY() + unit.getHeight() / 2, 0);
-                Vector3 unitTopRightWorldCoordinates = new Vector3(unit.getX() + unit.getWidth() / 2,
-                        unit.getY() + unit.getHeight() / 2, 0);
-
-                Vector3 unitTopLeftScreenCoordinates = worldController.getWorldCamera().project(unitTopLeftWorldCoordinates);
-                Vector3 unitTopRightScreenCoordinates = worldController.getWorldCamera().project(unitTopRightWorldCoordinates);
-
-                shapeRenderer.rect(unitTopLeftScreenCoordinates.x,
-                        unitTopLeftScreenCoordinates.y,
-                        unitTopRightScreenCoordinates.x - unitTopLeftScreenCoordinates.x,
-                        10);
-                shapeRenderer.end();
-            }
-        }
-    }
-
-    private void renderUnitEnergyBarsWithPhysicsPrediction() {
         for (Unit unit : worldController.getUnitContainer().getUnits()) {
             if (unit.isSelected()) {
                 try {
-                    Unit unitClone = unit.clone();
-                    float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
-                    unitClone.update(deltaTime);
+                    Unit unitToRender = unit;
+
+                    if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
+                        Unit unitClone = unit.clone();
+                        float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
+                        unitClone.update(deltaTime);
+                        unitToRender = unitClone;
+                    }
 
                     shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                     shapeRenderer.setColor(Color.WHITE);
-                    Vector3 unitTopLeftWorldCoordinates = new Vector3(unitClone.getX() - unitClone.getWidth() / 2,
-                            unitClone.getY() + unitClone.getHeight() / 2, 0);
-                    Vector3 unitTopRightWorldCoordinates = new Vector3(unitClone.getX() + unitClone.getWidth() / 2,
-                            unitClone.getY() + unitClone.getHeight() / 2, 0);
+                    Vector3 unitTopLeftWorldCoordinates = new Vector3(unitToRender.getX() - unitToRender.getWidth() / 2,
+                            unitToRender.getY() + unitToRender.getHeight() / 2, 0);
+                    Vector3 unitTopRightWorldCoordinates = new Vector3(unitToRender.getX() + unitToRender.getWidth() / 2,
+                            unitToRender.getY() + unitToRender.getHeight() / 2, 0);
 
                     Vector3 unitTopLeftScreenCoordinates = worldController.getWorldCamera().project(unitTopLeftWorldCoordinates);
                     Vector3 unitTopRightScreenCoordinates = worldController.getWorldCamera().project(unitTopRightWorldCoordinates);
@@ -204,8 +165,6 @@ public class WorldRenderer implements Disposable {
                 } catch (CloneNotSupportedException e) {
                     Gdx.app.debug(TAG, "ERROR: " + e.getMessage());
                 }
-
-
             }
         }
     }
