@@ -38,15 +38,8 @@ public class WorldRenderer implements Disposable {
     }
 
     private void initializeSprites() {
-        initializeCursorSprites();
         initializeGroundSprites();
         initializeUnitSprites();
-    }
-
-    private void initializeCursorSprites() {
-        Texture texture = new Texture("graphics/pointers/pointer-basic-0.png");
-        Sprite sprite = new Sprite(texture);
-        SpriteContainer.getInstance().addSprite("pointer-basic-0", sprite);
     }
 
     private void initializeGroundSprites() {
@@ -76,7 +69,6 @@ public class WorldRenderer implements Disposable {
         batch = new SpriteBatch();
         hudBatch = new SpriteBatch();
     }
-
 
     public void render(final RenderMode renderMode) {
         /* This game uses the standard mathematic circle where 0 degrees point to right,

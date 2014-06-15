@@ -1,11 +1,13 @@
 package org.voimala.myrts.graphics;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 import java.util.HashMap;
 
 public class SpriteContainer {
 
+    private static final String TAG = SpriteContainer.class.getName();
     private static SpriteContainer instanceOfThis = null;
     private HashMap<String, Sprite> sprites = new HashMap<String, Sprite>();
 
@@ -31,5 +33,7 @@ public class SpriteContainer {
         for (Sprite sprite : sprites.values()) {
             sprite.getTexture().dispose();
         }
+
+        Gdx.app.debug(TAG, "Sprites disposed.");
     }
 }

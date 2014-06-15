@@ -3,6 +3,7 @@ package org.voimala.myrts.screens.gameplay;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import org.voimala.myrts.app.GameMain;
+import org.voimala.myrts.graphics.SpriteContainer;
 import org.voimala.myrts.networking.ConnectionState;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
@@ -140,7 +141,10 @@ public class GameplayScreen extends AbstractGameScreen {
 
     @Override
     public void dispose() {
+        // TODO Needs to be tested
         worldRenderer.dispose();
+        SpriteContainer.getInstance().freeResources();
+        NetworkManager.getInstance().disconnectAll();
     }
 
     public long getLastWorldUpdateTimestamp() {

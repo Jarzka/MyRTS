@@ -71,7 +71,7 @@ public class LoadGameScreen extends AbstractGameScreen {
         if (loadGameThread != null) {
             hudBatch.begin();
             defaultFont.draw(hudBatch,
-                    loadGameThread.getLoadState(),
+                    loadGameThread.getLoadState() + "(" + loadGameThread.getLoadProcess() + "%)",
                     10,
                     Gdx.graphics.getHeight() - 10);
             hudBatch.end();
