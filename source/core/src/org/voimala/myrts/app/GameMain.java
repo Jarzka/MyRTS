@@ -67,6 +67,8 @@ public class GameMain extends Game {
         if (NetworkManager.getInstance().getClientConnectionState() == ConnectionState.CONNECTED) {
             gameplayScreen.setGameMode(GameMode.MULTIPLAYER);
         } else {
+            player.setNumber(1);
+            player.setTeam(1);
             gameplayScreen.setGameMode(GameMode.SINGLEPLAYER);
         }
 
