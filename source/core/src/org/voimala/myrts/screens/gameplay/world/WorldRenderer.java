@@ -25,7 +25,7 @@ public class WorldRenderer implements Disposable {
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
     private long lastRenderTimestamp = 0;
 
-    private int chatMessagesXScreen = 20;
+    private int chatMessagesXScreen = 80;
     private int chatMessagesYScreen = Gdx.graphics.getHeight() - 150;
 
     private BitmapFont defaultFont;

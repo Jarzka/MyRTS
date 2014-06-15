@@ -77,7 +77,10 @@ public class GameplayInputManager {
 
     private void handleUserInputSendMessage() {
         if (Gdx.input.isKeyPressed(Input.Keys.ENTER) && isChatTypingOn && userChatMessage.length() > 0) {
-            NetworkManager.getInstance().getClientThread().sendMessage(userChatMessage);
+            NetworkManager.getInstance().getClientThread().sendMessage(
+                    RTSProtocolManager.getInstance().createNetworkMessageChatMessage(
+                            GameMain.getInstance().getPlayer().getName(),
+                            userChatMessage));
             userChatMessage = "";
             isChatTypingOn = false;
         }
