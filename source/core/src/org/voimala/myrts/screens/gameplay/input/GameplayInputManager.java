@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.networking.ListenSocketThread;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
@@ -69,8 +70,8 @@ public class GameplayInputManager {
                         Gdx.input.getX(),
                         Gdx.input.getY(),
                         0));
-                // TODO CHECK TEAM
-                if (unit.onCollision(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y))) {
+                if (unit.onCollision(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y))
+                        && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
                     unit.setSelected(true);
                     break;
                 }
@@ -105,7 +106,8 @@ public class GameplayInputManager {
                     rectangleTopRightWorld.y - rectangleBottomRightWorld.y);
 
             for (Unit unit : worldController.getUnitContainer().getUnits()) {
-                if (rectangleWorld.contains(unit.getX(), unit.getY())) {
+                if (rectangleWorld.contains(unit.getX(), unit.getY())
+                        && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
                     unit.setSelected(true);
                 }
             }
@@ -156,7 +158,7 @@ public class GameplayInputManager {
                 && mouseButtonRightPressedLastFrame
                 && !Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
             for (Unit unit : worldController.getUnitContainer().getUnits()) {
-                if (unit.isSelected()) { // TODO CHECK TEAM
+                if (unit.isSelected() && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
                     handleCommandMoveUnit(unit);
                 }
             }

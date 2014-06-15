@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputManager;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputProcessor;
@@ -102,9 +101,21 @@ public class WorldController {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 3; j++) {
                 M4Unit unit = new M4Unit(String.valueOf(i) + String.valueOf(j));
-                unit.setPosition(new Vector2(TILE_SIZE_PIXELS * i, TILE_SIZE_PIXELS  * j));
-                unit.setTeam(i % 2 + 1);
+                unit.setPosition(new Vector2(500 + TILE_SIZE_PIXELS * i, 500 + TILE_SIZE_PIXELS  * j));
+                unit.setTeam(1);
+                unit.setPlayerNumber(1);
                 unit.setAngle(0);
+                unitContainer.addUnit(unit);
+            }
+        }
+
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 3; j++) {
+                M4Unit unit = new M4Unit(String.valueOf(i) + String.valueOf(j));
+                unit.setPosition(new Vector2(4000 + TILE_SIZE_PIXELS * i, 4000 + TILE_SIZE_PIXELS  * j));
+                unit.setPlayerNumber(2);
+                unit.setTeam(2);
+                unit.setAngle(180);
                 unitContainer.addUnit(unit);
             }
         }

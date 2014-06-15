@@ -63,8 +63,8 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderGround() {
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < 25; i++) { // TODO Map size
+            for (int j = 0; j < 25; j++) {
                 batch.begin();
                 Sprite sprite = SpriteContainer.getInstance().getSprite("grass1");
                 sprite.setPosition(i * worldController.TILE_SIZE_PIXELS, j * worldController.TILE_SIZE_PIXELS);

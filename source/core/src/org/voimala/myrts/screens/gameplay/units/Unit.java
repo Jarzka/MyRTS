@@ -53,11 +53,11 @@ public abstract class Unit extends AbstractGameObject {
         this.isSelected = isSelected;
     }
 
-    public int getPlayer() {
+    public int getPlayerNumber() {
         return player;
     }
 
-    public void setPlayer(final int player) {
+    public void setPlayerNumber(final int player) {
         if (player < 0) {
             throw new GameLogicException("Player number must be equal or greater than 0");
         }
