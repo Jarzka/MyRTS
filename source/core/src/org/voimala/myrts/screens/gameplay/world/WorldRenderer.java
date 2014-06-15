@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
+import org.voimala.myrts.app.GameMain;
+import org.voimala.myrts.networking.Chat;
 import org.voimala.myrts.screens.gameplay.units.Unit;
 import org.voimala.myrts.graphics.SpriteContainer;
 
@@ -22,6 +24,9 @@ public class WorldRenderer implements Disposable {
     private WorldController worldController;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
     private long lastRenderTimestamp = 0;
+
+    private int chatMessagesXScreen = 20;
+    private int chatMessagesYScreen = Gdx.graphics.getHeight() - 150;
 
     private BitmapFont defaultFont;
 
@@ -83,6 +88,7 @@ public class WorldRenderer implements Disposable {
         renderHud();
         renderUnitSelectionRectangle();
         renderInfoText();
+        renderChat();
 
         lastRenderTimestamp = System.currentTimeMillis();
     }
@@ -204,6 +210,36 @@ public class WorldRenderer implements Disposable {
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 4);
         hudBatch.end();
+    }
+
+    private void renderChat() {
+        renderUserMessage();
+        renderChatMessages();
+    }
+
+    private void renderUserMessage() {
+        if (worldController.getGameplayScreen().getGameplayInputManager().isChatTypingOn()) {
+            hudBatch.begin();
+            defaultFont.draw(hudBatch,
+                    "[ALL]" + " " + GameMain.getInstance().getPlayer().getName() + ": " + worldController.getGameplayScreen().getGameplayInputManager().getUserChatMessage(),
+                    chatMessagesXScreen,
+                    Gdx.graphics.getHeight() - chatMessagesYScreen);
+            hudBatch.end();
+        }
+    }
+
+    private void renderChatMessages() {
+        int numberOfMessages = 10;
+        String[] chatMessages = Chat.getInstance().getNewestChatMessagesForChatBox(numberOfMessages);
+        for (int i = 0; i < chatMessages.length; i++) {
+            hudBatch.begin();
+            defaultFont.draw(hudBatch,
+                    chatMessages[i],
+                    chatMessagesXScreen,
+                    Gdx.graphics.getHeight() - chatMessagesYScreen + defaultFont.getLineHeight() + i * defaultFont.getLineHeight());
+            hudBatch.end();
+        }
+
     }
 
     public void resize(int width, int height) {

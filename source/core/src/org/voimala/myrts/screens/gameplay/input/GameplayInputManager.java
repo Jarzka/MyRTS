@@ -33,7 +33,7 @@ public class GameplayInputManager {
     private float rectangleStartYScreen = -1;
 
     private boolean isChatTypingOn = false;
-    private String chatUserInput = "";
+    private String userChatMessage = "";
 
     /** Returns null if there is no active selection rectangle. */
     public Rectangle getUnitSelectionRectangle() {
@@ -68,14 +68,18 @@ public class GameplayInputManager {
     }
 
     private void handleUserInputTurnChatTypingOn() {
-        if (Gdx.input.isKeyPressed(Input.Keys.ENTER) && !isChatTypingOn) {
-            isChatTypingOn = true;
+        if (gameplayScreen.getGameMode() == GameMode.MULTIPLAYER) {
+            if (Gdx.input.isKeyPressed(Input.Keys.Y) && !isChatTypingOn) {
+                isChatTypingOn = true;
+            }
         }
     }
 
     private void handleUserInputSendMessage() {
-        if (Gdx.input.isKeyPressed(Input.Keys.ENTER) && isChatTypingOn && chatUserInput.length() > 0) {
-            NetworkManager.getInstance().getClientThread().sendMessage(chatUserInput);
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER) && isChatTypingOn && userChatMessage.length() > 0) {
+            NetworkManager.getInstance().getClientThread().sendMessage(userChatMessage);
+            userChatMessage = "";
+            isChatTypingOn = false;
         }
     }
 
@@ -241,4 +245,17 @@ public class GameplayInputManager {
         }
     }
 
+    public void handleUserChatInput(char character) {
+        if (isChatTypingOn) { // TODO Backspace?
+            userChatMessage += character;
+        }
+    }
+
+    public CharSequence getUserChatMessage() {
+        return userChatMessage;
+    }
+
+    public boolean isChatTypingOn() {
+        return isChatTypingOn;
+    }
 }

@@ -52,4 +52,8 @@ public class Chat {
     public void addChatMessage(final ChatMessage chatMessage) {
         chatMessages.add(chatMessage);
     }
+
+    public String[] getNewestChatMessagesForChatBox(int maxNumberOfMessages) {
+        return getChatMessagesForChatBox(); // TODO Implement numberOfMessages
+    }
 }

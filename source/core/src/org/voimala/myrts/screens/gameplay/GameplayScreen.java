@@ -68,12 +68,11 @@ public class GameplayScreen extends AbstractGameScreen {
 
     @Override
     public void render(float deltaTime) {
+        deltaTime = fixDeltaTimeMinAndMaxValues(deltaTime);
         currentState.update(deltaTime);
     }
 
     private float fixDeltaTimeMinAndMaxValues(float deltaTime) {
-        deltaTime = fixDeltaTimeMinAndMaxValues(deltaTime);
-
         if (deltaTime > 0.06) {
             deltaTime = (float) 0.06;
         }
@@ -81,13 +80,7 @@ public class GameplayScreen extends AbstractGameScreen {
         return deltaTime;
     }
 
-    public void update(float deltaTime) {
-        handleUserInput(deltaTime);
-        updateWorld(deltaTime);
-        renderWorld();
-    }
-
-    private void handleUserInput(float deltaTime) {
+    public void handleUserInput(float deltaTime) {
         gameplayInputManager.update();
     }
 
@@ -102,6 +95,7 @@ public class GameplayScreen extends AbstractGameScreen {
     private void updateWorldUsingVariablePhysics(final float deltaTime) {
         worldController.updateWorld(deltaTime);
         worldUpdateTick++;
+        lastWorldUpdateTimestamp = System.currentTimeMillis();
     }
 
     private void updateWorldUsingFixedPhysics() {

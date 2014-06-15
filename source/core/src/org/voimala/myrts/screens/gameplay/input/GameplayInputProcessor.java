@@ -26,6 +26,7 @@ public class GameplayInputProcessor implements InputProcessor{
 
     @Override
     public boolean keyTyped(char character) {
+        gameplayScreen.getGameplayInputManager().handleUserChatInput(character);
         return false;
     }
 
