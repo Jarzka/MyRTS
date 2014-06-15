@@ -82,7 +82,6 @@ public class GameplayInputManager {
 
     private void handleSelectionRectangle() {
         if (mouseButtonLeftPressedLastFrame && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            // TODO Toimii vain vetämällä hiirellä oikealle ylös.
             Vector3 rectangleTopLeftWorld = worldController.getWorldCamera().unproject(
                     new Vector3(unitSelectionRectangle.x,
                             Gdx.graphics.getHeight() - unitSelectionRectangle.y - unitSelectionRectangle.height,
