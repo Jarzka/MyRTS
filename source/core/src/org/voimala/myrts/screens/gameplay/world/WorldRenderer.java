@@ -168,7 +168,7 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnitSelectionRectangle() {
-        Rectangle selectionRectangle = worldController.getGameplayInputManager().getUnitSelectionRectangle();
+        Rectangle selectionRectangle = worldController.getGameplayScreen().getGameplayInputManager().getUnitSelectionRectangle();
 
         if (selectionRectangle != null) {
             shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);

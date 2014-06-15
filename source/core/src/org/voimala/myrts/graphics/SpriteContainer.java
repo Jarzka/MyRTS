@@ -22,7 +22,12 @@ public class SpriteContainer {
     }
 
     public Sprite getSprite(final String id) {
-        return sprites.get(id);
+        if (sprites.get(id) != null) {
+            return sprites.get(id);
+        }
+
+        Gdx.app.debug(TAG, "WARNING: Sprite " + id + " not found");
+        return null;
     }
 
     public void addSprite(final String id, final Sprite sprite) {

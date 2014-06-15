@@ -6,9 +6,11 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import org.voimala.myrts.app.GameMain;
+import org.voimala.myrts.networking.Chat;
 import org.voimala.myrts.networking.ListenSocketThread;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
+import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
 import org.voimala.myrts.screens.gameplay.units.Unit;
@@ -17,6 +19,7 @@ public class GameplayInputManager {
 
     private static final String TAG = GameplayInputManager.class.getName();
 
+    private GameplayScreen gameplayScreen;
     private WorldController worldController;
 
     private boolean mouseButtonLeftPressedLastFrame;
@@ -29,14 +32,18 @@ public class GameplayInputManager {
     private float rectangleStartXScreen = -1;
     private float rectangleStartYScreen = -1;
 
+    private boolean isChatTypingOn = false;
+    private String chatUserInput = "";
+
     /** Returns null if there is no active selection rectangle. */
     public Rectangle getUnitSelectionRectangle() {
         return unitSelectionRectangle;
     }
 
-    public GameplayInputManager(WorldController worldController) {
-        this.worldController = worldController;
-        cameraManager = new CameraManager(worldController.getWorldCamera());
+    public GameplayInputManager(final GameplayScreen gameplayScreen) {
+        this.gameplayScreen = gameplayScreen;
+        this.worldController = gameplayScreen.getWorldController();
+        cameraManager = new CameraManager(gameplayScreen.getWorldController().getWorldCamera());
     }
 
     public void update() {
@@ -49,9 +56,27 @@ public class GameplayInputManager {
         handleSelectionRectangle();
         handleDrawSelectionRectangle();
         handleUnitCommands();
+        handleChat();
 
         mouseButtonLeftPressedLastFrame = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
         mouseButtonRightPressedLastFrame = Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
+    }
+
+    private void handleChat() {
+        handleUserInputTurnChatTypingOn();
+        handleUserInputSendMessage();
+    }
+
+    private void handleUserInputTurnChatTypingOn() {
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER) && !isChatTypingOn) {
+            isChatTypingOn = true;
+        }
+    }
+
+    private void handleUserInputSendMessage() {
+        if (Gdx.input.isKeyPressed(Input.Keys.ENTER) && isChatTypingOn && chatUserInput.length() > 0) {
+            NetworkManager.getInstance().getClientThread().sendMessage(chatUserInput);
+        }
     }
 
     private void handleCameraManagement() {

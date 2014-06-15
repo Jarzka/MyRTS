@@ -8,6 +8,8 @@ import org.voimala.myrts.networking.ConnectionState;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.AbstractGameScreen;
+import org.voimala.myrts.screens.gameplay.input.GameplayInputManager;
+import org.voimala.myrts.screens.gameplay.input.GameplayInputProcessor;
 import org.voimala.myrts.screens.gameplay.states.AbstractGameplayState;
 import org.voimala.myrts.screens.gameplay.states.GameplayStateRunning;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
@@ -27,6 +29,9 @@ public class GameplayScreen extends AbstractGameScreen {
     private long worldUpdateTick = 0;
     private long renderTick = 0;
 
+    private GameplayInputProcessor inputHandler = new GameplayInputProcessor(this);
+    private GameplayInputManager gameplayInputManager;
+
     /** @param worldController Preloaded WorldController object.
      */
     public GameplayScreen(final WorldController worldController) {
@@ -34,6 +39,7 @@ public class GameplayScreen extends AbstractGameScreen {
         RTSProtocolManager.getInstance().setWorldController(worldController);
         initializeWorldRenderer();
         initializeGameMode();
+        initializeInputListeners();
     }
 
     private void initializeWorldRenderer() {
@@ -49,6 +55,11 @@ public class GameplayScreen extends AbstractGameScreen {
             GameMain.getInstance().getPlayer().setTeam(1);
             setGameMode(GameMode.SINGLEPLAYER);
         }
+    }
+
+    private void initializeInputListeners() {
+        gameplayInputManager = new GameplayInputManager(this);
+        Gdx.input.setInputProcessor(inputHandler);
     }
 
     public void setGameMode(GameMode gameMode) {
@@ -70,8 +81,14 @@ public class GameplayScreen extends AbstractGameScreen {
         return deltaTime;
     }
 
-    public void updateInput(final float deltaTime) {
-        worldController.updateInputManager(deltaTime);
+    public void update(float deltaTime) {
+        handleUserInput(deltaTime);
+        updateWorld(deltaTime);
+        renderWorld();
+    }
+
+    private void handleUserInput(float deltaTime) {
+        gameplayInputManager.update();
     }
 
     public void updateWorld(float deltaTime) {
@@ -166,4 +183,13 @@ public class GameplayScreen extends AbstractGameScreen {
     public void setState(final AbstractGameplayState newState) {
         currentState = newState;
     }
+
+    public WorldController getWorldController() {
+        return worldController;
+    }
+
+    public GameplayInputManager getGameplayInputManager() {
+        return gameplayInputManager;
+    }
+
 }

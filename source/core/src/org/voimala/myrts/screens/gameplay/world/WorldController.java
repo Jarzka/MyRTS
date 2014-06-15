@@ -21,11 +21,7 @@ public class WorldController {
 
     private UnitContainer unitContainer = new UnitContainer();
 
-    private GameplayInputProcessor inputHandler = new GameplayInputProcessor(this);
-    private GameplayInputManager gameplayInputManager;
-
     private GameplayScreen gameplayScreen;
-
     private OrthographicCamera worldCamera;
 
     private double hudSize = 1; // TODO Hud needs to be implemented
@@ -41,7 +37,6 @@ public class WorldController {
 
     private void initialize() {
         initializeCamera();
-        initializeInputProcessor();
         initializeMap();
     }
 
@@ -51,12 +46,6 @@ public class WorldController {
         worldCamera.translate(800, 800);
         worldCamera.zoom = 4;
         worldCamera.update();
-
-        gameplayInputManager = new GameplayInputManager(this);
-    }
-
-    private void initializeInputProcessor() {
-        Gdx.input.setInputProcessor(inputHandler);
     }
 
     private void initializeMap() {
@@ -97,10 +86,6 @@ public class WorldController {
         updateUnits(deltaTime);
     }
 
-    public void updateInputManager(final float deltaTime) {
-        gameplayInputManager.update();
-    }
-
     private void updateUnits(float deltaTime) {
         for (Unit unit : unitContainer.getUnits()) {
             unit.update(deltaTime);
@@ -109,10 +94,6 @@ public class WorldController {
 
     public OrthographicCamera getWorldCamera() {
         return worldCamera;
-    }
-
-    public GameplayInputManager getGameplayInputManager() {
-        return gameplayInputManager;
     }
 
     /** Returns null if unit is not found. */

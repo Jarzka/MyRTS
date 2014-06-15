@@ -2,15 +2,16 @@ package org.voimala.myrts.screens.gameplay.input;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
 
 /* This class is used for handling desktop zoom with mouse wheel. */
 
 public class GameplayInputProcessor implements InputProcessor{
-    WorldController worldController = null;
+    private GameplayScreen gameplayScreen = null;
 
-    public GameplayInputProcessor(WorldController worldController) {
-        this.worldController = worldController;
+    public GameplayInputProcessor(final GameplayScreen gameplayScreen) {
+        this.gameplayScreen = gameplayScreen;
     }
 
     @Override
@@ -56,7 +57,7 @@ public class GameplayInputProcessor implements InputProcessor{
     }
 
     private void handleInputZoom(int amount) {
-        OrthographicCamera camera = worldController.getWorldCamera();
+        OrthographicCamera camera = gameplayScreen.getWorldController().getWorldCamera();
 
         if (amount < 0) {
             if (camera.zoom > 1) {
