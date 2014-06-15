@@ -3,6 +3,8 @@ package org.voimala.myrts.screens.gameplay;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import org.voimala.myrts.app.GameMain;
+import org.voimala.myrts.networking.ConnectionState;
+import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.AbstractGameScreen;
 import org.voimala.myrts.screens.gameplay.states.AbstractGameplayState;
@@ -24,14 +26,28 @@ public class GameplayScreen extends AbstractGameScreen {
     private long worldUpdateTick = 0;
     private long renderTick = 0;
 
-    public GameplayScreen() {
-        initialize();
+    /** @param worldController Preloaded WorldController object.
+     */
+    public GameplayScreen(final WorldController worldController) {
+        this.worldController = worldController;
+        RTSProtocolManager.getInstance().setWorldController(worldController);
+        initializeWorldRenderer();
+        initializeGameMode();
     }
 
-    private void initialize() {
-        worldController = new WorldController(this);
-        RTSProtocolManager.getInstance().setWorldController(worldController);
-        worldRenderer = new WorldRenderer(worldController);
+    private void initializeWorldRenderer() {
+        worldRenderer = new WorldRenderer();
+        worldRenderer.setWorldController(worldController);
+    }
+
+    private void initializeGameMode() {
+        if (NetworkManager.getInstance().getClientConnectionState() == ConnectionState.CONNECTED) {
+            setGameMode(GameMode.MULTIPLAYER);
+        } else {
+            GameMain.getInstance().getPlayer().setNumber(1);
+            GameMain.getInstance().getPlayer().setTeam(1);
+            setGameMode(GameMode.SINGLEPLAYER);
+        }
     }
 
     public void setGameMode(GameMode gameMode) {
@@ -97,7 +113,9 @@ public class GameplayScreen extends AbstractGameScreen {
 
     @Override
     public void resize(int width, int height) {
-        worldRenderer.resize(width, height);
+        if (worldRenderer != null) {
+            worldRenderer.resize(width, height);
+        }
     }
 
     @Override

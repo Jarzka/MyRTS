@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import org.voimala.myrts.app.GameMain;
-import org.voimala.myrts.screens.gameplay.world.GameMode;
+import org.voimala.myrts.screens.ScreenName;
 import org.voimala.myrts.screens.menu.MenuScreen;
 
 public class MainMenuWindow extends AbstractMenuWindow {
@@ -103,7 +103,7 @@ public class MainMenuWindow extends AbstractMenuWindow {
     public void onSingleplayerButtonClicked() {
         /* TODO Normally we would show the "Singleplayer window", but it will be skipped
          * as long as the main menu is still in development. */
-        GameMain.getInstance().setNextScreenToGameplay();
+        GameMain.getInstance().setNextScreen(ScreenName.LOAD_GAMEPLAY);
     }
 
     public void onMultiplayerButtonClicked() {

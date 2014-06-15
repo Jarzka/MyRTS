@@ -25,9 +25,8 @@ public class WorldRenderer implements Disposable {
 
     private BitmapFont defaultFont;
 
-    public WorldRenderer (WorldController worldController) {
-        this. worldController = worldController;
-
+    /** Remember to call setWorldController soon after constructing this object! */
+    public WorldRenderer() {
         initialize();
     }
 
@@ -228,6 +227,10 @@ public class WorldRenderer implements Disposable {
     @Override
     public void dispose() {
         defaultFont.dispose();
+    }
+
+    public void setWorldController(final WorldController worldController) {
+        this.worldController = worldController;
     }
 
 }

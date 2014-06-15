@@ -11,6 +11,9 @@ import org.voimala.myrts.screens.ScreenName;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
 import org.voimala.myrts.screens.gameplay.world.Player;
+import org.voimala.myrts.screens.gameplay.world.WorldController;
+import org.voimala.myrts.screens.gameplay.world.WorldRenderer;
+import org.voimala.myrts.screens.loadgameplay.LoadGameScreen;
 import org.voimala.myrts.screens.menu.MenuScreen;
 
 public class GameMain extends Game {
@@ -56,23 +59,32 @@ public class GameMain extends Game {
     }
 
     private void checkNextScreen() {
-        if (nextScreen == ScreenName.GAMEPLAY) {
+        if (nextScreen == ScreenName.LOAD_GAMEPLAY) {
+            loadGame();
+            nextScreen = null;
+        } else if (nextScreen == ScreenName.GAMEPLAY) {
             startGame();
             nextScreen = null;
         }
     }
 
-    private void startGame() {
-        GameplayScreen gameplayScreen = new GameplayScreen();
-        if (NetworkManager.getInstance().getClientConnectionState() == ConnectionState.CONNECTED) {
-            gameplayScreen.setGameMode(GameMode.MULTIPLAYER);
-        } else {
-            player.setNumber(1);
-            player.setTeam(1);
-            gameplayScreen.setGameMode(GameMode.SINGLEPLAYER);
-        }
+    private void loadGame() {
+        LoadGameScreen loasGameScreen = new LoadGameScreen();
+        setScreen(loasGameScreen);
+    }
 
-        setScreen(gameplayScreen);
+    private void startGame() {
+        if (getScreen() instanceof  LoadGameScreen) {
+            LoadGameScreen loadGameScreen = (LoadGameScreen) getScreen();
+            if (loadGameScreen.isEverythingLoaded()) {
+                WorldController preloadedWorldController = loadGameScreen.getWorldController();
+                GameplayScreen gameplayScreen = new GameplayScreen(preloadedWorldController);
+                preloadedWorldController.setGameplayScreen(gameplayScreen);
+                setScreen(gameplayScreen);
+            } else {
+                Gdx.app.debug(TAG, "ERROR: Could not start the game because world or graphics not loaded!!!");
+            }
+        }
     }
 
 
@@ -100,12 +112,13 @@ public class GameMain extends Game {
         getScreen().dispose();
     }
 
-    public void setNextScreenToGameplay() {
-        nextScreen = ScreenName.GAMEPLAY;
+    public void setNextScreen(ScreenName screenName) {
+        nextScreen = screenName;
     }
 
     public Player getPlayer() {
         return player;
     }
+
 
 }

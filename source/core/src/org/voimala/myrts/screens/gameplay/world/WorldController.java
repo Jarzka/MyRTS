@@ -32,11 +32,10 @@ public class WorldController {
 
     public final int TILE_SIZE_PIXELS = 256;
 
-    private long currentSimTick = 1; // "Communication turn" in multiplayer game.
+    private long currentSimTick = 1; // "Communication turn" in multiplayer game. // TODO Move to NetworkManager?
     private long SimTickDurationMs = 100;
 
-    public WorldController(final GameplayScreen gameplayScreen) {
-        this.gameplayScreen = gameplayScreen;
+    public WorldController() {
         initialize();
     }
 
@@ -129,5 +128,9 @@ public class WorldController {
 
     public GameplayScreen getGameplayScreen() {
         return gameplayScreen;
+    }
+
+    public void setGameplayScreen(final GameplayScreen gameplayScreen) {
+        this.gameplayScreen = gameplayScreen;
     }
 }

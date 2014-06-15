@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import org.voimala.myrts.app.GameMain;
-import org.voimala.myrts.screens.gameplay.world.GameMode;
+import org.voimala.myrts.screens.ScreenName;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
 import org.voimala.myrts.screens.gameplay.units.Unit;
 
@@ -182,7 +182,7 @@ public class RTSProtocolManager {
     private boolean handleNetworkMessageStartGame(final String message, final SocketType source) {
         if (message.equals("<COMMAND_AND_CONQUER>")) {
             Gdx.app.debug(TAG, "Starting game...");
-            GameMain.getInstance().setNextScreenToGameplay();
+            GameMain.getInstance().setNextScreen(ScreenName.LOAD_GAMEPLAY);
             return true;
         }
 
