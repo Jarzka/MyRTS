@@ -11,15 +11,10 @@ public class GameplayStateInitialize extends AbstractGameplayState {
     @Override
     public void update() {
         loadMap();
-        initializeMultiplayer();
     }
 
     private void loadMap() {
-        // TODO
-    }
-
-    private void initializeMultiplayer() {
-        // TODO
+        // TODO Implement file maps
     }
 
 }

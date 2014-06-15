@@ -119,7 +119,7 @@ public class ServerThread extends Thread {
         }
 
         // Free slot not found?
-        // TODO
+        // TODO Implement "Server is full" protocol
     }
 
     /** Gives admin rights to the client if he is the first player in the game */

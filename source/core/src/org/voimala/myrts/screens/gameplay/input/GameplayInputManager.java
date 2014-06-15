@@ -64,7 +64,7 @@ public class GameplayInputManager {
 
     private void handleMouseInputSelectSingleUnit() {
         if (mouseButtonLeftPressedLastFrame && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            unselectAllOwnUnits();
+            unselectAllUnits();
             for (Unit unit : worldController.getUnitContainer().getUnits()) {
                 Vector3 mouseLocationInWorld = worldController.getWorldCamera().unproject(new Vector3(
                         Gdx.input.getX(),
@@ -188,8 +188,7 @@ public class GameplayInputManager {
     }
 
 
-    private void unselectAllOwnUnits() {
-        // TODO CHECK TEAM
+    private void unselectAllUnits() {
         for (Unit unit : worldController.getUnitContainer().getUnits()) {
             unit.setSelected(false);
         }

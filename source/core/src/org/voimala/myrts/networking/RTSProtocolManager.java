@@ -129,11 +129,11 @@ public class RTSProtocolManager {
     }
 
     private boolean handleNetworkMessagePing(final String message, final SocketType source) {
-        return false; // TODO
+        return false; // TODO Implement ping protocol
     }
 
     private boolean handleNetworkMessagePong(final String message, final SocketType source) {
-        return false; // TODO
+        return false; // TODO Implement ping protocol
     }
 
     private boolean handleNetworkMessageSlot(final String message, final SocketType source) {

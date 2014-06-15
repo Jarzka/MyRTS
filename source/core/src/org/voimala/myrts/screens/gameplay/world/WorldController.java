@@ -27,7 +27,7 @@ public class WorldController {
 
     private OrthographicCamera worldCamera;
 
-    private double hudSize = 1; // TODO Hud size needs to be implemented
+    private double hudSize = 1; // TODO Hud needs to be implemented
 
     public final int TILE_SIZE_PIXELS = 256;
 
@@ -40,17 +40,9 @@ public class WorldController {
     }
 
     private void initialize() {
-        initializePointer();
         initializeCamera();
         initializeInputProcessor();
-        initializeSprites(); // TODO Move to WorldRenderer?
         initializeMap();
-    }
-
-    private void initializePointer() {
-        Pixmap pixelmap = new Pixmap(Gdx.files.internal("graphics/pointers/pointer-basic-0.png"));
-        Gdx.input.setCursorImage(pixelmap, 0, 0);
-        pixelmap.dispose();
     }
 
     private void initializeCamera() {
@@ -63,32 +55,8 @@ public class WorldController {
         gameplayInputManager = new GameplayInputManager(this);
     }
 
-    private void initializeSprites() {
-        initializeCursorSprites();
-        initializeGroundSprites();
-        initializeUnitSprites();
-    }
-
-    private void initializeCursorSprites() {
-        Texture texture = new Texture("graphics/pointers/pointer-basic-0.png");
-        Sprite sprite = new Sprite(texture);
-        SpriteContainer.getInstance().addSprite("pointer-basic-0", sprite);
-    }
-
     private void initializeInputProcessor() {
         Gdx.input.setInputProcessor(inputHandler);
-    }
-
-    private void initializeGroundSprites() {
-        Texture texture = new Texture("graphics/textures/ground/grass1.jpg");
-        Sprite sprite = new Sprite(texture);
-        SpriteContainer.getInstance().addSprite("grass1", sprite);
-    }
-
-    private void initializeUnitSprites() {
-        Texture texture = new Texture("graphics/units/m4/m4-stopped-0.png");
-        Sprite sprite = new Sprite(texture);
-        SpriteContainer.getInstance().addSprite("m4-stopped-0", sprite);
     }
 
     private void initializeMap() {

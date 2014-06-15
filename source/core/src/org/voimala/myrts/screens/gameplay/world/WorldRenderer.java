@@ -2,6 +2,8 @@ package org.voimala.myrts.screens.gameplay.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -30,8 +32,40 @@ public class WorldRenderer implements Disposable {
     }
 
     private void initialize () {
+        initializeSprites();
+        initializePointer();
         initializeFonts();
         initializeBatches();
+    }
+
+    private void initializeSprites() {
+        initializeCursorSprites();
+        initializeGroundSprites();
+        initializeUnitSprites();
+    }
+
+    private void initializeCursorSprites() {
+        Texture texture = new Texture("graphics/pointers/pointer-basic-0.png");
+        Sprite sprite = new Sprite(texture);
+        SpriteContainer.getInstance().addSprite("pointer-basic-0", sprite);
+    }
+
+    private void initializeGroundSprites() {
+        Texture texture = new Texture("graphics/textures/ground/grass1.jpg");
+        Sprite sprite = new Sprite(texture);
+        SpriteContainer.getInstance().addSprite("grass1", sprite);
+    }
+
+    private void initializeUnitSprites() {
+        Texture texture = new Texture("graphics/units/m4/m4-stopped-0.png");
+        Sprite sprite = new Sprite(texture);
+        SpriteContainer.getInstance().addSprite("m4-stopped-0", sprite);
+    }
+
+    private void initializePointer() {
+        Pixmap pixelmap = new Pixmap(Gdx.files.internal("graphics/pointers/pointer-basic-0.png"));
+        Gdx.input.setCursorImage(pixelmap, 0, 0);
+        pixelmap.dispose();
     }
 
     private void initializeFonts() {
