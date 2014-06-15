@@ -27,7 +27,9 @@ public class SpriteContainer {
         sprites.put(id, sprite);
     }
 
-    public static void freeResources() {
-        // TODO
+    public void freeResources() {
+        for (Sprite sprite : sprites.values()) {
+            sprite.getTexture().dispose();
+        }
     }
 }

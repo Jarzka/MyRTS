@@ -76,13 +76,13 @@ public class WorldRenderer implements Disposable {
 
     private void renderUnits(final RenderMode renderMode) {
         if (renderMode == RenderMode.GAME_STATE) {
-            renderUnitsAsTheyAre();
+            renderUnits();
         } else if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
             renderUnitsWithPhysicsPrediction();
         }
     }
 
-    private void renderUnitsAsTheyAre() {
+    private void renderUnits() {
         for (Unit unit : worldController.getUnitContainer().getUnits()) {
             batch.begin();
             Sprite sprite = SpriteContainer.getInstance().getSprite("m4-stopped-0");
@@ -98,9 +98,7 @@ public class WorldRenderer implements Disposable {
         for (Unit unit : worldController.getUnitContainer().getUnits()) {
             try {
                 Unit unitClone = unit.clone();
-
-                // Find delta time between last world update and current time.
-                float deltaTime = (System.currentTimeMillis() - worldController.getGameplayScreen().getLastWorldUpdateTimestamp()) / (float) 1000;
+                float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
                 unitClone.update(deltaTime);
 
                 batch.begin();
@@ -117,7 +115,14 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnitEnergyBars(final RenderMode renderMode) {
-        // TODO Rendermode
+        if (renderMode == RenderMode.GAME_STATE) {
+            renderUnitEnergyBars();
+        } else if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
+            renderUnitEnergyBarsWithPhysicsPrediction();
+        }
+    }
+
+    private void renderUnitEnergyBars() {
         for (Unit unit : worldController.getUnitContainer().getUnits()) {
             if (unit.isSelected()) {
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -139,8 +144,44 @@ public class WorldRenderer implements Disposable {
         }
     }
 
+    private void renderUnitEnergyBarsWithPhysicsPrediction() {
+        for (Unit unit : worldController.getUnitContainer().getUnits()) {
+            if (unit.isSelected()) {
+                try {
+                    Unit unitClone = unit.clone();
+                    float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
+                    unitClone.update(deltaTime);
+
+                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                    shapeRenderer.setColor(Color.WHITE);
+                    Vector3 unitTopLeftWorldCoordinates = new Vector3(unitClone.getX() - unitClone.getWidth() / 2,
+                            unitClone.getY() + unitClone.getHeight() / 2, 0);
+                    Vector3 unitTopRightWorldCoordinates = new Vector3(unitClone.getX() + unitClone.getWidth() / 2,
+                            unitClone.getY() + unitClone.getHeight() / 2, 0);
+
+                    Vector3 unitTopLeftScreenCoordinates = worldController.getWorldCamera().project(unitTopLeftWorldCoordinates);
+                    Vector3 unitTopRightScreenCoordinates = worldController.getWorldCamera().project(unitTopRightWorldCoordinates);
+
+                    shapeRenderer.rect(unitTopLeftScreenCoordinates.x,
+                            unitTopLeftScreenCoordinates.y,
+                            unitTopRightScreenCoordinates.x - unitTopLeftScreenCoordinates.x,
+                            (float) (Gdx.graphics.getPpiY() * 0.1)); // TODO ppi is not supported on the desktop
+                    shapeRenderer.end();
+                } catch (CloneNotSupportedException e) {
+                    Gdx.app.debug(TAG, "ERROR: " + e.getMessage());
+                }
+
+
+            }
+        }
+    }
+
+    private float calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime() {
+        return (System.currentTimeMillis() - worldController.getGameplayScreen().getLastWorldUpdateTimestamp()) / (float) 1000;
+    }
+
     private void renderHud() {
-        // TODO
+        // TODO Implement hud
     }
 
     private void renderUnitSelectionRectangle() {

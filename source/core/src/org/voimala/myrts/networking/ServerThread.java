@@ -66,7 +66,7 @@ public class ServerThread extends Thread {
             Gdx.app.debug(TAG, "Server created");
         } catch (Exception e) {
             Gdx.app.debug(TAG, "Error creating a server: " + e.getMessage());
-            running = false; // TODO Multiplayer lobby does not notice this?
+            running = false;
         }
     }
 

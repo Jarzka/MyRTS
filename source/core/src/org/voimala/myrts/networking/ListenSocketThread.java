@@ -90,7 +90,7 @@ public class ListenSocketThread extends Thread {
 
                     if (readCharacter[0] == '>') { // End of the message reached, handle message
                         if (socketType == SocketType.SERVER_SOCKET) {
-                            Gdx.app.debug(TAG, "Got message from the server: " + constructMessage); // TODO Dies for some reason
+                            Gdx.app.debug(TAG, "Got message from the server: " + constructMessage);
                         } else if (socketType == SocketType.PLAYER_SOCKET) {
                             Gdx.app.debug(TAG, "Got message from the player: " + constructMessage);
                         }

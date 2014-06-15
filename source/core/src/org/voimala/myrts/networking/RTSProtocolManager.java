@@ -222,13 +222,7 @@ public class RTSProtocolManager {
                 ServerThread serverThread = NetworkManager.getInstance().getServerThread();
                 if (serverThread != null) {
                     // Update slot info
-                    StringBuilder contentPlayer = new StringBuilder();
-                    contentPlayer.append("PLAYER");
-                    contentPlayer.append("|");
-                    contentPlayer.append(listenSocketThread.getPlayerInfo().getName());
-                    contentPlayer.append("|");
-                    contentPlayer.append(listenSocketThread.getPlayerInfo().getNetworkId());
-                    serverThread.changeSlotContent(listenSocketThread.getPlayerInfo().getNumber(), contentPlayer.toString());
+                    serverThread.changeSlotContent(listenSocketThread.getPlayerInfo().getNumber(), "PLAYER" + "|" + listenSocketThread.getPlayerInfo().getName() + "|" + listenSocketThread.getPlayerInfo().getNetworkId());
 
                     // Send slots states to the connected player
                     for (int i = 1; i <= NetworkManager.getInstance().SLOTS_MAX; i++) {
@@ -253,7 +247,7 @@ public class RTSProtocolManager {
 
     public String createNetworkMessageMoveUnit(String unitId,
                                                final Vector3 mouseLocationInWorld) {
-        // TODO Use StringBuilder in send methods
+        // Compiler should use StringBuilder automatically.
         return "<UNIT_MOVE|" + unitId + "|" + mouseLocationInWorld.x + "|" + mouseLocationInWorld.y + ">";
     }
 
@@ -298,14 +292,8 @@ public class RTSProtocolManager {
                                                   final String content,
                                                   final String playerName,
                                                   final int playerNetworkId) {
-        StringBuilder buildMessage = new StringBuilder();
-        buildMessage.append("<SLOT|");
-        buildMessage.append(String.valueOf(slotNumber));
-        buildMessage.append("|");
-        buildMessage.append(content);
-        buildMessage.append(">");
 
-        return buildMessage.toString();
+        return "<SLOT|" + String.valueOf(slotNumber) + "|" + content + ">";
     }
 
     public String createNetworkMessageNewConnectionInfo(final String nick, final int networkId) {

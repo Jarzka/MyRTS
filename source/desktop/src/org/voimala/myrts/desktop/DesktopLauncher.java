@@ -13,12 +13,11 @@ public class DesktopLauncher {
         /**
          * FPS in Libgdx means how many times per second the render method will be called.
          * Since render method also handles game logic and world updating, it should be called
-         * as many times in second as possible. The graphics rendering times per second can be
-         * lowered manually. It seems that vsync needs to be implemented manually.
+         * as many times in second as possible.
          */
         config.backgroundFPS = 120;
         config.foregroundFPS = 120;
-        config.vSyncEnabled = false; // Affects game world update rate
+        config.vSyncEnabled = true; // Warning: affects game world update rate
 
 		new LwjglApplication(GameMain.getInstance(), config);
 	}

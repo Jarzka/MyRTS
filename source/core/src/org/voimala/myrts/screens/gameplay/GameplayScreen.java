@@ -40,7 +40,6 @@ public class GameplayScreen extends AbstractGameScreen {
 
     @Override
     public void render(float deltaTime) {
-        // TODO update current state
         deltaTime = fixDeltaTimeMinAndMaxValues(deltaTime);
 
         updateInput(deltaTime);
@@ -86,7 +85,6 @@ public class GameplayScreen extends AbstractGameScreen {
     }
 
     private void renderWorld() {
-        // TODO Check Vsync?
         renderTick++;
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
