@@ -43,7 +43,7 @@ public class WorldController {
     private void initialize() {
         initializeCamera();
         initializeInputProcessor();
-        initializeMap(); // TODO Move to GameplayStateInitialize or LoadGameplay screen
+        initializeMap();
     }
 
     private void initializeCamera() {
