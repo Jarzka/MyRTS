@@ -120,7 +120,6 @@ public class WorldRenderer implements Disposable {
                     unitToRender = unitClone;
                 }
 
-
                 batch.begin();
                 Sprite sprite = SpriteContainer.getInstance().getSprite("m4-stopped-0");
                 sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2 - 70);

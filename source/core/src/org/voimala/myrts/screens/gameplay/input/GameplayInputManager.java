@@ -26,8 +26,8 @@ public class GameplayInputManager {
 
     private Rectangle unitSelectionRectangle;
     private boolean isDrawingRectangle = false;
-    private float rectangleStartX = -1;
-    private float rectangleStartY = -1;
+    private float rectangleStartXScreen = -1;
+    private float rectangleStartYScreen = -1;
 
     /** Returns null if there is no active selection rectangle. */
     public Rectangle getUnitSelectionRectangle() {
@@ -126,18 +126,41 @@ public class GameplayInputManager {
 
             if (!isDrawingRectangle) {
                 isDrawingRectangle = true;
-                rectangleStartX = Gdx.input.getX();
-                rectangleStartY = Gdx.graphics.getHeight() - Gdx.input.getY();
+                rectangleStartXScreen = Gdx.input.getX();
+                rectangleStartYScreen = Gdx.input.getY();
             }
 
-            unitSelectionRectangle.x = rectangleStartX;
-            unitSelectionRectangle.y = rectangleStartY;
-            unitSelectionRectangle.width = Gdx.input.getX() - rectangleStartX;
-            unitSelectionRectangle.height = (Gdx.graphics.getHeight() - Gdx.input.getY()) - rectangleStartY;
+            // Screen coordinates ("y goes down") are converted to libgdx coordinates ("y goes up") for rectangle
+
+            if (Gdx.input.getX() > rectangleStartXScreen && Gdx.input.getY() < rectangleStartYScreen) {
+                // Top right
+                unitSelectionRectangle.x = rectangleStartXScreen;
+                unitSelectionRectangle.y = Gdx.graphics.getHeight() - rectangleStartYScreen;
+                unitSelectionRectangle.width = Math.abs(Gdx.input.getX() - rectangleStartXScreen);
+                unitSelectionRectangle.height = Math.abs(Gdx.input.getY() - rectangleStartYScreen);
+            } else if (Gdx.input.getX() > rectangleStartXScreen && Gdx.input.getY() > rectangleStartYScreen) {
+                // Bottom right
+                unitSelectionRectangle.x = rectangleStartXScreen;
+                unitSelectionRectangle.y = Gdx.graphics.getHeight() - Gdx.input.getY();
+                unitSelectionRectangle.width = Math.abs(Gdx.input.getX() - rectangleStartXScreen);
+                unitSelectionRectangle.height = Math.abs(Gdx.input.getY() - rectangleStartYScreen);
+            } else if (Gdx.input.getX() < rectangleStartXScreen && Gdx.input.getY() > rectangleStartYScreen) {
+                // Bottom left
+                unitSelectionRectangle.x = Gdx.input.getX();
+                unitSelectionRectangle.y = Gdx.graphics.getHeight() - Gdx.input.getY();
+                unitSelectionRectangle.width = Math.abs(Gdx.input.getX() - rectangleStartXScreen);
+                unitSelectionRectangle.height = Math.abs(Gdx.input.getY() - rectangleStartYScreen);
+            } else if (Gdx.input.getX() < rectangleStartXScreen && Gdx.input.getY() < rectangleStartYScreen) {
+                // Top left
+                unitSelectionRectangle.x = Gdx.input.getX();
+                unitSelectionRectangle.y = Gdx.graphics.getHeight() - rectangleStartYScreen;
+                unitSelectionRectangle.width = Math.abs(Gdx.input.getX() - rectangleStartXScreen);
+                unitSelectionRectangle.height = Math.abs(Gdx.input.getY() - rectangleStartYScreen);
+            }
         } else {
             isDrawingRectangle = false;
-            rectangleStartX = -1;
-            rectangleStartY = -1;
+            rectangleStartXScreen = -1;
+            rectangleStartYScreen = -1;
             unitSelectionRectangle = null;
         }
     }
