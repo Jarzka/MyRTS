@@ -78,7 +78,7 @@ public class WorldRenderer implements Disposable {
         if (renderMode == RenderMode.GAME_STATE) {
             renderUnits();
         } else if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
-            renderUnitsWithPhysicsPrediction();
+            renderUnitsWithPhysicsPrediction(); // TODO Too much code duplication
         }
     }
 
@@ -138,7 +138,7 @@ public class WorldRenderer implements Disposable {
                 shapeRenderer.rect(unitTopLeftScreenCoordinates.x,
                         unitTopLeftScreenCoordinates.y,
                         unitTopRightScreenCoordinates.x - unitTopLeftScreenCoordinates.x,
-                        (float) (Gdx.graphics.getPpiY() * 0.1)); // TODO ppi is not supported on the desktop
+                        10);
                 shapeRenderer.end();
             }
         }
@@ -165,7 +165,7 @@ public class WorldRenderer implements Disposable {
                     shapeRenderer.rect(unitTopLeftScreenCoordinates.x,
                             unitTopLeftScreenCoordinates.y,
                             unitTopRightScreenCoordinates.x - unitTopLeftScreenCoordinates.x,
-                            (float) (Gdx.graphics.getPpiY() * 0.1)); // TODO ppi is not supported on the desktop
+                            10);
                     shapeRenderer.end();
                 } catch (CloneNotSupportedException e) {
                     Gdx.app.debug(TAG, "ERROR: " + e.getMessage());
