@@ -88,7 +88,7 @@ public class WorldRenderer implements Disposable {
         renderHud();
         renderUnitSelectionRectangle();
         renderInfoText();
-        renderChat();
+        renderChat(); // TODO Consumes lots of processing power.
 
         lastRenderTimestamp = System.currentTimeMillis();
     }
@@ -229,16 +229,17 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderChatMessages() {
+        hudBatch.begin();
         int numberOfMessages = 10;
         String[] chatMessages = Chat.getInstance().getNewestChatMessagesForChatBox(numberOfMessages);
         for (int i = 0; i < chatMessages.length; i++) {
-            hudBatch.begin();
             defaultFont.draw(hudBatch,
                     chatMessages[i],
                     chatMessagesXScreen,
                     Gdx.graphics.getHeight() - chatMessagesYScreen + defaultFont.getLineHeight() + i * defaultFont.getLineHeight());
-            hudBatch.end();
+
         }
+        hudBatch.end();
 
     }
 
