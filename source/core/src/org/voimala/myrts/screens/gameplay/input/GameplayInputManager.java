@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import org.voimala.myrts.app.GameMain;
-import org.voimala.myrts.networking.Chat;
 import org.voimala.myrts.networking.ListenSocketThread;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
@@ -14,6 +13,8 @@ import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
 import org.voimala.myrts.screens.gameplay.units.Unit;
+
+import java.util.ArrayList;
 
 public class GameplayInputManager {
 
@@ -34,6 +35,7 @@ public class GameplayInputManager {
 
     private boolean isChatTypingOn = false;
     private String userChatMessage = "";
+    private ArrayList<PlayerInput> playerInputs = new ArrayList<PlayerInput>();
 
     /** Returns null if there is no active selection rectangle. */
     public Rectangle getUnitSelectionRectangle() {
@@ -231,7 +233,7 @@ public class GameplayInputManager {
             unit.getMovement().setPathPoint(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y));
         } else if (worldController.getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
             // Send command to the server
-            String message = RTSProtocolManager.getInstance().createNetworkMessageMoveUnit(
+            String message = RTSProtocolManager.getInstance().createNetworkMessageInputMoveUnit(
                     unit.getObjectId(),
                     mouseLocationInWorld);
             ListenSocketThread listenSocketThread = NetworkManager.getInstance().getClientThread();

@@ -28,6 +28,14 @@ public class GameplayScreen extends AbstractGameScreen {
     private long lastWorldUpdateTimestamp = 0;
     private long worldUpdateTick = 0;
     private long renderTick = 0;
+    /** SimTick is used for network communication.
+     * 1 simTick = 5 world update ticks by default.
+     * When a new SimTick is reached, the game executes other player's input information.
+     * If such information is not available, wait for it.
+     */
+    private long simTick = 0;
+    private boolean isWaitingInputForNextSimTick = false;
+    private boolean isNoInputSentForTheNextTurn = false;
 
     private GameplayInputProcessor inputHandler = new GameplayInputProcessor(this);
     private GameplayInputManager gameplayInputManager;
@@ -50,6 +58,7 @@ public class GameplayScreen extends AbstractGameScreen {
     private void initializeGameMode() {
         if (NetworkManager.getInstance().getClientConnectionState() == ConnectionState.CONNECTED) {
             setGameMode(GameMode.MULTIPLAYER);
+            simTick = 1;
         } else {
             GameMain.getInstance().getPlayer().setNumber(1);
             GameMain.getInstance().getPlayer().setTeam(1);
@@ -81,6 +90,7 @@ public class GameplayScreen extends AbstractGameScreen {
     }
 
     public void handleUserInput(float deltaTime) {
+        // TODO What to do when the game is waiting input from the network?
         gameplayInputManager.update();
     }
 
@@ -88,7 +98,48 @@ public class GameplayScreen extends AbstractGameScreen {
         if (gameMode == GameMode.SINGLEPLAYER) {
             updateWorldUsingVariablePhysics(deltaTime);
         } else if (gameMode == GameMode.MULTIPLAYER) {
-            updateWorldUsingFixedPhysics();
+            if (!isWaitingInputForNextSimTick) {
+                updateWorldUsingFixedPhysics();
+            }
+
+            // New SimTick reached.
+            if (worldUpdateTick % 5.0 == 0 && gameMode == GameMode.MULTIPLAYER) {
+                handleNewSimTick(); // TODO Move to Network Manager or create a new SimTickCommunication class?
+            }
+        }
+    }
+
+    private void handleNewSimTick() {
+        isWaitingInputForNextSimTick = true;
+
+        if (checkInputInfoForNextSimTick()) {
+            // TODO If no input in this SimTick, send "no input"
+            checkAndSendNoInputIfNeeded();
+            isWaitingInputForNextSimTick = false;
+            isNoInputSentForTheNextTurn = false;
+            simTick++;
+        }
+    }
+
+    /** @return True if input ok for the next SimTick. */
+    private boolean checkInputInfoForNextSimTick() {
+        // We never wait input for SimTick 2.
+        if (simTick == 1) {
+            return true;
+        }
+
+        /* TODO Check that we have input information for the next SimTick so that we can
+        continue executing the simulation. */
+
+        return false;
+    }
+
+    private void checkAndSendNoInputIfNeeded() {
+        if (!isNoInputSentForTheNextTurn) {
+            NetworkManager.getInstance().getClientThread().sendMessage(
+                    RTSProtocolManager.getInstance().createNetworkMessageInputNoInput(simTick));
+            );
+            isNoInputSentForTheNextTurn = true;
         }
     }
 
@@ -105,7 +156,6 @@ public class GameplayScreen extends AbstractGameScreen {
             float deltaTime = (float) 1 / (float) fixedPhysicsFps;
             worldController.updateWorld(deltaTime);
             worldUpdateTick++;
-
             lastWorldUpdateTimestamp = System.currentTimeMillis();
         }
     }
@@ -186,4 +236,11 @@ public class GameplayScreen extends AbstractGameScreen {
         return gameplayInputManager;
     }
 
+    public long getSimTick() {
+        return simTick;
+    }
+
+    public boolean isWaitingInputForNextSimTick() {
+        return isWaitingInputForNextSimTick;
+    }
 }

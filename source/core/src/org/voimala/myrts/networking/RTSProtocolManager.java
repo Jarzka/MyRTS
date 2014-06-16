@@ -245,10 +245,15 @@ public class RTSProtocolManager {
         return false;
     }
 
-    public String createNetworkMessageMoveUnit(String unitId,
-                                               final Vector3 mouseLocationInWorld) {
-        // Compiler should use StringBuilder automatically.
-        return "<UNIT_MOVE|" + unitId + "|" + mouseLocationInWorld.x + "|" + mouseLocationInWorld.y + ">";
+    public String createNetworkMessageInputMoveUnit(final String unitId,
+                                                    final int simTick,
+                                                    final Vector3 mouseLocationInWorld) {
+        return "<UNIT_MOVE|" + simTick + "|" + unitId + "|" + mouseLocationInWorld.x + "|" + mouseLocationInWorld.y + ">";
+    }
+
+
+    public String createNetworkMessageInputNoInput(final int simTick) {
+        return "<INPUT|" + simTick + "|NO_INPUT>";
     }
 
     public String createNetworkMessageChatMessage(final String nick, final String message) {

@@ -89,7 +89,8 @@ public class WorldRenderer implements Disposable {
         renderHud();
         renderUnitSelectionRectangle();
         renderInfoText();
-        renderChat(); // TODO Consumes lots of processing power.
+        renderNetworkText();
+        renderChat();
 
         lastRenderTimestamp = System.currentTimeMillis();
     }
@@ -203,14 +204,25 @@ public class WorldRenderer implements Disposable {
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 2);
         defaultFont.draw(hudBatch,
-                "Render Tick: " + worldController.getGameplayScreen().getRenderTick(),
+                "Render Frame: " + worldController.getGameplayScreen().getRenderTick(),
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 3);
         defaultFont.draw(hudBatch,
-                "SimTick: 0",
+                "SimTick: " + worldController.getGameplayScreen().getSimTick(),
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 4);
         hudBatch.end();
+    }
+
+    private void renderNetworkText() {
+        if (worldController.getGameplayScreen().isWaitingInputForNextSimTick()) {
+            hudBatch.begin();
+            defaultFont.draw(hudBatch,
+                    "Waiting for player...",
+                    10,
+                    Gdx.graphics.getHeight() - 200);
+            hudBatch.end();
+        }
     }
 
     private void renderChat() {
