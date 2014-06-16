@@ -2,18 +2,11 @@ package org.voimala.myrts.screens.gameplay.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
-import org.voimala.myrts.screens.gameplay.input.GameplayInputManager;
-import org.voimala.myrts.screens.gameplay.input.GameplayInputProcessor;
-import org.voimala.myrts.screens.gameplay.states.AbstractGameplayState;
-import org.voimala.myrts.screens.gameplay.units.Unit;
+import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrts.screens.gameplay.units.UnitContainer;
 import org.voimala.myrts.screens.gameplay.units.infantry.M4Unit;
-import org.voimala.myrts.graphics.SpriteContainer;
 
 public class WorldController {
 
@@ -57,7 +50,7 @@ public class WorldController {
     private void createTestUnit() {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 3; j++) {
-                M4Unit unit = new M4Unit(String.valueOf(i) + String.valueOf(j));
+                M4Unit unit = new M4Unit(i + j);
                 unit.setPosition(new Vector2(500 + TILE_SIZE_PIXELS * i, 500 + TILE_SIZE_PIXELS  * j));
                 unit.setTeam(1);
                 unit.setPlayerNumber(1);
@@ -68,7 +61,7 @@ public class WorldController {
 
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 3; j++) {
-                M4Unit unit = new M4Unit(String.valueOf(i) + String.valueOf(j));
+                M4Unit unit = new M4Unit(i + j * 100);
                 unit.setPosition(new Vector2(4000 + TILE_SIZE_PIXELS * i, 4000 + TILE_SIZE_PIXELS  * j));
                 unit.setPlayerNumber(2);
                 unit.setTeam(2);
@@ -87,7 +80,7 @@ public class WorldController {
     }
 
     private void updateUnits(float deltaTime) {
-        for (Unit unit : unitContainer.getUnits()) {
+        for (AbstractUnit unit : unitContainer.getUnits()) {
             unit.update(deltaTime);
         }
     }
@@ -97,9 +90,10 @@ public class WorldController {
     }
 
     /** Returns null if unit is not found. */
-    public Unit findUnitById(final String id) {
-        for (Unit unit : unitContainer.getUnits()) {
-            if (unit.getObjectId().equals(id)) {
+    public AbstractUnit findUnitById(final long id) {
+        // TODO Do not use linear search here?
+        for (AbstractUnit unit : unitContainer.getUnits()) {
+            if (unit.getObjectId() == id) {
                 return unit;
             }
         }

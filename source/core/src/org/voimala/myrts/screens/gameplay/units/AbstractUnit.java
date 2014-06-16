@@ -1,25 +1,24 @@
 package org.voimala.myrts.screens.gameplay.units;
 
 import org.voimala.myrts.exceptions.GameLogicException;
+import org.voimala.myrts.screens.gameplay.units.movements.AbstractMovement;
 import org.voimala.myrts.screens.gameplay.world.AbstractGameObject;
-import org.voimala.myrts.screens.gameplay.units.movements.Movement;
 
-public abstract class Unit extends AbstractGameObject {
+public abstract class AbstractUnit extends AbstractGameObject {
 
     protected Object collisionMask;
     protected int player = 0;
     protected int team = 0;
-    protected Movement movement = null;
+    protected AbstractMovement movement = null;
     protected UnitType type;
 
     private boolean isSelected = false;
-    private String id;
 
-    public Unit(final String id) {
+    public AbstractUnit(final long id) {
         initialize(id);
     }
 
-    private void initialize(final String id) {
+    private void initialize(final long id) {
         initializeId(id);
         initializeDimensions();
         initializeCollisionMask();
@@ -27,9 +26,9 @@ public abstract class Unit extends AbstractGameObject {
     }
 
     @Override
-    public Unit clone() throws CloneNotSupportedException {
-        Unit unitClone = (Unit) super.clone();
-        Movement movementClone = movement.clone();
+    public AbstractUnit clone() throws CloneNotSupportedException {
+        AbstractUnit unitClone = (AbstractUnit) super.clone();
+        AbstractMovement movementClone = movement.clone();
         movementClone.setOwner(unitClone);
         // Object collisionMaskClone = collisionMask.clone(); TODO CLONE COLLISION MASK
         unitClone.setMovement(movementClone);
@@ -41,7 +40,7 @@ public abstract class Unit extends AbstractGameObject {
     protected abstract void initializeCollisionMask();
     protected abstract void initializeMovement();
 
-    private void initializeId(final String id) {
+    private void initializeId(final long id) {
         this.ObjectId = id;
     }
 
@@ -106,11 +105,11 @@ public abstract class Unit extends AbstractGameObject {
         }
     }
 
-    public void setMovement(final Movement movement) {
+    public void setMovement(final AbstractMovement movement) {
         this.movement = movement;
     }
 
-    public Movement getMovement() {
+    public AbstractMovement getMovement() {
         return movement;
     }
 }

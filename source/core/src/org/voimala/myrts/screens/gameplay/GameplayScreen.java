@@ -138,7 +138,6 @@ public class GameplayScreen extends AbstractGameScreen {
         if (!isNoInputSentForTheNextTurn) {
             NetworkManager.getInstance().getClientThread().sendMessage(
                     RTSProtocolManager.getInstance().createNetworkMessageInputNoInput(simTick));
-            );
             isNoInputSentForTheNextTurn = true;
         }
     }

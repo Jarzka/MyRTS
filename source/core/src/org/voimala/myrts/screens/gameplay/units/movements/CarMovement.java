@@ -1,18 +1,18 @@
 package org.voimala.myrts.screens.gameplay.units.movements;
 
 import com.badlogic.gdx.math.Vector2;
-import org.voimala.myrts.screens.gameplay.units.Unit;
+import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
 import org.voimala.utility.MathHelper;
 import org.voimala.utility.RotationDirection;
 
-public class CarMovement extends Movement {
+public class CarMovement extends AbstractMovement {
 
     private double acceleratorPedal = 0; /// 0 = no acceleration, 1 = full acceleration.
     private double steeringWheel = 0; // 1 = full clockwise, -1 = full counter-clockwise
     private int currentRotationDirection = 0; // 1 = clockwise, -1 = counter-clockwise
     private boolean stopAtFinalPoint = true;
 
-    public CarMovement(Unit ownerUnit) {
+    public CarMovement(AbstractUnit ownerUnit) {
         super(ownerUnit);
     }
 

@@ -2,12 +2,12 @@ package org.voimala.myrts.screens.gameplay.units.movements;
 
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.exceptions.GameLogicException;
-import org.voimala.myrts.screens.gameplay.units.Unit;
+import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
 import org.voimala.utility.MathHelper;
 
 import java.util.ArrayList;
 
-public abstract class Movement implements Cloneable {
+public abstract class AbstractMovement implements Cloneable {
     protected double currentVelocity = 0; /// px/s
     protected double maxVelocity = 0; /// px/s
     protected double acceleration = 0; /// px/s
@@ -16,7 +16,7 @@ public abstract class Movement implements Cloneable {
     protected double currentRotationVelocity = 0; /// px/s
     protected double rotationAcceleration = 0; /// px/s
     protected double rotationDeceleration = 0; /// px/s
-    protected Unit ownerUnit = null;
+    protected AbstractUnit ownerUnit = null;
     protected ArrayList<Vector2> pathPoints = new ArrayList<Vector2>();
 
     private void checkMaxRotationVelocity(double maxRotationVelocity) {
@@ -27,8 +27,8 @@ public abstract class Movement implements Cloneable {
 
     @Override
     /** The owner unit of the movement is the same as the original owner.  */
-    public Movement clone() throws CloneNotSupportedException {
-        Movement movementClone = (Movement) super.clone();
+    public AbstractMovement clone() throws CloneNotSupportedException {
+        AbstractMovement movementClone = (AbstractMovement) super.clone();
         ArrayList<Vector2> pathPointsClone = clonePathPoints();
         movementClone.setPathPoints(pathPointsClone);
 
@@ -78,7 +78,7 @@ public abstract class Movement implements Cloneable {
         }
     }
 
-    public Movement(final Unit ownerUnit) {
+    public AbstractMovement(final AbstractUnit ownerUnit) {
         this.ownerUnit = ownerUnit;
     }
 
@@ -162,7 +162,7 @@ public abstract class Movement implements Cloneable {
         this.pathPoints = pathPoints;
     }
 
-    public void setOwner(Unit owner) {
+    public void setOwner(AbstractUnit owner) {
         this.ownerUnit = owner;
     }
 }

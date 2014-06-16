@@ -2,11 +2,9 @@ package org.voimala.myrts.networking;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.screens.ScreenName;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
-import org.voimala.myrts.screens.gameplay.units.Unit;
 
 /** This class is used to send network messages that respect the game's protocol. */
 
@@ -35,7 +33,8 @@ public class RTSProtocolManager {
     public boolean handleNetworkMessage(final String message, final ListenSocketThread listenSocketThread) {
         try {
             if (handleNetworkMessageMotd(message)
-                    || handleNetworkMessageMoveUnit(message, listenSocketThread.getSocketType())
+                    || handleNetworkMessageInputMoveUnit(message, listenSocketThread)
+                    || handleNetworkMessageInputNoInput(message, listenSocketThread)
                     || handleNetworkMessageChat(message, listenSocketThread.getSocketType())
                     || handleNetworkMessagePing(message, listenSocketThread.getSocketType())
                     || handleNetworkMessagePong(message, listenSocketThread.getSocketType())
@@ -81,22 +80,52 @@ public class RTSProtocolManager {
         return messageSplitted;
     }
 
-    private boolean handleNetworkMessageMoveUnit(String message, final SocketType source) {
-        if (message.startsWith("<UNIT_MOVE|")) {
-            if (source == SocketType.SERVER_SOCKET) { // The message came from the server
+    private boolean handleNetworkMessageInputMoveUnit(String message, final ListenSocketThread client) {
+        if (message.startsWith("<INPUT|UNIT_MOVE|")) {
+            if (client.getSocketType() == SocketType.SERVER_SOCKET) { // The message came from the server
                 String messageSplitted[] = splitNetworkMessage(message);
+                // TODO Check player number and that the player owns the selected unit.
                 if (worldController != null) {
-                    Unit unit = worldController.findUnitById(messageSplitted[1]);
-                    if (unit != null) {
-                        unit.getMovement().setPathPoint(
-                                new Vector2(Float.valueOf(messageSplitted[2]),
-                                        Float.valueOf(messageSplitted[3])));
-                    }
+                    worldController.getGameplayScreen().getGameplayInputManager().addPlayerInputToQueue(message);
                 }
-            } else if (source == SocketType.PLAYER_SOCKET) { // The message came to the server from a player
+            } else if (client.getSocketType() == SocketType.PLAYER_SOCKET) { // The message came to the server from a player
                 ServerThread server = NetworkManager.getInstance().getServerThread();
                 if (server != null) {
-                    server.sendMessageToAllClients(message);
+                    String messageSplitted[] = splitNetworkMessage(message);
+                    server.sendMessageToAllClients(
+                            RTSProtocolManager.getInstance().createNetworkMessageInputMoveUnit(
+                                    Long.valueOf(messageSplitted[3]),
+                                    Long.valueOf(messageSplitted[2]),
+                                    client.getPlayerInfo().getNumber(),
+                                    new Vector2(Float.valueOf(messageSplitted[4]),
+                                            Float.valueOf(messageSplitted[5])))
+                    );
+                }
+
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean handleNetworkMessageInputNoInput(String message, final ListenSocketThread client) {
+        if (message.startsWith("<INPUT|NO_INPUT|")) {
+            if (client.getSocketType() == SocketType.SERVER_SOCKET) { // The message came from the server
+                String messageSplitted[] = splitNetworkMessage(message);
+                if (worldController != null) {
+                    worldController.getGameplayScreen().getGameplayInputManager().addPlayerInputToQueue(message);
+                }
+            } else if (client.getSocketType() == SocketType.PLAYER_SOCKET) { // The message came to the server from a player
+                ServerThread server = NetworkManager.getInstance().getServerThread();
+                if (server != null) {
+                    String messageSplitted[] = splitNetworkMessage(message);
+                    server.sendMessageToAllClients(
+                            RTSProtocolManager.getInstance().createNetworkMessageInputNoInput(
+                                    Long.valueOf(messageSplitted[2]),
+                                    client.getPlayerInfo().getNumber())
+                    );
                 }
 
             }
@@ -210,7 +239,6 @@ public class RTSProtocolManager {
         return false;
     }
 
-
     private boolean handleNetworkMessageNewConnectionInfo(final String message, final ListenSocketThread listenSocketThread) {
         if (message.startsWith("<NEW_CONNECTION_INFO|")) {
             if (listenSocketThread.getSocketType() == SocketType.PLAYER_SOCKET) {
@@ -245,15 +273,25 @@ public class RTSProtocolManager {
         return false;
     }
 
-    public String createNetworkMessageInputMoveUnit(final String unitId,
-                                                    final int simTick,
-                                                    final Vector3 mouseLocationInWorld) {
-        return "<UNIT_MOVE|" + simTick + "|" + unitId + "|" + mouseLocationInWorld.x + "|" + mouseLocationInWorld.y + ">";
+    public String createNetworkMessageInputMoveUnit(final long unitId,
+                                                    final long simTick,
+                                                    final Vector2 mouseLocationInWorld) {
+        return "<INPUT|UNIT_MOVE|" + simTick + "|" + unitId + "|" + mouseLocationInWorld.x + "|" + mouseLocationInWorld.y + ">";
     }
 
+    public String createNetworkMessageInputMoveUnit(final long unitId,
+                                                    final long simTick,
+                                                    final int playerNumber,
+                                                    final Vector2 mouseLocationInWorld) {
+        return "<INPUT|UNIT_MOVE|" + playerNumber + "|" + simTick + "|" + unitId + "|" + mouseLocationInWorld.x + "|" + mouseLocationInWorld.y + ">";
+    }
 
-    public String createNetworkMessageInputNoInput(final int simTick) {
-        return "<INPUT|" + simTick + "|NO_INPUT>";
+    public String createNetworkMessageInputNoInput(final long simTick) {
+        return "<INPUT|NO_INPUT|" + simTick + ">";
+    }
+
+    public String createNetworkMessageInputNoInput(final long simTick, final int playerNumber) {
+        return "<INPUT|NO_INPUT|" + playerNumber + "|" + simTick + ">";
     }
 
     public String createNetworkMessageChatMessage(final String nick, final String message) {

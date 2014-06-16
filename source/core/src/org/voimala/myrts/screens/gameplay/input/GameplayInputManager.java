@@ -10,9 +10,9 @@ import org.voimala.myrts.networking.ListenSocketThread;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
+import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
-import org.voimala.myrts.screens.gameplay.units.Unit;
 
 import java.util.ArrayList;
 
@@ -99,7 +99,7 @@ public class GameplayInputManager {
     private void handleMouseInputSelectSingleUnit() {
         if (mouseButtonLeftPressedLastFrame && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             unselectAllUnits();
-            for (Unit unit : worldController.getUnitContainer().getUnits()) {
+            for (AbstractUnit unit : worldController.getUnitContainer().getUnits()) {
                 Vector3 mouseLocationInWorld = worldController.getWorldCamera().unproject(new Vector3(
                         Gdx.input.getX(),
                         Gdx.input.getY(),
@@ -138,7 +138,7 @@ public class GameplayInputManager {
                     rectangleBottomRightWorld.x - rectangleBottomLeftWorld.x,
                     rectangleTopRightWorld.y - rectangleBottomRightWorld.y);
 
-            for (Unit unit : worldController.getUnitContainer().getUnits()) {
+            for (AbstractUnit unit : worldController.getUnitContainer().getUnits()) {
                 if (rectangleWorld.contains(unit.getX(), unit.getY())
                         && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
                     unit.setSelected(true);
@@ -213,7 +213,7 @@ public class GameplayInputManager {
         if (cameraManager.timeSinceCameraMovementStoppedInMs() > 100
                 && mouseButtonRightPressedLastFrame
                 && !Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-            for (Unit unit : worldController.getUnitContainer().getUnits()) {
+            for (AbstractUnit unit : worldController.getUnitContainer().getUnits()) {
                 if (unit.isSelected() && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
                     handleCommandMoveUnit(unit);
                 }
@@ -221,7 +221,7 @@ public class GameplayInputManager {
         }
     }
 
-    private void handleCommandMoveUnit(Unit unit) {
+    private void handleCommandMoveUnit(AbstractUnit unit) {
         Vector3 mouseLocationInWorld = worldController.getWorldCamera().unproject(
                 new Vector3(Gdx.input.getX(),
                 Gdx.input.getY(),
@@ -235,7 +235,8 @@ public class GameplayInputManager {
             // Send command to the server
             String message = RTSProtocolManager.getInstance().createNetworkMessageInputMoveUnit(
                     unit.getObjectId(),
-                    mouseLocationInWorld);
+                    worldController.getGameplayScreen().getSimTick(),
+                    new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y));
             ListenSocketThread listenSocketThread = NetworkManager.getInstance().getClientThread();
             if (listenSocketThread != null) {
                 listenSocketThread.sendMessage(message);
@@ -245,7 +246,7 @@ public class GameplayInputManager {
 
 
     private void unselectAllUnits() {
-        for (Unit unit : worldController.getUnitContainer().getUnits()) {
+        for (AbstractUnit unit : worldController.getUnitContainer().getUnits()) {
             unit.setSelected(false);
         }
     }
@@ -266,5 +267,21 @@ public class GameplayInputManager {
 
     public boolean isChatTypingOn() {
         return isChatTypingOn;
+    }
+
+    public void addPlayerInputToQueue(final String inputMessage) {
+        // TODO Parse input
+        int asd = 5;
+    }
+
+    public void performNetworkInput() {
+        /* TODO
+        AbstractUnit unit = worldController.findUnitById(messageSplitted[3]);
+        if (unit != null) {
+            unit.getMovement().setPathPoint(
+                    new Vector2(Float.valueOf(messageSplitted[4]),
+                            Float.valueOf(messageSplitted[5])));
+        }
+        */
     }
 }

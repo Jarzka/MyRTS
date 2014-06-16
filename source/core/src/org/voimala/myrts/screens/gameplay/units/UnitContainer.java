@@ -4,17 +4,17 @@ import java.util.ArrayList;
 
 public class UnitContainer {
 
-    private ArrayList<Unit> units = new ArrayList<Unit>();
+    private ArrayList<AbstractUnit> units = new ArrayList<AbstractUnit>();
 
-    public ArrayList<Unit> getUnits() {
+    public ArrayList<AbstractUnit> getUnits() {
         return units;
     }
 
-    public void addUnit(final Unit unit) {
+    public void addUnit(final AbstractUnit unit) {
         units.add(unit);
     }
 
-    public void removeUnit(final Unit unit) {
+    public void removeUnit(final AbstractUnit unit) {
         units.remove(unit);
     }
 

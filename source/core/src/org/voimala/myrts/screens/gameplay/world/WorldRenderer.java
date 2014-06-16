@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.networking.Chat;
-import org.voimala.myrts.screens.gameplay.units.Unit;
+import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrts.graphics.SpriteContainer;
 import org.voimala.utility.ArrayHelper;
 
@@ -108,12 +108,12 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnits(final RenderMode renderMode) {
-        for (Unit unit : worldController.getUnitContainer().getUnits()) {
+        for (AbstractUnit unit : worldController.getUnitContainer().getUnits()) {
             try {
-                Unit unitToRender = unit;
+                AbstractUnit unitToRender = unit;
 
                 if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
-                    Unit unitClone = unit.clone();
+                    AbstractUnit unitClone = unit.clone();
                     float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
                     unitClone.update(deltaTime);
                     unitToRender = unitClone;
@@ -133,13 +133,13 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnitEnergyBars(final RenderMode renderMode) {
-        for (Unit unit : worldController.getUnitContainer().getUnits()) {
+        for (AbstractUnit unit : worldController.getUnitContainer().getUnits()) {
             if (unit.isSelected()) {
                 try {
-                    Unit unitToRender = unit;
+                    AbstractUnit unitToRender = unit;
 
                     if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
-                        Unit unitClone = unit.clone();
+                        AbstractUnit unitClone = unit.clone();
                         float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
                         unitClone.update(deltaTime);
                         unitToRender = unitClone;

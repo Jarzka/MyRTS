@@ -4,9 +4,9 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.screens.gameplay.units.movements.CarMovement;
 
-public class M4Unit extends Infantry {
+public class M4Unit extends AbstractInfantry {
 
-    public M4Unit(final String id) {
+    public M4Unit(final long id) {
         super(id);
     }
 
