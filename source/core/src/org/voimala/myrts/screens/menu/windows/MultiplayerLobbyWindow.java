@@ -330,7 +330,7 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
     }
 
     private void updateChatMessages() {
-        textAreaChatMessages.setItems(Chat.getInstance().getChatMessagesForChatBox());
+        textAreaChatMessages.setItems(Chat.getInstance().getNewestChatMessagesAsStrings(100));
     }
 
     @Override

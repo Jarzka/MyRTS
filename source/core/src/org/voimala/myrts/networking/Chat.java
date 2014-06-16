@@ -22,27 +22,38 @@ public class Chat {
         return chatMessages;
     }
 
-    /** Returns the messages in the following format:
+    /** Returns the newest chat messages in the following format:
      * Author: message
-     * */
-    public String[] getChatMessagesForChatBox() {
-        String[] messages = new String[Chat.getInstance().getChatMessages().size()];
+     * The first string in the array contains the newest chat message, the second index contains
+     * the second newest message and so on.
+     */
+    public String[] getNewestChatMessagesAsStrings(int maxNumberOfMessages) {
+        ArrayList<String> messages = new ArrayList<String>();
 
         for (int i = 0; i < chatMessages.size(); i++) {
+            if (chatMessages.size() - i > maxNumberOfMessages) {
+                continue;
+            }
+
             if (chatMessages.get(i).getAuthor().toLowerCase().equals("server")) {
                 StringBuilder constructMessage = new StringBuilder();
                 constructMessage.append(chatMessages.get(i).getMessage());
-                messages[i] = constructMessage.toString();
+                messages.add(constructMessage.toString());
             } else {
                 StringBuilder constructMessage = new StringBuilder();
                 constructMessage.append(chatMessages.get(i).getAuthor());
                 constructMessage.append(": ");
                 constructMessage.append(chatMessages.get(i).getMessage());
-                messages[i] = constructMessage.toString();
+                messages.add(constructMessage.toString());
             }
         }
 
-        return messages;
+        String[] messagesArray = new String[messages.size()];
+        for (int i = 0; i < messagesArray.length; i++) {
+            messagesArray[i] = messages.get(i);
+        }
+
+        return messagesArray;
     }
 
     public void clearAllChatMessages() {
@@ -53,7 +64,4 @@ public class Chat {
         chatMessages.add(chatMessage);
     }
 
-    public String[] getNewestChatMessagesForChatBox(int maxNumberOfMessages) {
-        return getChatMessagesForChatBox(); // TODO Implement numberOfMessages
-    }
 }

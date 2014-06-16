@@ -15,6 +15,7 @@ import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.networking.Chat;
 import org.voimala.myrts.screens.gameplay.units.Unit;
 import org.voimala.myrts.graphics.SpriteContainer;
+import org.voimala.utility.ArrayHelper;
 
 public class WorldRenderer implements Disposable {
 
@@ -231,7 +232,8 @@ public class WorldRenderer implements Disposable {
     private void renderChatMessages() {
         hudBatch.begin();
         int numberOfMessages = 10;
-        String[] chatMessages = Chat.getInstance().getNewestChatMessagesForChatBox(numberOfMessages);
+        String[] chatMessages = Chat.getInstance().getNewestChatMessagesAsStrings(numberOfMessages);
+        chatMessages = ArrayHelper.reverseArray(chatMessages);
         for (int i = 0; i < chatMessages.length; i++) {
             defaultFont.draw(hudBatch,
                     chatMessages[i],
