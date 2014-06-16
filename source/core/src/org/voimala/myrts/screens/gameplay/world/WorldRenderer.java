@@ -27,7 +27,7 @@ public class WorldRenderer implements Disposable {
     private long lastRenderTimestamp = 0;
 
     private int chatMessagesXScreen = 80;
-    private int chatMessagesYScreen = Gdx.graphics.getHeight() - 150;
+    private int chatMessagesYScreen = Gdx.graphics.getHeight() - 70;
 
     private BitmapFont defaultFont;
 
@@ -230,19 +230,21 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderChatMessages() {
-        hudBatch.begin();
-        int numberOfMessages = 10;
-        String[] chatMessages = Chat.getInstance().getNewestChatMessagesAsStrings(numberOfMessages);
-        chatMessages = ArrayHelper.reverseArray(chatMessages);
-        for (int i = 0; i < chatMessages.length; i++) {
-            defaultFont.draw(hudBatch,
-                    chatMessages[i],
-                    chatMessagesXScreen,
-                    Gdx.graphics.getHeight() - chatMessagesYScreen + defaultFont.getLineHeight() + i * defaultFont.getLineHeight());
+        if (Chat.getInstance().getMillisecondsPassedSinceLastMessageReceived() < 10000
+                || worldController.getGameplayScreen().getGameplayInputManager().isChatTypingOn()) {
+            hudBatch.begin();
+            int numberOfMessages = 10;
+            String[] chatMessages = Chat.getInstance().getNewestChatMessagesAsStrings(numberOfMessages);
+            chatMessages = ArrayHelper.reverseArray(chatMessages);
+            for (int i = 0; i < chatMessages.length; i++) {
+                defaultFont.draw(hudBatch,
+                        chatMessages[i],
+                        chatMessagesXScreen,
+                        Gdx.graphics.getHeight() - chatMessagesYScreen + defaultFont.getLineHeight() + i * defaultFont.getLineHeight());
 
+            }
+            hudBatch.end();
         }
-        hudBatch.end();
-
     }
 
     public void resize(int width, int height) {

@@ -250,7 +250,11 @@ public class GameplayInputManager {
 
     public void handleUserChatInput(char character) {
         if (isChatTypingOn) { // TODO Backspace?
-            userChatMessage += character;
+            if (character == '\b') {
+                userChatMessage = userChatMessage.substring(0, userChatMessage.length() - 1);
+            } else {
+                userChatMessage += character;
+            }
         }
     }
 

@@ -7,6 +7,7 @@ public class Chat {
     private ArrayList<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
 
     private static Chat instanceOfThis;
+    private long latestMessageReceivedTimestamp = 0;
 
     private Chat() {}
 
@@ -62,6 +63,11 @@ public class Chat {
 
     public void addChatMessage(final ChatMessage chatMessage) {
         chatMessages.add(chatMessage);
+        latestMessageReceivedTimestamp = System.currentTimeMillis();
+    }
+
+    public long getMillisecondsPassedSinceLastMessageReceived() {
+        return System.currentTimeMillis() - latestMessageReceivedTimestamp;
     }
 
 }
