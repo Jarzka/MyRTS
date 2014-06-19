@@ -7,8 +7,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
+import org.voimala.myrts.screens.gameplay.input.commands.ExecuteCommandMethod;
 import org.voimala.myrts.screens.gameplay.input.commands.RTSCommandUnitMove;
 import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
+import org.voimala.myrts.screens.gameplay.world.GameMode;
 
 /** This class is used for handling local player input.
  * NOTE: Chat input is handled in GameplayChatInput class. */
@@ -198,8 +200,20 @@ public class GameplayInputManager {
                 new Vector3(Gdx.input.getX(),
                         Gdx.input.getY(),
                         0));
+
+        ExecuteCommandMethod method = ExecuteCommandMethod.EXECUTE_LOCALLY;
+        if (gameplayScreen.getWorldController().getGameplayScreen().getGameMode() == GameMode.SINGLEPLAYER) {
+            method = ExecuteCommandMethod.EXECUTE_LOCALLY;
+        } else if (gameplayScreen.getWorldController().getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
+            method = ExecuteCommandMethod.SEND_TO_NETWORK;
+        }
+
         gameplayScreen.getRTSCommandExecuter().executeCommand(
-                new RTSCommandUnitMove(unit.getObjectId(), mouseLocationInWorld.x, mouseLocationInWorld.y));
+                method,
+                new RTSCommandUnitMove(
+                        unit.getObjectId(),
+                        mouseLocationInWorld.x,
+                        mouseLocationInWorld.y));
     }
 
     private void unselectAllUnits() {

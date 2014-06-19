@@ -12,17 +12,19 @@ import org.voimala.myrts.screens.gameplay.world.GameMode;
 /** This class is used to perform RTS commands. */
 public class RTSCommandExecuter {
 
+    private static final String TAG = RTSCommandExecuter.class.getName();
+
     private GameplayScreen gameplayScreen;
 
     public RTSCommandExecuter(GameplayScreen gameplayScreen) {
         this.gameplayScreen = gameplayScreen;
     }
 
-    public void executeCommand(final AbstractRTSCommand command) {
+    public void executeCommand(final ExecuteCommandMethod method, final AbstractRTSCommand command) {
         if (command != null) {
             if (command.getCommandName() == RTSCommand.MOVE_UNIT) {
                 RTSCommandUnitMove moveCommand = (RTSCommandUnitMove) command;
-                handleCommandMoveUnit(gameplayScreen.getWorldController().getUnitContainer().findUnitById(
+                handleCommandMoveUnit(method, gameplayScreen.getWorldController().getUnitContainer().findUnitById(
                                 moveCommand.getObjectId()), moveCommand.getTargetX(), moveCommand.getTargetY()
                 );
             }
@@ -30,11 +32,27 @@ public class RTSCommandExecuter {
 
     }
 
-    private void handleCommandMoveUnit(AbstractUnit unit, final float targetX, final float targetY) {
-        // TODO What if the command came from the network?
+    private void handleCommandMoveUnit(final ExecuteCommandMethod method, AbstractUnit unit, final float targetX, final float targetY) {
+        if (method == ExecuteCommandMethod.EXECUTE_LOCALLY) {
+            unit.getMovement().setPathPoint(new Vector2(targetX, targetY));
+        }
+
+        if (method == ExecuteCommandMethod.SEND_TO_NETWORK) {
+            String message = RTSProtocolManager.getInstance().createNetworkMessageInputMoveUnit(
+                    unit.getObjectId(),
+                    gameplayScreen.getWorldController().getGameplayScreen().getMultiplayerSynchronizationManager().getSimTick(),
+                    new Vector2(targetX, targetY));
+            ListenSocketThread listenSocketThread = NetworkManager.getInstance().getClientThread();
+            if (listenSocketThread != null) {
+                listenSocketThread.sendMessage(message);
+            } else {
+                Gdx.app.debug(TAG, "WARNING: Unable to send move command to the network because socket is null.");
+            }
+        }
+
+        /* OLD VERSION
         if (gameplayScreen.getWorldController().getGameplayScreen().getGameMode() == GameMode.SINGLEPLAYER) {
             // Process command locally
-            unit.getMovement().setPathPoint(new Vector2(targetX, targetY));
         } else if (gameplayScreen.getWorldController().getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
             // Send command to the server
             String message = RTSProtocolManager.getInstance().createNetworkMessageInputMoveUnit(
@@ -46,6 +64,7 @@ public class RTSCommandExecuter {
                 listenSocketThread.sendMessage(message);
             }
         }
+        */
     }
 
     /** @return null if message could not be constructed. */

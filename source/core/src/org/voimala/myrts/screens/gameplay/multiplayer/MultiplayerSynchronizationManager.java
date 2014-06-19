@@ -4,6 +4,7 @@ import org.voimala.myrts.networking.LocalMultiplayerInfo;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
+import org.voimala.myrts.screens.gameplay.input.commands.ExecuteCommandMethod;
 import org.voimala.myrts.screens.gameplay.input.commands.PlayerInput;
 import org.voimala.myrts.screens.gameplay.input.commands.RTSCommand;
 import org.voimala.myrts.screens.gameplay.input.commands.RTSCommandExecuter;
@@ -72,7 +73,9 @@ public class MultiplayerSynchronizationManager {
             List<PlayerInput> playerInputs = findInputsByPlayerNumberAndSimTick(i, simTick);
 
             for (PlayerInput playerInput : playerInputs) {
-                gameplayScreen.getRTSCommandExecuter().executeCommand(playerInput.getCommand());
+                gameplayScreen.getRTSCommandExecuter().executeCommand(
+                        ExecuteCommandMethod.EXECUTE_LOCALLY,
+                        playerInput.getCommand());
             }
         }
     }
