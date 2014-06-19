@@ -30,11 +30,6 @@ public class MultiplayerSynchronizationManager {
 
     /** @return True if input is ok for the next SimTick. */
     public boolean handleNewSimTick() {
-        // We never wait input for SimTick 2.
-        if (simTick == 1) {
-            return true;
-        }
-
         isWaitingInputForNextSimTick = true;
         /* Check that we have input information for the next SimTick so that we can
         * continue executing the simulation. If the input is not available for all players,
@@ -91,6 +86,8 @@ public class MultiplayerSynchronizationManager {
     }
 
     public boolean doesAllInputExist(final long simTick) {
+        if (checkFirstSimTickInput(simTick)) return true;
+
         for (int i = 1; i <= 8; i++) {
             if (!LocalMultiplayerInfo.getInstance().getSlots().get(i).startsWith("PLAYER")) {
                 continue; // No-one plays in this slot so we do not wait input from this slot.
@@ -105,7 +102,16 @@ public class MultiplayerSynchronizationManager {
     }
 
     public boolean doesPlayerInputExist(final int playerNumber, final long simTick) {
+        if (checkFirstSimTickInput(simTick)) return true;
         return findPlayerInput(playerNumber, simTick).length() != 0;
+    }
+
+    private boolean checkFirstSimTickInput(long simTick) {
+        // We never wait input for SimTick 2.
+        if (simTick == 1) {
+            return true;
+        }
+        return false;
     }
 
 
