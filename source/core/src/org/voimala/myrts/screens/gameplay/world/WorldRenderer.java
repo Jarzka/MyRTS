@@ -208,7 +208,7 @@ public class WorldRenderer implements Disposable {
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 3);
         defaultFont.draw(hudBatch,
-                "SimTick: " + worldController.getGameplayScreen().getSimTick(),
+                "SimTick: " + worldController.getGameplayScreen().getMultiplayerSynchronizationManager().getSimTick(),
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 4);
         hudBatch.end();
@@ -216,7 +216,7 @@ public class WorldRenderer implements Disposable {
 
     private void renderNetworkText() {
         // TODO Render only if the waiting has lasted over 2 seconds
-        if (worldController.getGameplayScreen().isWaitingInputForNextSimTick()) {
+        if (worldController.getGameplayScreen().getMultiplayerSynchronizationManager().isWaitingInputForNextSimTick()) {
             hudBatch.begin();
             defaultFont.draw(hudBatch,
                     "Waiting for player...",

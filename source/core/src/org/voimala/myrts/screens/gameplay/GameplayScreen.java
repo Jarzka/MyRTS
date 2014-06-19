@@ -42,8 +42,8 @@ public class GameplayScreen extends AbstractGameScreen {
         this.worldController = worldController;
         RTSProtocolManager.getInstance().setWorldController(worldController);
         initializeWorldRenderer();
-        initializeGameMode();
         initializeInputManagers();
+        initializeGameMode();
     }
 
     private void initializeWorldRenderer() {

@@ -203,7 +203,7 @@ public class GameplayInputManager {
             // Send command to the server
             String message = RTSProtocolManager.getInstance().createNetworkMessageInputMoveUnit(
                     unit.getObjectId(),
-                    gameplayScreen.getWorldController().getGameplayScreen().getSimTick(),
+                    gameplayScreen.getWorldController().getGameplayScreen().getMultiplayerSynchronizationManager().getSimTick(),
                     new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y));
             ListenSocketThread listenSocketThread = NetworkManager.getInstance().getClientThread();
             if (listenSocketThread != null) {

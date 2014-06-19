@@ -13,7 +13,7 @@ public class MultiplayerSynchronizationManager {
 
     private static final String TAG = MultiplayerSynchronizationManager.class.getName();
 
-    private ArrayList<PlayerInput> playerInputs = new ArrayList<PlayerInput>();
+    private ArrayList<PlayerInput> playerInputs = new ArrayList<PlayerInput>(); // TODO Use different data structure?
     private GameplayScreen gameplayScreen;
     /** SimTick is used for network communication.
      * 1 simTick = 5 world update ticks by default.
@@ -79,10 +79,6 @@ public class MultiplayerSynchronizationManager {
         return "";
     }
 
-    public boolean doesPlayerInputExist(final int playerNumber, final long simTick) {
-        return findPlayerInput(playerNumber, simTick).length() != 0;
-    }
-
     public void performAllInputs(final long simTick) {
         /* TODO
         AbstractUnit unit = worldController.findUnitById(messageSplitted[3]);
@@ -107,6 +103,11 @@ public class MultiplayerSynchronizationManager {
 
         return true;
     }
+
+    public boolean doesPlayerInputExist(final int playerNumber, final long simTick) {
+        return findPlayerInput(playerNumber, simTick).length() != 0;
+    }
+
 
     public long getSimTick() {
         return simTick;
