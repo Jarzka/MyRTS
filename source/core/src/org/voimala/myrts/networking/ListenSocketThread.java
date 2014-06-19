@@ -116,7 +116,7 @@ public class ListenSocketThread extends Thread {
             serverThread.sendMessageToAllClients(
                     RTSProtocolManager.getInstance().createNetworkMessageChatMessage(
                     serverThread.getServerChatName(),
-                    player.getName() + " " + "disconnected."));
+                    player.getName() + " " + "disconnected.")); // TODO Does not work?
         }
 
         this.socket.dispose();

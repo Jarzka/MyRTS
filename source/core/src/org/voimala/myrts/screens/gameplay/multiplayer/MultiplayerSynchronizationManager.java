@@ -84,6 +84,7 @@ public class MultiplayerSynchronizationManager {
         List<PlayerInput> playerInputs = new ArrayList<PlayerInput>();
 
         // TODO Do not use linear search
+        // TODO ConcurrentModificationException, network thread might be adding input at the same time
         for (PlayerInput playerInput : this.playerInputs) {
             if (playerInput.getPlayerNumber() == playerNumber && playerInput.getSimTick() == simTick) {
                 playerInputs.add(playerInput);
