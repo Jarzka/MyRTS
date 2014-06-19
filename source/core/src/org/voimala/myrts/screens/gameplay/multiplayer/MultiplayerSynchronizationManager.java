@@ -1,15 +1,15 @@
 package org.voimala.myrts.screens.gameplay.multiplayer;
 
-import com.badlogic.gdx.Gdx;
 import org.voimala.myrts.networking.LocalMultiplayerInfo;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
-import org.voimala.myrts.screens.gameplay.input.commands.AbstractRTSCommand;
 import org.voimala.myrts.screens.gameplay.input.commands.PlayerInput;
+import org.voimala.myrts.screens.gameplay.input.commands.RTSCommand;
 import org.voimala.myrts.screens.gameplay.input.commands.RTSCommandExecuter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MultiplayerSynchronizationManager {
 
@@ -37,58 +37,65 @@ public class MultiplayerSynchronizationManager {
         * continue executing the simulation. If the input is not available for all players,
         * isWaitingInputForNextSimTick remains true.
         * The input for the next turn was sent in the previous SimTick. */
-        if (doesAllInputExist(simTick - 1)) {
-            performAllInputs(simTick + 1);
+        if (doesAllInputExistForSimTick(simTick - 1)) {
+            performAllInputs(simTick - 1);
             sendNoInput();
             isWaitingInputForNextSimTick = false;
             simTick++;
+            removeOldInputs();
             return true;
         }
 
         return false;
     }
+
     private void sendNoInput() {
         NetworkManager.getInstance().getClientThread().sendMessage(
                 RTSProtocolManager.getInstance().createNetworkMessageInputNoInput(simTick));
         isNoInputSentForTheNextTurn = true;
     }
 
+    private void removeOldInputs() {
+        // TODO Remove old inputs
+    }
+
     public void addPlayerInputToQueue(final String inputMessage) {
-        String[] inputMessageSplitted = RTSProtocolManager.splitNetworkMessage(inputMessage);
         playerInputs.add(RTSCommandExecuter.createPlayerInputFromNetworkMessage(inputMessage));
     }
 
-    /** @return Empty string if input is not found. */
-    public AbstractRTSCommand findPlayerInput(final int playerNumber, final long simTick) {
-        // TODO Do not use linear search?
-        for (PlayerInput playerInput : playerInputs) {
+    public void performAllInputs(final long simTick) {
+        for (int i = 1; i <= 8; i++) {
+            if (!LocalMultiplayerInfo.getInstance().getSlots().get(i).startsWith("PLAYER")) { // TODO Use object here
+                continue; // No-one plays in this slot so we do not wait input from this slot.
+            }
+
+            List<PlayerInput> playerInputs = findInputsByPlayerNumberAndSimTick(i, simTick);
+
+            for (PlayerInput playerInput : playerInputs) {
+                gameplayScreen.getRTSCommandExecuter().executeCommand(playerInput.getCommand());
+            }
+        }
+    }
+
+    public List<PlayerInput> findInputsByPlayerNumberAndSimTick(final int playerNumber, final long simTick) {
+        List<PlayerInput> playerInputs = new ArrayList<PlayerInput>();
+
+        // TODO Do not use linear search
+        for (PlayerInput playerInput : this.playerInputs) {
             if (playerInput.getPlayerNumber() == playerNumber && playerInput.getSimTick() == simTick) {
-                Gdx.app.debug(TAG, "Player" + " " + playerNumber + " " + "input found for SimTick" + " " + simTick + ": "
-                        + playerInput.getCommand());
-                return playerInput.getCommand();
+                playerInputs.add(playerInput);
             }
         }
 
-        return null;
-    }
-
-    public void performAllInputs(final long simTick) {
-        /* TODO
-        AbstractUnit unit = worldController.findUnitById(messageSplitted[3]);
-        if (unit != null) {
-            unit.getMovement().setPathPoint(
-                    new Vector2(Float.valueOf(messageSplitted[4]),
-                            Float.valueOf(messageSplitted[5])));
-        }
-        */
+        return playerInputs;
     }
 
     /** @param simTick SimTick that was active when input was given. */
-    public boolean doesAllInputExist(final long simTick) {
+    public boolean doesAllInputExistForSimTick(final long simTick) {
         if (checkFirstSimTickInput(simTick)) return true;
 
         for (int i = 1; i <= 8; i++) {
-            if (!LocalMultiplayerInfo.getInstance().getSlots().get(i).startsWith("PLAYER")) {
+            if (!LocalMultiplayerInfo.getInstance().getSlots().get(i).startsWith("PLAYER")) { // TODO Use object here
                 continue; // No-one plays in this slot so we do not wait input from this slot.
             }
 
@@ -102,7 +109,7 @@ public class MultiplayerSynchronizationManager {
 
     public boolean doesPlayerInputExist(final int playerNumber, final long simTick) {
         if (checkFirstSimTickInput(simTick)) return true;
-        return findPlayerInput(playerNumber, simTick) != null;
+        return findInputsByPlayerNumberAndSimTick(playerNumber, simTick).size() != 0;
     }
 
     private boolean checkFirstSimTickInput(long simTick) {

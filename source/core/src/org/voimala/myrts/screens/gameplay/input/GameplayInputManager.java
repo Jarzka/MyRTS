@@ -198,7 +198,7 @@ public class GameplayInputManager {
                 new Vector3(Gdx.input.getX(),
                         Gdx.input.getY(),
                         0));
-        gameplayScreen.getCommandExecuter().executeCommand(
+        gameplayScreen.getRTSCommandExecuter().executeCommand(
                 new RTSCommandUnitMove(unit.getObjectId(), mouseLocationInWorld.x, mouseLocationInWorld.y));
     }
 

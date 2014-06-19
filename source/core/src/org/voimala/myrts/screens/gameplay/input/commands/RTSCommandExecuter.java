@@ -1,5 +1,6 @@
 package org.voimala.myrts.screens.gameplay.input.commands;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.networking.ListenSocketThread;
 import org.voimala.myrts.networking.NetworkManager;
@@ -18,15 +19,19 @@ public class RTSCommandExecuter {
     }
 
     public void executeCommand(final AbstractRTSCommand command) {
-        if (command.getCommandName() == RTSCommand.MOVE_UNIT) {
-            RTSCommandUnitMove moveCommand = (RTSCommandUnitMove) command;
-            handleCommandMoveUnit(gameplayScreen.getWorldController().getUnitContainer().findUnitById(
-                    moveCommand.getObjectId()), moveCommand.getTargetX(), moveCommand.getTargetY()
-            );
+        if (command != null) {
+            if (command.getCommandName() == RTSCommand.MOVE_UNIT) {
+                RTSCommandUnitMove moveCommand = (RTSCommandUnitMove) command;
+                handleCommandMoveUnit(gameplayScreen.getWorldController().getUnitContainer().findUnitById(
+                                moveCommand.getObjectId()), moveCommand.getTargetX(), moveCommand.getTargetY()
+                );
+            }
         }
+
     }
 
     private void handleCommandMoveUnit(AbstractUnit unit, final float targetX, final float targetY) {
+        // TODO What if the command came from the network?
         if (gameplayScreen.getWorldController().getGameplayScreen().getGameMode() == GameMode.SINGLEPLAYER) {
             // Process command locally
             unit.getMovement().setPathPoint(new Vector2(targetX, targetY));
@@ -43,7 +48,35 @@ public class RTSCommandExecuter {
         }
     }
 
+    /** @return null if message could not be constructed. */
     public static PlayerInput createPlayerInputFromNetworkMessage(final String inputMessage) {
+        if (inputMessage.startsWith("<INPUT|UNIT_MOVE|")) {
+            return createPlayerInputUnitMove(inputMessage);
+        } else if (inputMessage.startsWith("<INPUT|NO_INPUT|")) {
+            return createPlayerInputNoInput(inputMessage);
+        }
+
         return null; // TODO Create object
+    }
+
+    private static PlayerInput createPlayerInputNoInput(final String inputMessage) {
+        String[] messageSplitted = RTSProtocolManager.splitNetworkMessage(inputMessage);
+
+        return new PlayerInput(
+                Integer.valueOf(messageSplitted[2]),
+                Long.valueOf(messageSplitted[3]),
+                null);
+    }
+
+    private static PlayerInput createPlayerInputUnitMove(final String inputMessage) {
+        String[] messageSplitted = RTSProtocolManager.splitNetworkMessage(inputMessage);
+
+        return new PlayerInput(
+                Integer.valueOf(messageSplitted[2]),
+                Integer.valueOf(messageSplitted[3]),
+                new RTSCommandUnitMove(Long.valueOf(messageSplitted[4]),
+                        Float.valueOf(messageSplitted[5]),
+                        Float.valueOf(messageSplitted[6]))
+                );
     }
 }

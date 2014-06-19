@@ -31,7 +31,7 @@ public class GameplayScreen extends AbstractGameScreen {
     private GameplayInputProcessor gameplayInputProcessor;
     private MultiplayerSynchronizationManager multiplayerSynchronizationManager;
     private GameplayChatInputManager gameplayChatInputManager;
-    private RTSCommandExecuter commandExecuter;
+    private RTSCommandExecuter rtsCommandExecuter;
 
     private GameMode gameMode = GameMode.SINGLEPLAYER;
     private long lastWorldUpdateTimestamp = 0;
@@ -71,7 +71,7 @@ public class GameplayScreen extends AbstractGameScreen {
         gameplayChatInputManager = new GameplayChatInputManager(this);
         Gdx.input.setInputProcessor(gameplayInputProcessor);
 
-        commandExecuter = new RTSCommandExecuter(this);
+        rtsCommandExecuter = new RTSCommandExecuter(this);
     }
 
     public void setGameMode(GameMode gameMode) {
@@ -215,7 +215,7 @@ public class GameplayScreen extends AbstractGameScreen {
         return gameplayChatInputManager;
     }
 
-    public RTSCommandExecuter getCommandExecuter() {
-        return commandExecuter;
+    public RTSCommandExecuter getRTSCommandExecuter() {
+        return rtsCommandExecuter;
     }
 }
