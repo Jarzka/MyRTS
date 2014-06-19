@@ -103,8 +103,9 @@ public class GameplayScreen extends AbstractGameScreen {
             }
 
             // New SimTick reached.
+            // TODO Variable turn length?
             if (worldUpdateTick % 5.0 == 0 && gameMode == GameMode.MULTIPLAYER) {
-                handleNewSimTick(); // TODO Move to Network Manager or create a new SimTickCommunication class?
+                handleNewSimTick(); // TODO Move to MultiplayerInputManager
             }
         }
     }
@@ -112,8 +113,7 @@ public class GameplayScreen extends AbstractGameScreen {
     private void handleNewSimTick() {
         isWaitingInputForNextSimTick = true;
 
-        if (checkInputInfoForNextSimTick()) {
-            // TODO If no input in this SimTick, send "no input"
+        if (checkAndPerformInputInfoForNextSimTick()) {
             checkAndSendNoInputIfNeeded();
             isWaitingInputForNextSimTick = false;
             isNoInputSentForTheNextTurn = false;
@@ -122,19 +122,25 @@ public class GameplayScreen extends AbstractGameScreen {
     }
 
     /** @return True if input ok for the next SimTick. */
-    private boolean checkInputInfoForNextSimTick() {
+    private boolean checkAndPerformInputInfoForNextSimTick() {
         // We never wait input for SimTick 2.
         if (simTick == 1) {
             return true;
         }
 
-        /* TODO Check that we have input information for the next SimTick so that we can
-        continue executing the simulation. */
-
-        return false;
+        /* Check that we have input information for the next SimTick so that we can
+        * continue executing the simulation.
+        * The input for the next turn was sent in the previous SimTick. */
+        if (gameplayInputManager.doesAllInputExist(simTick - 1)) {
+            // TODO Perform inputs
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private void checkAndSendNoInputIfNeeded() {
+        // TODO If no input in this SimTick, send "no input"
         if (!isNoInputSentForTheNextTurn) {
             NetworkManager.getInstance().getClientThread().sendMessage(
                     RTSProtocolManager.getInstance().createNetworkMessageInputNoInput(simTick));

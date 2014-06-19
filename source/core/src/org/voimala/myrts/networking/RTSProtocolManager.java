@@ -68,7 +68,7 @@ public class RTSProtocolManager {
 
     /** Returns a string array which contains individual parts of the message.
      * Individual parts are separated by "|". "<" and ">" characters are removed. */
-    private String[] splitNetworkMessage(final String message) {
+     public static String[] splitNetworkMessage(final String message) {
         String[] messageSplitted = message.split("\\|");
         // Remove < from the fist index
         messageSplitted[0] = messageSplitted[0].substring(1, messageSplitted[0].length());
@@ -174,11 +174,11 @@ public class RTSProtocolManager {
                      if (GameMain.getInstance().getPlayer().getNetworkId() == (Integer.valueOf(messageSplitted[4]))) {
                          GameMain.getInstance().getPlayer().setNumber(Integer.valueOf(messageSplitted[1]));
                      }
-                     LocalNetworkInfo.getInstance().getSlots().put(
+                     LocalMultiplayerInfo.getInstance().getSlots().put(
                              Integer.valueOf(messageSplitted[1]),
                              messageSplitted[2] + "|" + messageSplitted[3] + "|" + messageSplitted[4]);
                  } else {
-                     LocalNetworkInfo.getInstance().getSlots().put(
+                     LocalMultiplayerInfo.getInstance().getSlots().put(
                              Integer.valueOf(messageSplitted[1]),
                              messageSplitted[2]);
                  }

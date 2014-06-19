@@ -215,6 +215,7 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderNetworkText() {
+        // TODO Render only if the waiting has lasted over 2 seconds
         if (worldController.getGameplayScreen().isWaitingInputForNextSimTick()) {
             hudBatch.begin();
             defaultFont.draw(hudBatch,

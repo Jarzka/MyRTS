@@ -2,17 +2,17 @@ package org.voimala.myrts.networking;
 
 import java.util.HashMap;
 
-/** This class contains local information about the game network game. Things like player names,
+/** This class contains local information about the multiplayer game. Things like player names,
  * current map name etc. are kept in this class. */
-public class LocalNetworkInfo {
+public class LocalMultiplayerInfo {
 
-    private static LocalNetworkInfo instanceOfThis;
+    private static LocalMultiplayerInfo instanceOfThis;
 
     /** This should be identical to the server's hash map. See: ServerThreads class.*/
     private HashMap<Integer, String> slots = new HashMap<Integer, String>();
     private String mapName;
 
-    private LocalNetworkInfo() {
+    private LocalMultiplayerInfo() {
         initialize();
     }
 
@@ -22,9 +22,9 @@ public class LocalNetworkInfo {
         }
     }
 
-    public static LocalNetworkInfo getInstance() {
+    public static LocalMultiplayerInfo getInstance() {
         if (instanceOfThis == null) {
-            instanceOfThis = new LocalNetworkInfo();
+            instanceOfThis = new LocalMultiplayerInfo();
         }
 
         return instanceOfThis;

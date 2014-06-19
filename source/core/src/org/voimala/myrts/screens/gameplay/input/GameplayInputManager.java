@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.networking.ListenSocketThread;
+import org.voimala.myrts.networking.LocalMultiplayerInfo;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
@@ -269,11 +270,37 @@ public class GameplayInputManager {
         return isChatTypingOn;
     }
 
+    // TODO Move to MultiplayerInputManager
     public void addPlayerInputToQueue(final String inputMessage) {
-        // TODO Parse input
-        int asd = 5;
+        String[] inputMessageSplitted = RTSProtocolManager.splitNetworkMessage(inputMessage);
+        playerInputs.add(new PlayerInput(
+                        Integer.valueOf(inputMessageSplitted[3]),
+                        Integer.valueOf(inputMessageSplitted[2]),
+                        inputMessage)
+                );
     }
 
+    /** @return Empty string if input is not found. */
+    // TODO Move to MultiplayerInputManager
+    public String findPlayerInput(final int playerNumber, final long simTick) {
+        // TODO Do not use linear search?
+        for (PlayerInput playerInput : playerInputs) {
+            if (playerInput.getPlayerNumber() == playerNumber && playerInput.getSimTick() == simTick) {
+                Gdx.app.debug(TAG, "Player" + " " + playerNumber + " " + "input found for SimTick" + " " + simTick + ": "
+                        + playerInput.getInput());
+                return playerInput.getInput();
+            }
+        }
+
+        return "";
+    }
+
+    // TODO Move to MultiplayerInputManager
+    public boolean doesPlayerInputExist(final int playerNumber, final long simTick) {
+        return findPlayerInput(playerNumber, simTick).length() != 0;
+    }
+
+    // TODO Move to MultiplayerInputManager
     public void performNetworkInput() {
         /* TODO
         AbstractUnit unit = worldController.findUnitById(messageSplitted[3]);
@@ -283,5 +310,20 @@ public class GameplayInputManager {
                             Float.valueOf(messageSplitted[5])));
         }
         */
+    }
+
+    // TODO Move to MultiplayerInputManager
+    public boolean doesAllInputExist(final long simTick) {
+        for (int i = 1; i <= 8; i++) {
+            if (!LocalMultiplayerInfo.getInstance().getSlots().get(i).startsWith("PLAYER")) {
+                continue; // No-one plays in this slot so we do not wait input from this slot.
+            }
+
+            if (!doesPlayerInputExist(i, simTick)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

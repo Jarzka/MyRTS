@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.networking.Chat;
-import org.voimala.myrts.networking.LocalNetworkInfo;
+import org.voimala.myrts.networking.LocalMultiplayerInfo;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.menu.MenuScreen;
@@ -295,7 +295,7 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
                 SelectBox slot = (SelectBox) actor;
                 String[] playerSlotValues = getSelectBoxPlayerDefaultValus();
 
-                String slotContent = LocalNetworkInfo.getInstance().getSlots().get(i);
+                String slotContent = LocalMultiplayerInfo.getInstance().getSlots().get(i);
 
                 if (slotContent.equals("OPEN")) {
                     playerSlotValues[0] = "Open";
