@@ -4,12 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.graphics.SpriteContainer;
-import org.voimala.myrts.networking.ConnectionState;
-import org.voimala.myrts.networking.GameplayChatInputManager;
-import org.voimala.myrts.networking.NetworkManager;
-import org.voimala.myrts.networking.RTSProtocolManager;
+import org.voimala.myrts.networking.*;
 import org.voimala.myrts.screens.AbstractGameScreen;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputManager;
+import org.voimala.myrts.screens.gameplay.input.GameplayInputProcessor;
 import org.voimala.myrts.screens.gameplay.states.AbstractGameplayState;
 import org.voimala.myrts.screens.gameplay.states.GameplayStateRunning;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
@@ -66,7 +64,7 @@ public class GameplayScreen extends AbstractGameScreen {
     private void initializeInputListeners() {
         GameplayInputManager.getInstance().setGameplayScreen(this);
         GameplayChatInputManager.getInstance().setGameplayScreen(this);
-        Gdx.input.setInputProcessor(inputHandler);
+        Gdx.input.setInputProcessor(GameplayInputProcessor.getInstance());
     }
 
     public void setGameMode(GameMode gameMode) {
@@ -130,7 +128,7 @@ public class GameplayScreen extends AbstractGameScreen {
         /* Check that we have input information for the next SimTick so that we can
         * continue executing the simulation.
         * The input for the next turn was sent in the previous SimTick. */
-        if (gameplayInputManager.doesAllInputExist(simTick - 1)) {
+        if (MultiplayerInputManager.getInstance().doesAllInputExist(simTick - 1)) {
             // TODO Perform inputs
             return true;
         } else {
@@ -234,10 +232,6 @@ public class GameplayScreen extends AbstractGameScreen {
 
     public WorldController getWorldController() {
         return worldController;
-    }
-
-    public GameplayInputManager getGameplayInputManager() {
-        return gameplayInputManager;
     }
 
     public long getSimTick() {

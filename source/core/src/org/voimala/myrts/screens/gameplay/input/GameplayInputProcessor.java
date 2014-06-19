@@ -8,9 +8,22 @@ import org.voimala.myrts.screens.gameplay.world.WorldController;
 /* This class is used for handling desktop zoom with mouse wheel. */
 
 public class GameplayInputProcessor implements InputProcessor{
+
+    private static GameplayInputProcessor instanceOfThis;
+
     private GameplayScreen gameplayScreen = null;
 
-    public GameplayInputProcessor(final GameplayScreen gameplayScreen) {
+    private GameplayInputProcessor() {}
+
+    public static GameplayInputProcessor getInstance() {
+        if (instanceOfThis == null) {
+            instanceOfThis = new GameplayInputProcessor();
+        }
+
+        return instanceOfThis;
+    }
+
+    public void setGameplayScreen(final GameplayScreen gameplayScreen) {
         this.gameplayScreen = gameplayScreen;
     }
 

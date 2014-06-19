@@ -8,15 +8,11 @@ import com.badlogic.gdx.math.Vector3;
 import com.sun.istack.internal.NotNull;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.networking.ListenSocketThread;
-import org.voimala.myrts.networking.LocalMultiplayerInfo;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
-import org.voimala.myrts.screens.gameplay.world.WorldController;
-
-import java.util.ArrayList;
 
 /** This class is used for handling local player input.
  * NOTE: Chat input is handled in GameplayChatInput class. */
@@ -61,7 +57,7 @@ public class GameplayInputManager {
     }
 
     private void handleUserInput() {
-        handleCameraManagement();
+        updateWorldCamera();
         handleSingleUnitSelection();
         handleSelectionRectangle();
         handleDrawSelectionRectangle();
@@ -70,8 +66,8 @@ public class GameplayInputManager {
         mouseButtonRightPressedLastFrame = Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
     }
 
-    private void handleCameraManagement() {
-        cameraManager.update();
+    private void updateWorldCamera() {
+        gameplayScreen.getWorldController().getWorldCamera().update();
     }
 
     private void handleSingleUnitSelection() {
