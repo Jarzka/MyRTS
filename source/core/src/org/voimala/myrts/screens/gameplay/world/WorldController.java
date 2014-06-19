@@ -89,18 +89,6 @@ public class WorldController {
         return worldCamera;
     }
 
-    /** Returns null if unit is not found. */
-    public AbstractUnit findUnitById(final long id) {
-        // TODO Do not use linear search here?
-        for (AbstractUnit unit : unitContainer.getUnits()) {
-            if (unit.getObjectId() == id) {
-                return unit;
-            }
-        }
-
-        return null;
-    }
-
     public GameplayScreen getGameplayScreen() {
         return gameplayScreen;
     }

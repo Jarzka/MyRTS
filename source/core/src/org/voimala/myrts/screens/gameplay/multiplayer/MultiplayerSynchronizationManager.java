@@ -5,7 +5,9 @@ import org.voimala.myrts.networking.LocalMultiplayerInfo;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
-import org.voimala.myrts.screens.gameplay.input.PlayerInput;
+import org.voimala.myrts.screens.gameplay.input.commands.AbstractRTSCommand;
+import org.voimala.myrts.screens.gameplay.input.commands.PlayerInput;
+import org.voimala.myrts.screens.gameplay.input.commands.RTSCommandExecuter;
 
 import java.util.ArrayList;
 
@@ -53,25 +55,21 @@ public class MultiplayerSynchronizationManager {
 
     public void addPlayerInputToQueue(final String inputMessage) {
         String[] inputMessageSplitted = RTSProtocolManager.splitNetworkMessage(inputMessage);
-        playerInputs.add(new PlayerInput(
-                        Integer.valueOf(inputMessageSplitted[3]),
-                        Integer.valueOf(inputMessageSplitted[2]),
-                        inputMessage)
-        );
+        playerInputs.add(RTSCommandExecuter.createPlayerInputFromNetworkMessage(inputMessage));
     }
 
     /** @return Empty string if input is not found. */
-    public String findPlayerInput(final int playerNumber, final long simTick) {
+    public AbstractRTSCommand findPlayerInput(final int playerNumber, final long simTick) {
         // TODO Do not use linear search?
         for (PlayerInput playerInput : playerInputs) {
             if (playerInput.getPlayerNumber() == playerNumber && playerInput.getSimTick() == simTick) {
                 Gdx.app.debug(TAG, "Player" + " " + playerNumber + " " + "input found for SimTick" + " " + simTick + ": "
-                        + playerInput.getInput());
-                return playerInput.getInput();
+                        + playerInput.getCommand());
+                return playerInput.getCommand();
             }
         }
 
-        return "";
+        return null;
     }
 
     public void performAllInputs(final long simTick) {
@@ -104,14 +102,14 @@ public class MultiplayerSynchronizationManager {
 
     public boolean doesPlayerInputExist(final int playerNumber, final long simTick) {
         if (checkFirstSimTickInput(simTick)) return true;
-        return findPlayerInput(playerNumber, simTick).length() != 0;
+        return findPlayerInput(playerNumber, simTick) != null;
     }
 
     private boolean checkFirstSimTickInput(long simTick) {
         if (simTick == 0) {
             return true;
         }
-        
+
         return false;
     }
 

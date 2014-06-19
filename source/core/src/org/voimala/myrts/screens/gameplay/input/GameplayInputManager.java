@@ -10,6 +10,7 @@ import org.voimala.myrts.networking.ListenSocketThread;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
+import org.voimala.myrts.screens.gameplay.input.commands.RTSCommandUnitMove;
 import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
 
@@ -48,9 +49,7 @@ public class GameplayInputManager {
 
     private void handleUserInput() {
         handleCameraManagement();
-        handleSingleUnitSelection();
-        handleSelectionRectangle();
-        handleDrawSelectionRectangle();
+        handleUnitCommands();
 
         mouseButtonLeftPressedLastFrame = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
         mouseButtonRightPressedLastFrame = Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
@@ -115,10 +114,6 @@ public class GameplayInputManager {
         }
     }
 
-    private void handleDrawSelectionRectangle() {
-        handleMouseInputDrawSelectionArea();
-    }
-
     private void handleMouseInputDrawSelectionArea() {
         if (Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             if (unitSelectionRectangle == null) {
@@ -171,6 +166,8 @@ public class GameplayInputManager {
     }
 
     private void handleMouseInputUnitCommands() {
+        handleMouseInputSelectSingleUnit();
+        handleMouseInputDrawSelectionArea();
         handleMouseInputUnitMoveCommand();
     }
 
@@ -181,36 +178,21 @@ public class GameplayInputManager {
         if (cameraManager.timeSinceCameraMovementStoppedInMs() > 100
                 && mouseButtonRightPressedLastFrame
                 && !Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+            // TODO Linear searching ;_;
             for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainer().getUnits()) {
                 if (unit.isSelected() && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
-                    handleCommandMoveUnit(unit);
+                    Vector3 mouseLocationInWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
+                            new Vector3(Gdx.input.getX(),
+                                    Gdx.input.getY(),
+                                    0));
+                    gameplayScreen.getCommandExecuter().executeCommand(
+                            new RTSCommandUnitMove(unit.getObjectId(), mouseLocationInWorld.x, mouseLocationInWorld.y));
                 }
             }
         }
     }
 
-    private void handleCommandMoveUnit(AbstractUnit unit) {
-        Vector3 mouseLocationInWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
-                new Vector3(Gdx.input.getX(),
-                Gdx.input.getY(),
-                0));
 
-
-        if (gameplayScreen.getWorldController().getGameplayScreen().getGameMode() == GameMode.SINGLEPLAYER) {
-            // Process command locally
-            unit.getMovement().setPathPoint(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y));
-        } else if (gameplayScreen.getWorldController().getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
-            // Send command to the server
-            String message = RTSProtocolManager.getInstance().createNetworkMessageInputMoveUnit(
-                    unit.getObjectId(),
-                    gameplayScreen.getWorldController().getGameplayScreen().getMultiplayerSynchronizationManager().getSimTick(),
-                    new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y));
-            ListenSocketThread listenSocketThread = NetworkManager.getInstance().getClientThread();
-            if (listenSocketThread != null) {
-                listenSocketThread.sendMessage(message);
-            }
-        }
-    }
 
 
     private void unselectAllUnits() {

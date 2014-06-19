@@ -10,6 +10,7 @@ import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.AbstractGameScreen;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputManager;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputProcessor;
+import org.voimala.myrts.screens.gameplay.input.commands.RTSCommandExecuter;
 import org.voimala.myrts.screens.gameplay.multiplayer.GameplayChatInputManager;
 import org.voimala.myrts.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrts.screens.gameplay.states.AbstractGameplayState;
@@ -30,6 +31,7 @@ public class GameplayScreen extends AbstractGameScreen {
     private GameplayInputProcessor gameplayInputProcessor;
     private MultiplayerSynchronizationManager multiplayerSynchronizationManager;
     private GameplayChatInputManager gameplayChatInputManager;
+    private RTSCommandExecuter commandExecuter;
 
     private GameMode gameMode = GameMode.SINGLEPLAYER;
     private long lastWorldUpdateTimestamp = 0;
@@ -68,6 +70,8 @@ public class GameplayScreen extends AbstractGameScreen {
         multiplayerSynchronizationManager = new MultiplayerSynchronizationManager(this);
         gameplayChatInputManager = new GameplayChatInputManager(this);
         Gdx.input.setInputProcessor(gameplayInputProcessor);
+
+        commandExecuter = new RTSCommandExecuter(this);
     }
 
     public void setGameMode(GameMode gameMode) {
@@ -209,5 +213,9 @@ public class GameplayScreen extends AbstractGameScreen {
 
     public GameplayChatInputManager getGameplayChatInputManager() {
         return gameplayChatInputManager;
+    }
+
+    public RTSCommandExecuter getCommandExecuter() {
+        return commandExecuter;
     }
 }
