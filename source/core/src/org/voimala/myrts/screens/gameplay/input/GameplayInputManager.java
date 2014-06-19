@@ -45,7 +45,12 @@ public class GameplayInputManager {
 
     private void handleUserInput() {
         handleCameraManagement();
-        handleUnitCommands();
+
+        handleSingleUnitSelection();
+        handleSelectUnitsWithinRectangle();
+        handleDrawSelectionRectangle();
+
+        handleUnitMoveCommand();
 
         mouseButtonLeftPressedLastFrame = Gdx.input.isButtonPressed(Input.Buttons.LEFT);
         mouseButtonRightPressedLastFrame = Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
@@ -55,18 +60,8 @@ public class GameplayInputManager {
         cameraManager.update();
     }
 
-
-    private void handleUnitCommands() {
-        selectUnitsWithSelectionRectangle();
-        handleMouseInputUnitCommands();
-
-
-    }
-
-    private void handleMouseInputUnitCommands() {
+    private void handleSingleUnitSelection() {
         handleMouseInputSelectSingleUnit();
-        handleMouseInputDrawSelectionArea();
-        handleMouseInputUnitMoveCommand();
     }
 
     private void handleMouseInputSelectSingleUnit() {
@@ -79,15 +74,16 @@ public class GameplayInputManager {
                         0));
                 if (unit.onCollision(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y))
                         && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
-                   // TODO Create RTSCommand object
-                   unit.setSelected(true);
+                    // TODO Create RTSCommand object
+                    unit.setSelected(true);
+                    break;
                 }
             }
 
         }
     }
 
-    private void selectUnitsWithSelectionRectangle() {
+    private void handleSelectUnitsWithinRectangle() {
         if (unitSelectionRectangle != null) {
             if (mouseButtonLeftPressedLastFrame && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
                 Vector3 rectangleTopLeftWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
@@ -125,6 +121,10 @@ public class GameplayInputManager {
                 }
             }
         }
+    }
+
+    private void handleDrawSelectionRectangle() {
+        handleMouseInputDrawSelectionArea();
     }
 
     private void handleMouseInputDrawSelectionArea() {
@@ -174,6 +174,10 @@ public class GameplayInputManager {
         }
     }
 
+    private void handleUnitMoveCommand() {
+        handleMouseInputUnitMoveCommand();
+    }
+
     private void handleMouseInputUnitMoveCommand() {
         /** It is possible that at least one unit is selected while the player
          * stops moving camera by stopping pressing right mouse button. To prevent this,
@@ -181,18 +185,21 @@ public class GameplayInputManager {
         if (cameraManager.timeSinceCameraMovementStoppedInMs() > 100
                 && mouseButtonRightPressedLastFrame
                 && !Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-            // TODO Linear searching ;_;
             for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainer().getUnits()) {
                 if (unit.isSelected() && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
-                    Vector3 mouseLocationInWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
-                            new Vector3(Gdx.input.getX(),
-                                    Gdx.input.getY(),
-                                    0));
-                    gameplayScreen.getCommandExecuter().executeCommand(
-                            new RTSCommandUnitMove(unit.getObjectId(), mouseLocationInWorld.x, mouseLocationInWorld.y));
+                    handleCommandMoveUnit(unit);
                 }
             }
         }
+    }
+
+    private void handleCommandMoveUnit(AbstractUnit unit) {
+        Vector3 mouseLocationInWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
+                new Vector3(Gdx.input.getX(),
+                        Gdx.input.getY(),
+                        0));
+        gameplayScreen.getCommandExecuter().executeCommand(
+                new RTSCommandUnitMove(unit.getObjectId(), mouseLocationInWorld.x, mouseLocationInWorld.y));
     }
 
     private void unselectAllUnits() {
