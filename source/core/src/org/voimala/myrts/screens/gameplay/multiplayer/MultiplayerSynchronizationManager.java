@@ -2,22 +2,58 @@ package org.voimala.myrts.screens.gameplay.multiplayer;
 
 import com.badlogic.gdx.Gdx;
 import org.voimala.myrts.networking.LocalMultiplayerInfo;
+import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.input.PlayerInput;
 
 import java.util.ArrayList;
 
-/** This class used for multiplayer game synchronization. */
-public class GameplayMultiplayerInputManager {
+public class MultiplayerSynchronizationManager {
 
-    private static final String TAG = GameplayMultiplayerInputManager.class.getName();
+    private static final String TAG = MultiplayerSynchronizationManager.class.getName();
 
     private ArrayList<PlayerInput> playerInputs = new ArrayList<PlayerInput>();
     private GameplayScreen gameplayScreen;
+    /** SimTick is used for network communication.
+     * 1 simTick = 5 world update ticks by default.
+     * When a new SimTick is reached, the game executes other player's input information.
+     * If such information is not available, wait for it.
+     */
+    private long simTick = 0;
+    private boolean isWaitingInputForNextSimTick = false;
+    private boolean isNoInputSentForTheNextTurn = false;
 
-    public GameplayMultiplayerInputManager(final GameplayScreen gameplayScreen) {
+    public MultiplayerSynchronizationManager(final GameplayScreen gameplayScreen) {
         this.gameplayScreen = gameplayScreen;
+    }
+
+    /** @return True if input is ok for the next SimTick. */
+    public boolean handleNewSimTick() {
+        // We never wait input for SimTick 2.
+        if (simTick == 1) {
+            return true;
+        }
+
+        isWaitingInputForNextSimTick = true;
+        /* Check that we have input information for the next SimTick so that we can
+        * continue executing the simulation. If the input is not available for all players,
+        * isWaitingInputForNextSimTick remains true.
+        * The input for the next turn was sent in the previous SimTick. */
+        if (doesAllInputExist(simTick - 1)) {
+            performAllInputs(simTick + 1);
+            sendNoInput();
+            isWaitingInputForNextSimTick = false;
+            simTick++;
+            return true;
+        }
+
+        return false;
+    }
+    private void sendNoInput() {
+        NetworkManager.getInstance().getClientThread().sendMessage(
+                RTSProtocolManager.getInstance().createNetworkMessageInputNoInput(simTick));
+        isNoInputSentForTheNextTurn = true;
     }
 
     public void addPlayerInputToQueue(final String inputMessage) {
@@ -70,6 +106,18 @@ public class GameplayMultiplayerInputManager {
         }
 
         return true;
+    }
+
+    public long getSimTick() {
+        return simTick;
+    }
+
+    public void setSimTick(final long simTick) {
+        this.simTick = simTick;
+    }
+
+    public boolean isWaitingInputForNextSimTick() {
+        return isWaitingInputForNextSimTick;
     }
 
 }

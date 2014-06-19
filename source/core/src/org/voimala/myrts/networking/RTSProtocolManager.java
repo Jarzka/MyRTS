@@ -86,7 +86,7 @@ public class RTSProtocolManager {
                 String messageSplitted[] = splitNetworkMessage(message);
                 // TODO Check player number and that the player owns the selected unit.
                 if (worldController != null) {
-                    worldController.getGameplayScreen().getGameplayMultiplayerInputManager().addPlayerInputToQueue(message);
+                    worldController.getGameplayScreen().getMultiplayerSynchronizationManager().addPlayerInputToQueue(message);
                 }
             } else if (client.getSocketType() == SocketType.PLAYER_SOCKET) { // The message came to the server from a player
                 ServerThread server = NetworkManager.getInstance().getServerThread();
@@ -115,7 +115,7 @@ public class RTSProtocolManager {
             if (client.getSocketType() == SocketType.SERVER_SOCKET) { // The message came from the server
                 String messageSplitted[] = splitNetworkMessage(message);
                 if (worldController != null) {
-                    worldController.getGameplayScreen().getGameplayMultiplayerInputManager().addPlayerInputToQueue(message);
+                    worldController.getGameplayScreen().getMultiplayerSynchronizationManager().addPlayerInputToQueue(message);
                 }
             } else if (client.getSocketType() == SocketType.PLAYER_SOCKET) { // The message came to the server from a player
                 ServerThread server = NetworkManager.getInstance().getServerThread();

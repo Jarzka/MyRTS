@@ -11,7 +11,7 @@ import org.voimala.myrts.screens.AbstractGameScreen;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputManager;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputProcessor;
 import org.voimala.myrts.screens.gameplay.multiplayer.GameplayChatInputManager;
-import org.voimala.myrts.screens.gameplay.multiplayer.GameplayMultiplayerInputManager;
+import org.voimala.myrts.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrts.screens.gameplay.states.AbstractGameplayState;
 import org.voimala.myrts.screens.gameplay.states.GameplayStateRunning;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
@@ -26,23 +26,15 @@ public class GameplayScreen extends AbstractGameScreen {
 
     private AbstractGameplayState currentState = new GameplayStateRunning(this);
 
-    private GameplayInputManager gameplayInputManager = new GameplayInputManager(this);
-    private GameplayInputProcessor gameplayInputProcessor = new GameplayInputProcessor(this);
-    private GameplayMultiplayerInputManager gameplayMultiplayerInputManager = new GameplayMultiplayerInputManager(this);
-    private GameplayChatInputManager gameplayChatInputManager = new GameplayChatInputManager(this);
+    private GameplayInputManager gameplayInputManager;
+    private GameplayInputProcessor gameplayInputProcessor;
+    private MultiplayerSynchronizationManager multiplayerSynchronizationManager;
+    private GameplayChatInputManager gameplayChatInputManager;
 
     private GameMode gameMode = GameMode.SINGLEPLAYER;
     private long lastWorldUpdateTimestamp = 0;
     private long worldUpdateTick = 0;
     private long renderTick = 0;
-    /** SimTick is used for network communication.
-     * 1 simTick = 5 world update ticks by default.
-     * When a new SimTick is reached, the game executes other player's input information.
-     * If such information is not available, wait for it.
-     */
-    private long simTick = 0;
-    private boolean isWaitingInputForNextSimTick = false;
-    private boolean isNoInputSentForTheNextTurn = false;
 
     /** @param worldController Preloaded WorldController object.
      */
@@ -51,7 +43,7 @@ public class GameplayScreen extends AbstractGameScreen {
         RTSProtocolManager.getInstance().setWorldController(worldController);
         initializeWorldRenderer();
         initializeGameMode();
-        initializeInputListeners();
+        initializeInputManagers();
     }
 
     private void initializeWorldRenderer() {
@@ -62,7 +54,7 @@ public class GameplayScreen extends AbstractGameScreen {
     private void initializeGameMode() {
         if (NetworkManager.getInstance().getClientConnectionState() == ConnectionState.CONNECTED) {
             setGameMode(GameMode.MULTIPLAYER);
-            simTick = 1;
+            multiplayerSynchronizationManager.setSimTick(1);
         } else {
             GameMain.getInstance().getPlayer().setNumber(1);
             GameMain.getInstance().getPlayer().setTeam(1);
@@ -70,7 +62,11 @@ public class GameplayScreen extends AbstractGameScreen {
         }
     }
 
-    private void initializeInputListeners() {
+    private void initializeInputManagers() {
+        gameplayInputManager = new GameplayInputManager(this);
+        gameplayInputProcessor = new GameplayInputProcessor(this);
+        multiplayerSynchronizationManager = new MultiplayerSynchronizationManager(this);
+        gameplayChatInputManager = new GameplayChatInputManager(this);
         Gdx.input.setInputProcessor(gameplayInputProcessor);
     }
 
@@ -102,54 +98,15 @@ public class GameplayScreen extends AbstractGameScreen {
         if (gameMode == GameMode.SINGLEPLAYER) {
             updateWorldUsingVariablePhysics(deltaTime);
         } else if (gameMode == GameMode.MULTIPLAYER) {
-            if (!isWaitingInputForNextSimTick) {
+            if (!multiplayerSynchronizationManager.isWaitingInputForNextSimTick()) {
                 updateWorldUsingFixedPhysics();
             }
 
             // New SimTick reached.
             // TODO Variable turn length?
             if (worldUpdateTick % 5.0 == 0 && gameMode == GameMode.MULTIPLAYER) {
-                handleNewSimTick(); // TODO Move to MultiplayerInputManager
+                multiplayerSynchronizationManager.handleNewSimTick();
             }
-        }
-    }
-
-    private void handleNewSimTick() {
-        isWaitingInputForNextSimTick = true;
-
-        if (checkAndPerformInputInfoForNextSimTick()) {
-            checkAndSendNoInputIfNeeded();
-            isWaitingInputForNextSimTick = false;
-            isNoInputSentForTheNextTurn = false;
-            simTick++;
-        }
-    }
-
-    /** @return True if input ok for the next SimTick. */
-    private boolean checkAndPerformInputInfoForNextSimTick() {
-        // We never wait input for SimTick 2.
-        if (simTick == 1) {
-            return true;
-        }
-
-        /* Check that we have input information for the next SimTick so that we can
-        * continue executing the simulation.
-        * The input for the next turn was sent in the previous SimTick. */
-        if (gameplayMultiplayerInputManager.doesAllInputExist(simTick - 1)) {
-            // TODO Perform inputs for the next round
-            gameplayMultiplayerInputManager.performAllInputs(simTick + 1);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    private void checkAndSendNoInputIfNeeded() {
-        // TODO If no input in this SimTick, send "no input"
-        if (!isNoInputSentForTheNextTurn) {
-            NetworkManager.getInstance().getClientThread().sendMessage(
-                    RTSProtocolManager.getInstance().createNetworkMessageInputNoInput(simTick));
-            isNoInputSentForTheNextTurn = true;
         }
     }
 
@@ -242,20 +199,12 @@ public class GameplayScreen extends AbstractGameScreen {
         return worldController;
     }
 
-    public long getSimTick() {
-        return simTick;
-    }
-
-    public boolean isWaitingInputForNextSimTick() {
-        return isWaitingInputForNextSimTick;
-    }
-
     public GameplayInputManager getGameplayInputManager() {
         return gameplayInputManager;
     }
 
-    public GameplayMultiplayerInputManager getGameplayMultiplayerInputManager() {
-        return gameplayMultiplayerInputManager;
+    public MultiplayerSynchronizationManager getMultiplayerSynchronizationManager() {
+        return multiplayerSynchronizationManager;
     }
 
     public GameplayChatInputManager getGameplayChatInputManager() {
