@@ -2,6 +2,7 @@ package org.voimala.myrts.screens.gameplay.input;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.sun.istack.internal.NotNull;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
 
@@ -9,21 +10,9 @@ import org.voimala.myrts.screens.gameplay.world.WorldController;
 
 public class GameplayInputProcessor implements InputProcessor{
 
-    private static GameplayInputProcessor instanceOfThis;
-
     private GameplayScreen gameplayScreen = null;
 
-    private GameplayInputProcessor() {}
-
-    public static GameplayInputProcessor getInstance() {
-        if (instanceOfThis == null) {
-            instanceOfThis = new GameplayInputProcessor();
-        }
-
-        return instanceOfThis;
-    }
-
-    public void setGameplayScreen(final GameplayScreen gameplayScreen) {
+    public GameplayInputProcessor(@NotNull final GameplayScreen gameplayScreen) {
         this.gameplayScreen = gameplayScreen;
     }
 

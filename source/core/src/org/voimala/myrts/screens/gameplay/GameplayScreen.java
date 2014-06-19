@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.GL20;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.graphics.SpriteContainer;
 import org.voimala.myrts.networking.*;
+import org.voimala.myrts.screens.gameplay.multiplayer.GameplayChatInputManager;
+import org.voimala.myrts.screens.gameplay.multiplayer.MultiplayerInputManager;
 import org.voimala.myrts.screens.AbstractGameScreen;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputManager;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputProcessor;
@@ -21,6 +23,11 @@ public class GameplayScreen extends AbstractGameScreen {
     private WorldRenderer worldRenderer;
 
     private AbstractGameplayState currentState = new GameplayStateRunning(this);
+
+    private GameplayInputManager gameplayInputManager = new GameplayInputManager(this);
+    private GameplayInputProcessor gameplayInputProcessor = new GameplayInputProcessor(this);
+    private MultiplayerInputManager multiplayerInputManager = new MultiplayerInputManager(this);
+    private GameplayChatInputManager gameplayChatInputManager = new GameplayChatInputManager(this);
 
     private GameMode gameMode = GameMode.SINGLEPLAYER;
     private long lastWorldUpdateTimestamp = 0;

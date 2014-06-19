@@ -1,6 +1,10 @@
-package org.voimala.myrts.networking;
+package org.voimala.myrts.screens.gameplay.multiplayer;
 
 import com.badlogic.gdx.Gdx;
+import com.sun.istack.internal.NotNull;
+import org.voimala.myrts.networking.LocalMultiplayerInfo;
+import org.voimala.myrts.networking.RTSProtocolManager;
+import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.input.PlayerInput;
 
 import java.util.ArrayList;
@@ -8,7 +12,14 @@ import java.util.ArrayList;
 /** This class used for multiplayer game synchronization. */
 public class MultiplayerInputManager {
 
+    private static final String TAG = MultiplayerInputManager.class.getName();
+
     private ArrayList<PlayerInput> playerInputs = new ArrayList<PlayerInput>();
+    private GameplayScreen gameplayScreen;
+
+    public MultiplayerInputManager(@NotNull final GameplayScreen gameplayScreen) {
+        this.gameplayScreen = gameplayScreen;
+    }
 
     public void addPlayerInputToQueue(final String inputMessage) {
         String[] inputMessageSplitted = RTSProtocolManager.splitNetworkMessage(inputMessage);

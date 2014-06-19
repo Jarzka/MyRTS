@@ -26,25 +26,16 @@ public class GameplayInputManager {
     private boolean mouseButtonLeftPressedLastFrame;
     private boolean mouseButtonRightPressedLastFrame;
 
-    private static GameplayInputManager instanceOfThis = null;
+    private CameraManager cameraManager;
 
     private Rectangle unitSelectionRectangle;
     private boolean isDrawingRectangle = false;
     private float rectangleStartXScreen = -1;
     private float rectangleStartYScreen = -1;
 
-    private GameplayInputManager() {}
-
-    public static GameplayInputManager getInstance() {
-        if (instanceOfThis == null) {
-            instanceOfThis = new GameplayInputManager();
-        }
-
-        return instanceOfThis;
-    }
-
-    public void setGameplayScreen(@NotNull final GameplayScreen gameplayScreen) {
+    public GameplayInputManager(@NotNull final GameplayScreen gameplayScreen) {
         this.gameplayScreen = gameplayScreen;
+        cameraManager = new CameraManager(gameplayScreen.getWorldController().getWorldCamera());
     }
 
     /** Returns null if there is no active selection rectangle. */
@@ -57,7 +48,7 @@ public class GameplayInputManager {
     }
 
     private void handleUserInput() {
-        updateWorldCamera();
+        handleCameraManagement();
         handleSingleUnitSelection();
         handleSelectionRectangle();
         handleDrawSelectionRectangle();
@@ -66,8 +57,8 @@ public class GameplayInputManager {
         mouseButtonRightPressedLastFrame = Gdx.input.isButtonPressed(Input.Buttons.RIGHT);
     }
 
-    private void updateWorldCamera() {
-        gameplayScreen.getWorldController().getWorldCamera().update();
+    private void handleCameraManagement() {
+        cameraManager.update();
     }
 
     private void handleSingleUnitSelection() {
