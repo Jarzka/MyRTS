@@ -2,13 +2,13 @@ package org.voimala.myrts.screens.gameplay.input.commands;
 
 public abstract class AbstractRTSCommandUnit extends AbstractRTSCommand {
 
-    private long id;
+    private long unitId;
 
-    protected AbstractRTSCommandUnit(final long id) {
-        this.id = id;
+    protected AbstractRTSCommandUnit(final long unitId) {
+        this.unitId = unitId;
     }
 
-    public long getId() {
-        return id;
+    public long getObjectId() {
+        return unitId;
     }
 }

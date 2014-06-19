@@ -6,13 +6,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import org.voimala.myrts.app.GameMain;
-import org.voimala.myrts.networking.ListenSocketThread;
-import org.voimala.myrts.networking.NetworkManager;
-import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.input.commands.RTSCommandUnitMove;
 import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
-import org.voimala.myrts.screens.gameplay.world.GameMode;
 
 /** This class is used for handling local player input.
  * NOTE: Chat input is handled in GameplayChatInput class. */
@@ -59,8 +55,18 @@ public class GameplayInputManager {
         cameraManager.update();
     }
 
-    private void handleSingleUnitSelection() {
+
+    private void handleUnitCommands() {
+        selectUnitsWithSelectionRectangle();
+        handleMouseInputUnitCommands();
+
+
+    }
+
+    private void handleMouseInputUnitCommands() {
         handleMouseInputSelectSingleUnit();
+        handleMouseInputDrawSelectionArea();
+        handleMouseInputUnitMoveCommand();
     }
 
     private void handleMouseInputSelectSingleUnit() {
@@ -73,42 +79,49 @@ public class GameplayInputManager {
                         0));
                 if (unit.onCollision(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y))
                         && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
-                    unit.setSelected(true);
-                    break;
+                   // TODO Create RTSCommand object
+                   unit.setSelected(true);
                 }
             }
 
         }
     }
 
-    private void handleSelectionRectangle() {
-        if (mouseButtonLeftPressedLastFrame && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-            Vector3 rectangleTopLeftWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
-                    new Vector3(unitSelectionRectangle.x,
-                            Gdx.graphics.getHeight() - unitSelectionRectangle.y - unitSelectionRectangle.height,
-                            0));
-            Vector3 rectangleTopRightWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
-                    new Vector3(unitSelectionRectangle.x + unitSelectionRectangle.width,
-                            Gdx.graphics.getHeight() - unitSelectionRectangle.y - unitSelectionRectangle.height,
-                            0));
-            Vector3 rectangleBottomLeftWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
-                    new Vector3(unitSelectionRectangle.x,
-                            Gdx.graphics.getHeight() - unitSelectionRectangle.y,
-                            0));
-            Vector3 rectangleBottomRightWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
-                    new Vector3(unitSelectionRectangle.x + unitSelectionRectangle.width,
-                            Gdx.graphics.getHeight() - unitSelectionRectangle.y,
-                            0));
+    private void selectUnitsWithSelectionRectangle() {
+        if (unitSelectionRectangle != null) {
+            if (mouseButtonLeftPressedLastFrame && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+                Vector3 rectangleTopLeftWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
+                        new Vector3(unitSelectionRectangle.x,
+                                Gdx.graphics.getHeight() - unitSelectionRectangle.y - unitSelectionRectangle.height,
+                                0)
+                );
+                Vector3 rectangleTopRightWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
+                        new Vector3(unitSelectionRectangle.x + unitSelectionRectangle.width,
+                                Gdx.graphics.getHeight() - unitSelectionRectangle.y - unitSelectionRectangle.height,
+                                0)
+                );
+                Vector3 rectangleBottomLeftWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
+                        new Vector3(unitSelectionRectangle.x,
+                                Gdx.graphics.getHeight() - unitSelectionRectangle.y,
+                                0)
+                );
+                Vector3 rectangleBottomRightWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
+                        new Vector3(unitSelectionRectangle.x + unitSelectionRectangle.width,
+                                Gdx.graphics.getHeight() - unitSelectionRectangle.y,
+                                0)
+                );
 
-            Rectangle rectangleWorld = new Rectangle(rectangleBottomLeftWorld.x,
-                    rectangleBottomLeftWorld.y,
-                    rectangleBottomRightWorld.x - rectangleBottomLeftWorld.x,
-                    rectangleTopRightWorld.y - rectangleBottomRightWorld.y);
+                Rectangle rectangleWorld = new Rectangle(rectangleBottomLeftWorld.x,
+                        rectangleBottomLeftWorld.y,
+                        rectangleBottomRightWorld.x - rectangleBottomLeftWorld.x,
+                        rectangleTopRightWorld.y - rectangleBottomRightWorld.y);
 
-            for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainer().getUnits()) {
-                if (rectangleWorld.contains(unit.getX(), unit.getY())
-                        && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
-                    unit.setSelected(true);
+                for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainer().getUnits()) {
+                    if (rectangleWorld.contains(unit.getX(), unit.getY())
+                            && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
+                        // TODO Create RTSCommand object
+                        unit.setSelected(true);
+                    }
                 }
             }
         }
@@ -161,16 +174,6 @@ public class GameplayInputManager {
         }
     }
 
-    private void handleUnitCommands() {
-        handleMouseInputUnitCommands();
-    }
-
-    private void handleMouseInputUnitCommands() {
-        handleMouseInputSelectSingleUnit();
-        handleMouseInputDrawSelectionArea();
-        handleMouseInputUnitMoveCommand();
-    }
-
     private void handleMouseInputUnitMoveCommand() {
         /** It is possible that at least one unit is selected while the player
          * stops moving camera by stopping pressing right mouse button. To prevent this,
@@ -191,9 +194,6 @@ public class GameplayInputManager {
             }
         }
     }
-
-
-
 
     private void unselectAllUnits() {
         for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainer().getUnits()) {

@@ -1,8 +1,6 @@
 package org.voimala.myrts.screens.gameplay.input.commands;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import org.voimala.myrts.networking.ListenSocketThread;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
@@ -23,7 +21,7 @@ public class RTSCommandExecuter {
         if (command.getCommandName() == RTSCommand.MOVE_UNIT) {
             RTSCommandUnitMove moveCommand = (RTSCommandUnitMove) command;
             handleCommandMoveUnit(gameplayScreen.getWorldController().getUnitContainer().findUnitById(
-                    moveCommand.getId()), moveCommand.getTargetX(), moveCommand.getTargetY()
+                    moveCommand.getObjectId()), moveCommand.getTargetX(), moveCommand.getTargetY()
             );
         }
     }
