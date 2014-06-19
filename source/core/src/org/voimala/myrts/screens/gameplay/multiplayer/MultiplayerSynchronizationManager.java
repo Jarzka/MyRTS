@@ -85,6 +85,7 @@ public class MultiplayerSynchronizationManager {
         */
     }
 
+    /** @param simTick SimTick that was active when input was given. */
     public boolean doesAllInputExist(final long simTick) {
         if (checkFirstSimTickInput(simTick)) return true;
 
@@ -107,10 +108,10 @@ public class MultiplayerSynchronizationManager {
     }
 
     private boolean checkFirstSimTickInput(long simTick) {
-        // We never wait input for SimTick 2.
-        if (simTick == 1) {
+        if (simTick == 0) {
             return true;
         }
+        
         return false;
     }
 
