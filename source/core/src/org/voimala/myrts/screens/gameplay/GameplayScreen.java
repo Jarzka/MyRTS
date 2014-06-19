@@ -4,12 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.graphics.SpriteContainer;
-import org.voimala.myrts.networking.*;
-import org.voimala.myrts.screens.gameplay.multiplayer.GameplayChatInputManager;
-import org.voimala.myrts.screens.gameplay.multiplayer.MultiplayerInputManager;
+import org.voimala.myrts.networking.ConnectionState;
+import org.voimala.myrts.networking.NetworkManager;
+import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.AbstractGameScreen;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputManager;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputProcessor;
+import org.voimala.myrts.screens.gameplay.multiplayer.GameplayChatInputManager;
+import org.voimala.myrts.screens.gameplay.multiplayer.GameplayMultiplayerInputManager;
 import org.voimala.myrts.screens.gameplay.states.AbstractGameplayState;
 import org.voimala.myrts.screens.gameplay.states.GameplayStateRunning;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
@@ -26,7 +28,7 @@ public class GameplayScreen extends AbstractGameScreen {
 
     private GameplayInputManager gameplayInputManager = new GameplayInputManager(this);
     private GameplayInputProcessor gameplayInputProcessor = new GameplayInputProcessor(this);
-    private MultiplayerInputManager multiplayerInputManager = new MultiplayerInputManager(this);
+    private GameplayMultiplayerInputManager gameplayMultiplayerInputManager = new GameplayMultiplayerInputManager(this);
     private GameplayChatInputManager gameplayChatInputManager = new GameplayChatInputManager(this);
 
     private GameMode gameMode = GameMode.SINGLEPLAYER;
@@ -69,9 +71,7 @@ public class GameplayScreen extends AbstractGameScreen {
     }
 
     private void initializeInputListeners() {
-        GameplayInputManager.getInstance().setGameplayScreen(this);
-        GameplayChatInputManager.getInstance().setGameplayScreen(this);
-        Gdx.input.setInputProcessor(GameplayInputProcessor.getInstance());
+        Gdx.input.setInputProcessor(gameplayInputProcessor);
     }
 
     public void setGameMode(GameMode gameMode) {
@@ -94,8 +94,8 @@ public class GameplayScreen extends AbstractGameScreen {
 
     public void handleUserInput(float deltaTime) {
         // TODO What to do when the game is waiting input from the network?
-        GameplayInputManager.getInstance().update();
-        GameplayChatInputManager.getInstance().update();
+        gameplayInputManager.update();
+        gameplayChatInputManager.update();
     }
 
     public void updateWorld(float deltaTime) {
@@ -135,8 +135,9 @@ public class GameplayScreen extends AbstractGameScreen {
         /* Check that we have input information for the next SimTick so that we can
         * continue executing the simulation.
         * The input for the next turn was sent in the previous SimTick. */
-        if (MultiplayerInputManager.getInstance().doesAllInputExist(simTick - 1)) {
-            // TODO Perform inputs
+        if (gameplayMultiplayerInputManager.doesAllInputExist(simTick - 1)) {
+            // TODO Perform inputs for the next round
+            gameplayMultiplayerInputManager.performAllInputs(simTick + 1);
             return true;
         } else {
             return false;
@@ -247,5 +248,17 @@ public class GameplayScreen extends AbstractGameScreen {
 
     public boolean isWaitingInputForNextSimTick() {
         return isWaitingInputForNextSimTick;
+    }
+
+    public GameplayInputManager getGameplayInputManager() {
+        return gameplayInputManager;
+    }
+
+    public GameplayMultiplayerInputManager getGameplayMultiplayerInputManager() {
+        return gameplayMultiplayerInputManager;
+    }
+
+    public GameplayChatInputManager getGameplayChatInputManager() {
+        return gameplayChatInputManager;
     }
 }

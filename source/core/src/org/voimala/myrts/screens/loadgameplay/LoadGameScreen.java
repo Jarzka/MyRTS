@@ -9,7 +9,6 @@ import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.screens.AbstractGameScreen;
 import org.voimala.myrts.screens.ScreenName;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
-import org.voimala.myrts.screens.gameplay.world.WorldRenderer;
 
 public class LoadGameScreen extends AbstractGameScreen {
 

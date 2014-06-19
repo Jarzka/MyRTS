@@ -1,6 +1,8 @@
 package org.voimala.myrts.screens.gameplay.world;
 
-import com.badlogic.gdx.math.Vector2;;
+import com.badlogic.gdx.math.Vector2;
+
+;
 
 public abstract class AbstractGameObject implements Cloneable {
 

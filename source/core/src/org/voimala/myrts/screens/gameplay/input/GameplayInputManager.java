@@ -5,7 +5,6 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.sun.istack.internal.NotNull;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.networking.ListenSocketThread;
 import org.voimala.myrts.networking.NetworkManager;
@@ -33,7 +32,7 @@ public class GameplayInputManager {
     private float rectangleStartXScreen = -1;
     private float rectangleStartYScreen = -1;
 
-    public GameplayInputManager(@NotNull final GameplayScreen gameplayScreen) {
+    public GameplayInputManager(final GameplayScreen gameplayScreen) {
         this.gameplayScreen = gameplayScreen;
         cameraManager = new CameraManager(gameplayScreen.getWorldController().getWorldCamera());
     }

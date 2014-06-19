@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.networking.ConnectionState;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.screens.AbstractGameScreen;

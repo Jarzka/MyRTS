@@ -12,9 +12,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import org.voimala.myrts.app.GameMain;
+import org.voimala.myrts.graphics.SpriteContainer;
 import org.voimala.myrts.networking.ChatContainer;
 import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
-import org.voimala.myrts.graphics.SpriteContainer;
 import org.voimala.utility.ArrayHelper;
 
 public class WorldRenderer implements Disposable {
@@ -232,10 +232,11 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUserMessage() {
-        if (worldController.getGameplayScreen().getGameplayInputManager().isChatTypingOn()) {
+        if (worldController.getGameplayScreen().getGameplayChatInputManager().isChatTypingOn()) {
             hudBatch.begin();
             defaultFont.draw(hudBatch,
-                    "[ALL]" + " " + GameMain.getInstance().getPlayer().getName() + ": " + worldController.getGameplayScreen().getGameplayInputManager().getUserChatMessage(),
+                    "[ALL]" + " " + GameMain.getInstance().getPlayer().getName() + ": " +
+                            worldController.getGameplayScreen().getGameplayChatInputManager().getUserChatMessage(),
                     chatMessagesXScreen,
                     Gdx.graphics.getHeight() - chatMessagesYScreen);
             hudBatch.end();
@@ -244,7 +245,7 @@ public class WorldRenderer implements Disposable {
 
     private void renderChatMessages() {
         if (ChatContainer.getInstance().getMillisecondsPassedSinceLastMessageReceived() < 10000
-                || worldController.getGameplayScreen().getGameplayInputManager().isChatTypingOn()) {
+                || worldController.getGameplayScreen().getGameplayChatInputManager().isChatTypingOn()) {
             hudBatch.begin();
             int numberOfMessages = 10;
             String[] chatMessages = ChatContainer.getInstance().getNewestChatMessagesAsStrings(numberOfMessages);

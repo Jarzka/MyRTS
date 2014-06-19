@@ -2,9 +2,7 @@ package org.voimala.myrts.screens.gameplay.input;
 
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.sun.istack.internal.NotNull;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
-import org.voimala.myrts.screens.gameplay.world.WorldController;
 
 /* This class is used for handling desktop zoom with mouse wheel. */
 
@@ -12,7 +10,7 @@ public class GameplayInputProcessor implements InputProcessor{
 
     private GameplayScreen gameplayScreen = null;
 
-    public GameplayInputProcessor(@NotNull final GameplayScreen gameplayScreen) {
+    public GameplayInputProcessor(final GameplayScreen gameplayScreen) {
         this.gameplayScreen = gameplayScreen;
     }
 
@@ -28,7 +26,7 @@ public class GameplayInputProcessor implements InputProcessor{
 
     @Override
     public boolean keyTyped(char character) {
-        gameplayScreen.getGameplayInputManager().handleUserChatInput(character);
+        gameplayScreen.getGameplayChatInputManager().handleUserChatInput(character);
         return false;
     }
 

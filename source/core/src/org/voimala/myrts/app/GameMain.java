@@ -3,16 +3,12 @@ package org.voimala.myrts.app;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import org.voimala.myrts.graphics.SpriteContainer;
-import org.voimala.myrts.networking.ConnectionState;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.screens.ScreenName;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
-import org.voimala.myrts.screens.gameplay.world.GameMode;
 import org.voimala.myrts.screens.gameplay.world.Player;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
-import org.voimala.myrts.screens.gameplay.world.WorldRenderer;
 import org.voimala.myrts.screens.loadgameplay.LoadGameScreen;
 import org.voimala.myrts.screens.menu.MenuScreen;
 

@@ -1,7 +1,6 @@
 package org.voimala.myrts.screens.gameplay.multiplayer;
 
 import com.badlogic.gdx.Gdx;
-import com.sun.istack.internal.NotNull;
 import org.voimala.myrts.networking.LocalMultiplayerInfo;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
@@ -10,14 +9,14 @@ import org.voimala.myrts.screens.gameplay.input.PlayerInput;
 import java.util.ArrayList;
 
 /** This class used for multiplayer game synchronization. */
-public class MultiplayerInputManager {
+public class GameplayMultiplayerInputManager {
 
-    private static final String TAG = MultiplayerInputManager.class.getName();
+    private static final String TAG = GameplayMultiplayerInputManager.class.getName();
 
     private ArrayList<PlayerInput> playerInputs = new ArrayList<PlayerInput>();
     private GameplayScreen gameplayScreen;
 
-    public MultiplayerInputManager(@NotNull final GameplayScreen gameplayScreen) {
+    public GameplayMultiplayerInputManager(final GameplayScreen gameplayScreen) {
         this.gameplayScreen = gameplayScreen;
     }
 
@@ -48,7 +47,7 @@ public class MultiplayerInputManager {
         return findPlayerInput(playerNumber, simTick).length() != 0;
     }
 
-    public void performNetworkInput() {
+    public void performAllInputs(final long simTick) {
         /* TODO
         AbstractUnit unit = worldController.findUnitById(messageSplitted[3]);
         if (unit != null) {

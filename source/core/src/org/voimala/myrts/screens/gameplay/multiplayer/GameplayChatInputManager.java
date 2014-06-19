@@ -2,7 +2,6 @@ package org.voimala.myrts.screens.gameplay.multiplayer;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.sun.istack.internal.NotNull;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
@@ -18,7 +17,7 @@ public class GameplayChatInputManager {
     private boolean isChatTypingOn = false;
     private String userChatMessage = "";
 
-    public GameplayChatInputManager(@NotNull final GameplayScreen gameplayScreen) {
+    public GameplayChatInputManager(final GameplayScreen gameplayScreen) {
         this.gameplayScreen = gameplayScreen;
     }
 
