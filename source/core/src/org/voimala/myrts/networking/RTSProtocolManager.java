@@ -263,7 +263,6 @@ public class RTSProtocolManager {
                     serverThread.sendMessageToAllClients(createNetworkMessageChatMessage(
                             serverThread.getServerChatName(),
                             messageSplitted[1] + " " + "connected."));
-
                 }
             }
 
