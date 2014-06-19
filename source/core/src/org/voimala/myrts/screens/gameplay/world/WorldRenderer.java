@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import org.voimala.myrts.app.GameMain;
-import org.voimala.myrts.networking.Chat;
+import org.voimala.myrts.networking.ChatContainer;
 import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrts.graphics.SpriteContainer;
 import org.voimala.utility.ArrayHelper;
@@ -243,11 +243,11 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderChatMessages() {
-        if (Chat.getInstance().getMillisecondsPassedSinceLastMessageReceived() < 10000
+        if (ChatContainer.getInstance().getMillisecondsPassedSinceLastMessageReceived() < 10000
                 || worldController.getGameplayScreen().getGameplayInputManager().isChatTypingOn()) {
             hudBatch.begin();
             int numberOfMessages = 10;
-            String[] chatMessages = Chat.getInstance().getNewestChatMessagesAsStrings(numberOfMessages);
+            String[] chatMessages = ChatContainer.getInstance().getNewestChatMessagesAsStrings(numberOfMessages);
             chatMessages = ArrayHelper.reverseArray(chatMessages);
             for (int i = 0; i < chatMessages.length; i++) {
                 defaultFont.draw(hudBatch,

@@ -2,18 +2,18 @@ package org.voimala.myrts.networking;
 
 import java.util.ArrayList;
 
-public class Chat {
+public class ChatContainer {
 
     private ArrayList<ChatMessage> chatMessages = new ArrayList<ChatMessage>();
 
-    private static Chat instanceOfThis;
+    private static ChatContainer instanceOfThis;
     private long latestMessageReceivedTimestamp = 0;
 
-    private Chat() {}
+    private ChatContainer() {}
 
-    public static Chat getInstance() {
+    public static ChatContainer getInstance() {
         if (instanceOfThis == null) {
-            instanceOfThis = new Chat();
+            instanceOfThis = new ChatContainer();
         }
 
         return instanceOfThis;

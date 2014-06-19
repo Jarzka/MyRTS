@@ -5,11 +5,11 @@ import com.badlogic.gdx.graphics.GL20;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.graphics.SpriteContainer;
 import org.voimala.myrts.networking.ConnectionState;
+import org.voimala.myrts.networking.GameplayChatInputManager;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.AbstractGameScreen;
 import org.voimala.myrts.screens.gameplay.input.GameplayInputManager;
-import org.voimala.myrts.screens.gameplay.input.GameplayInputProcessor;
 import org.voimala.myrts.screens.gameplay.states.AbstractGameplayState;
 import org.voimala.myrts.screens.gameplay.states.GameplayStateRunning;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
@@ -36,9 +36,6 @@ public class GameplayScreen extends AbstractGameScreen {
     private long simTick = 0;
     private boolean isWaitingInputForNextSimTick = false;
     private boolean isNoInputSentForTheNextTurn = false;
-
-    private GameplayInputProcessor inputHandler = new GameplayInputProcessor(this);
-    private GameplayInputManager gameplayInputManager;
 
     /** @param worldController Preloaded WorldController object.
      */
@@ -67,7 +64,8 @@ public class GameplayScreen extends AbstractGameScreen {
     }
 
     private void initializeInputListeners() {
-        gameplayInputManager = new GameplayInputManager(this);
+        GameplayInputManager.getInstance().setGameplayScreen(this);
+        GameplayChatInputManager.getInstance().setGameplayScreen(this);
         Gdx.input.setInputProcessor(inputHandler);
     }
 
@@ -91,7 +89,8 @@ public class GameplayScreen extends AbstractGameScreen {
 
     public void handleUserInput(float deltaTime) {
         // TODO What to do when the game is waiting input from the network?
-        gameplayInputManager.update();
+        GameplayInputManager.getInstance().update();
+        GameplayChatInputManager.getInstance().update();
     }
 
     public void updateWorld(float deltaTime) {

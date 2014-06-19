@@ -58,7 +58,7 @@ public class RTSProtocolManager {
     private boolean handleNetworkMessageMotd(final String message) {
         if (message.startsWith("<MOTD|")) {
             String[] messageSplitted = splitNetworkMessage(message);
-            Chat.getInstance().addChatMessage(new ChatMessage("Server", messageSplitted[1], System.currentTimeMillis()));
+            ChatContainer.getInstance().addChatMessage(new ChatMessage("Server", messageSplitted[1], System.currentTimeMillis()));
             Gdx.app.debug(TAG, "Message of the day: " + messageSplitted[1]);
             return true;
         }
@@ -140,7 +140,7 @@ public class RTSProtocolManager {
         if (message.startsWith("<CHAT|")) {
             if (source == SocketType.SERVER_SOCKET) {
                 String[] messageSplitted = splitNetworkMessage(message);
-                Chat.getInstance().addChatMessage(new ChatMessage(messageSplitted[1],
+                ChatContainer.getInstance().addChatMessage(new ChatMessage(messageSplitted[1],
                         messageSplitted[2],
                         System.currentTimeMillis()));
                 Gdx.app.debug(TAG, messageSplitted[1] + ": " + messageSplitted[2]);

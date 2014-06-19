@@ -1,5 +1,7 @@
 package org.voimala.myrts.networking;
 
+/** The main purpose of this class is to host a new game (start server thread)
+ * and join to a game (start listen socket thread). */
 public class NetworkManager {
 
     private ServerThread serverThread;
@@ -62,7 +64,7 @@ public class NetworkManager {
             listenSocketThread = null;
         }
 
-        Chat.getInstance().clearAllChatMessages();
+        ChatContainer.getInstance().clearAllChatMessages();
     }
 
     public void disconnectServerThread() {

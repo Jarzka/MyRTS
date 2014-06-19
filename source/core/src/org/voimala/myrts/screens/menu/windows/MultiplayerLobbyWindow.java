@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import org.voimala.myrts.app.GameMain;
-import org.voimala.myrts.networking.Chat;
+import org.voimala.myrts.networking.ChatContainer;
 import org.voimala.myrts.networking.LocalMultiplayerInfo;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
@@ -330,7 +330,7 @@ public class MultiplayerLobbyWindow extends AbstractMenuWindow {
     }
 
     private void updateChatMessages() {
-        textAreaChatMessages.setItems(Chat.getInstance().getNewestChatMessagesAsStrings(100));
+        textAreaChatMessages.setItems(ChatContainer.getInstance().getNewestChatMessagesAsStrings(100));
     }
 
     @Override
