@@ -29,7 +29,6 @@ public class GameplayScreen extends AbstractGameScreen {
 
     private GameplayInputManager gameplayInputManager;
     private GameplayInputProcessor gameplayInputProcessor;
-    private MultiplayerSynchronizationManager multiplayerSynchronizationManager;
     private GameplayChatInputManager gameplayChatInputManager;
     private RTSCommandExecuter rtsCommandExecuter;
 
@@ -56,7 +55,7 @@ public class GameplayScreen extends AbstractGameScreen {
     private void initializeGameMode() {
         if (NetworkManager.getInstance().getClientConnectionState() == ConnectionState.CONNECTED) {
             setGameMode(GameMode.MULTIPLAYER);
-            multiplayerSynchronizationManager.setSimTick(1);
+            MultiplayerSynchronizationManager.getInstance().setSimTick(1);
         } else {
             GameMain.getInstance().getPlayer().setNumber(1);
             GameMain.getInstance().getPlayer().setTeam(1);
@@ -67,7 +66,7 @@ public class GameplayScreen extends AbstractGameScreen {
     private void initializeInputManagers() {
         gameplayInputManager = new GameplayInputManager(this);
         gameplayInputProcessor = new GameplayInputProcessor(this);
-        multiplayerSynchronizationManager = new MultiplayerSynchronizationManager(this);
+        MultiplayerSynchronizationManager.getInstance().setGameplayScreen(this);
         gameplayChatInputManager = new GameplayChatInputManager(this);
         Gdx.input.setInputProcessor(gameplayInputProcessor);
 
@@ -102,14 +101,14 @@ public class GameplayScreen extends AbstractGameScreen {
         if (gameMode == GameMode.SINGLEPLAYER) {
             updateWorldUsingVariablePhysics(deltaTime);
         } else if (gameMode == GameMode.MULTIPLAYER) {
-            if (!multiplayerSynchronizationManager.isWaitingInputForNextSimTick()) {
+            if (!MultiplayerSynchronizationManager.getInstance().isWaitingInputForNextSimTick()) {
                 updateWorldUsingFixedPhysics();
             }
 
             // New SimTick reached.
             // TODO Variable turn length?
             if (worldUpdateTick % 5.0 == 0 && gameMode == GameMode.MULTIPLAYER) {
-                multiplayerSynchronizationManager.handleNewSimTick();
+                MultiplayerSynchronizationManager.getInstance().handleNewSimTick();
             }
         }
     }
@@ -205,10 +204,6 @@ public class GameplayScreen extends AbstractGameScreen {
 
     public GameplayInputManager getGameplayInputManager() {
         return gameplayInputManager;
-    }
-
-    public MultiplayerSynchronizationManager getMultiplayerSynchronizationManager() {
-        return multiplayerSynchronizationManager;
     }
 
     public GameplayChatInputManager getGameplayChatInputManager() {

@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Disposable;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.graphics.SpriteContainer;
 import org.voimala.myrts.networking.ChatContainer;
+import org.voimala.myrts.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
 import org.voimala.utility.ArrayHelper;
 
@@ -208,7 +209,7 @@ public class WorldRenderer implements Disposable {
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 3);
         defaultFont.draw(hudBatch,
-                "SimTick: " + worldController.getGameplayScreen().getMultiplayerSynchronizationManager().getSimTick(),
+                "SimTick: " + MultiplayerSynchronizationManager.getInstance().getSimTick(),
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 4);
         hudBatch.end();
@@ -216,7 +217,7 @@ public class WorldRenderer implements Disposable {
 
     private void renderNetworkText() {
         // TODO Render only if the waiting has lasted over 2 seconds
-        if (worldController.getGameplayScreen().getMultiplayerSynchronizationManager().isWaitingInputForNextSimTick()) {
+        if (MultiplayerSynchronizationManager.getInstance().isWaitingInputForNextSimTick()) {
             hudBatch.begin();
             defaultFont.draw(hudBatch,
                     "Waiting for player...",

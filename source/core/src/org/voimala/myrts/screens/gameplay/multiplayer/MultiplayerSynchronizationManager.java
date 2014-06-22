@@ -12,10 +12,18 @@ import org.voimala.myrts.screens.gameplay.input.commands.RTSCommandExecuter;
 import java.util.ArrayList;
 import java.util.List;
 
+/** This class is used to store ja process player inputs during gameplay.
+ * Implemented as a singleton since it is important to be able to store player inputs
+ * even if the game is still loading the game. */
 public class MultiplayerSynchronizationManager {
 
     private static final String TAG = MultiplayerSynchronizationManager.class.getName();
 
+    private static MultiplayerSynchronizationManager instanceOfThis;
+
+    /** vector is a thread-safe implementation of ArrayList,
+     * but it can not be used here because loopin over the contents
+     * might throw ConcurrentModificationException. */
     private ArrayList<PlayerInput> playerInputs = new ArrayList<PlayerInput>(); // TODO Use different data structure?
     private GameplayScreen gameplayScreen;
     /** SimTick is used for network communication.
@@ -27,12 +35,27 @@ public class MultiplayerSynchronizationManager {
     private boolean isWaitingInputForNextSimTick = false;
     private boolean isNoInputSentForTheNextTurn = false;
 
-    public MultiplayerSynchronizationManager(final GameplayScreen gameplayScreen) {
+    private MultiplayerSynchronizationManager() {}
+
+    public static MultiplayerSynchronizationManager getInstance() {
+        if (instanceOfThis == null) {
+            instanceOfThis = new MultiplayerSynchronizationManager();
+        }
+
+        return instanceOfThis;
+    }
+
+    public void setGameplayScreen(final GameplayScreen gameplayScreen) {
         this.gameplayScreen = gameplayScreen;
     }
 
-    /** @return True if input is ok for the next SimTick. */
+    /** Gameplayscreen should not be null when this method is called.
+     * @return True if input is ok for the next SimTick. */
     public boolean handleNewSimTick() {
+        if (gameplayScreen == null) {
+            throw new NullPointerException("Gameplay screen is null!");
+        }
+
         isWaitingInputForNextSimTick = true;
         /* Check that we have input information for the next SimTick so that we can
         * continue executing the simulation. If the input is not available for all players,
@@ -60,11 +83,11 @@ public class MultiplayerSynchronizationManager {
         // TODO Remove old inputs
     }
 
-    public void addPlayerInputToQueue(final String inputMessage) {
+    public synchronized void addPlayerInputToQueue(final String inputMessage) {
         playerInputs.add(RTSCommandExecuter.createPlayerInputFromNetworkMessage(inputMessage));
     }
 
-    public void performAllInputs(final long simTick) {
+    public synchronized void performAllInputs(final long simTick) {
         for (int i = 1; i <= 8; i++) {
             if (!LocalMultiplayerInfo.getInstance().getSlots().get(i).startsWith("PLAYER")) { // TODO Use object here
                 continue; // No-one plays in this slot so we do not wait input from this slot.
@@ -80,11 +103,10 @@ public class MultiplayerSynchronizationManager {
         }
     }
 
-    public List<PlayerInput> findInputsByPlayerNumberAndSimTick(final int playerNumber, final long simTick) {
+    public synchronized List<PlayerInput> findInputsByPlayerNumberAndSimTick(final int playerNumber, final long simTick) {
         List<PlayerInput> playerInputs = new ArrayList<PlayerInput>();
 
         // TODO Do not use linear search
-        // TODO ConcurrentModificationException, network thread might be adding input at the same time
         for (PlayerInput playerInput : this.playerInputs) {
             if (playerInput.getPlayerNumber() == playerNumber && playerInput.getSimTick() == simTick) {
                 playerInputs.add(playerInput);
@@ -95,7 +117,7 @@ public class MultiplayerSynchronizationManager {
     }
 
     /** @param simTick SimTick that was active when input was given. */
-    public boolean doesAllInputExistForSimTick(final long simTick) {
+    public synchronized boolean doesAllInputExistForSimTick(final long simTick) {
         if (checkFirstSimTickInput(simTick)) return true;
 
         for (int i = 1; i <= 8; i++) {

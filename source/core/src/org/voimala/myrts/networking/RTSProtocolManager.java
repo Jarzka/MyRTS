@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.screens.ScreenName;
+import org.voimala.myrts.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
 
 /** This class is used to send network messages that respect the game's protocol. */
@@ -86,7 +87,7 @@ public class RTSProtocolManager {
                 String messageSplitted[] = splitNetworkMessage(message);
                 // TODO Check player number and that the player owns the selected unit.
                 if (worldController != null) {
-                    worldController.getGameplayScreen().getMultiplayerSynchronizationManager().addPlayerInputToQueue(message);
+                    MultiplayerSynchronizationManager.getInstance().addPlayerInputToQueue(message);
                 }
             } else if (client.getSocketType() == SocketType.PLAYER_SOCKET) { // The message came to the server from a player
                 ServerThread server = NetworkManager.getInstance().getServerThread();
@@ -112,12 +113,15 @@ public class RTSProtocolManager {
 
     private boolean handleNetworkMessageInputNoInput(String message, final ListenSocketThread client) {
         if (message.startsWith("<INPUT|NO_INPUT|")) {
-            if (client.getSocketType() == SocketType.SERVER_SOCKET) { // The message came from the server
+            if (client.getSocketType() == SocketType.SERVER_SOCKET) {
+                // The message came from the server. Add the input to the queue.
                 String messageSplitted[] = splitNetworkMessage(message);
                 if (worldController != null) {
-                    worldController.getGameplayScreen().getMultiplayerSynchronizationManager().addPlayerInputToQueue(message);
+                    MultiplayerSynchronizationManager.getInstance().addPlayerInputToQueue(message);
                 }
-            } else if (client.getSocketType() == SocketType.PLAYER_SOCKET) { // The message came to the server from a player
+            } else if (client.getSocketType() == SocketType.PLAYER_SOCKET) {
+                /* The message came to the server from a player. Append player number to the message and
+                 * send it to all players. */
                 ServerThread server = NetworkManager.getInstance().getServerThread();
                 if (server != null) {
                     String messageSplitted[] = splitNetworkMessage(message);

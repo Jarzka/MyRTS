@@ -6,6 +6,7 @@ import org.voimala.myrts.networking.ListenSocketThread;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
+import org.voimala.myrts.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
 
@@ -40,7 +41,7 @@ public class RTSCommandExecuter {
         if (method == ExecuteCommandMethod.SEND_TO_NETWORK) {
             String message = RTSProtocolManager.getInstance().createNetworkMessageInputMoveUnit(
                     unit.getObjectId(),
-                    gameplayScreen.getWorldController().getGameplayScreen().getMultiplayerSynchronizationManager().getSimTick(),
+                    MultiplayerSynchronizationManager.getInstance().getSimTick(),
                     new Vector2(targetX, targetY));
             ListenSocketThread listenSocketThread = NetworkManager.getInstance().getClientThread();
             if (listenSocketThread != null) {
