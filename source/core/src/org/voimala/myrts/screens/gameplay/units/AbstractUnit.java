@@ -13,6 +13,7 @@ public abstract class AbstractUnit extends AbstractGameObject {
     protected UnitType type;
 
     private boolean isSelected = false;
+    private static long nextFreeId = 0;
 
     public AbstractUnit(final long id) {
         initialize(id);
@@ -111,5 +112,13 @@ public abstract class AbstractUnit extends AbstractGameObject {
 
     public AbstractMovement getMovement() {
         return movement;
+    }
+
+    public static long getNextFreeId() {
+        return nextFreeId++;
+    }
+
+    public static void resetNextFreeId() {
+        nextFreeId = 0;
     }
 }
