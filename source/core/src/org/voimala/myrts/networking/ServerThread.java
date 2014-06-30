@@ -14,7 +14,8 @@ public class ServerThread extends Thread {
     private static final String TAG = ServerThread.class.getName();
     private ServerSocketHints serverSocketHints;
     private ServerSocket serverSocket;
-    private boolean running = true;
+    private boolean serverRunning = true;
+    private boolean gameRunning = false;
     private int port = 0;
     private ArrayList<ListenSocketThread> connectedClients = new ArrayList<ListenSocketThread>();
     /** Integer = slot number.
@@ -66,12 +67,12 @@ public class ServerThread extends Thread {
             Gdx.app.debug(TAG, "Server created");
         } catch (Exception e) {
             Gdx.app.debug(TAG, "Error creating a server: " + e.getMessage());
-            running = false;
+            serverRunning = false;
         }
     }
 
     private void acceptConnections() {
-        while (running) {
+        while (serverRunning) {
             try {
                 Gdx.app.debug(TAG, "Listening connections...");
                 SocketHints socketHints = new SocketHints();
@@ -90,13 +91,20 @@ public class ServerThread extends Thread {
 
     private void handleNewClientConnection(final Socket clientSocket) {
         ListenSocketThread client = new ListenSocketThread(this, clientSocket);
-        connectedClients.add(client);
 
+        checkIfGameIsRunning(client);
         assignSlotToPlayer(client);
+        connectedClients.add(client);
         client.sendMessage(RTSProtocolManager.getInstance().createNetworkMessageOfTheDay(motd));
         handleAdminRights(client);
 
         client.start();
+    }
+
+    private void checkIfGameIsRunning(final ListenSocketThread client) {
+        if (gameRunning) {
+            kickClient(client, "Not allowed to join while the game is running.");
+        }
     }
 
     private void assignSlotToPlayer(ListenSocketThread client) {
@@ -119,7 +127,11 @@ public class ServerThread extends Thread {
         }
 
         // Free slot not found?
-        // TODO Implement "Server is full" protocol
+        kickClient(client, "Server is full");
+    }
+
+    private void kickClient(final ListenSocketThread client, final String message) {
+        // TODO Implement "kick" in protocol
     }
 
     /** Gives admin rights to the client if he is the first player in the game */
@@ -147,7 +159,8 @@ public class ServerThread extends Thread {
             client.die();
         }
 
-        running = false;
+        serverRunning = false;
+        gameRunning = false;
         serverSocket.dispose();
     }
 
@@ -186,5 +199,9 @@ public class ServerThread extends Thread {
 
     public HashMap<Integer, String> getSlots() {
         return slots;
+    }
+
+    public void setGameRunning(boolean gameRunning) {
+        this.gameRunning = gameRunning;
     }
 }

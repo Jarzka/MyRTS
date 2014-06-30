@@ -227,12 +227,11 @@ public class RTSProtocolManager {
             if (client.getSocketType() == SocketType.PLAYER_SOCKET) {
                 if (client.getPlayerInfo().isAdmin()) {
                     String messageSplitted[] = splitNetworkMessage(message);
-                    if (messageSplitted[1].equals("START")) {
-                        Gdx.app.debug(TAG, "Informing players that they can start the game.");
-                        ServerThread serverThread = NetworkManager.getInstance().getServerThread();
-                        if (serverThread != null) {
-                            serverThread.sendMessageToAllClients(createNetworkMessageStartGame());
-                        }
+                    Gdx.app.debug(TAG, "Informing players that they can start the game.");
+                    ServerThread serverThread = NetworkManager.getInstance().getServerThread();
+                    if (serverThread != null) {
+                        serverThread.setGameRunning(true);
+                        serverThread.sendMessageToAllClients(createNetworkMessageStartGame());
                     }
                 }
             }
