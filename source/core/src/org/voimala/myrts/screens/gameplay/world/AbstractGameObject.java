@@ -7,10 +7,11 @@ import com.badlogic.gdx.math.Vector2;
 public abstract class AbstractGameObject implements Cloneable {
 
     protected long ObjectId; // Every object should have an unique id
-    protected Vector2 position = new Vector2(0, 0);
+    protected Vector2 position = new Vector2(0, 0); /* Object's position in 2D space. Origin at center. */
     protected float angle = 0; // 0 = right, 90 = top, 180 = left, 270 = down. Always between 0 and 360 (inclusive)
     protected float width = 0;
     protected float height = 0;
+    protected Object collisionMask;
 
     public AbstractGameObject clone() throws CloneNotSupportedException {
         AbstractGameObject gameObjectClone = (AbstractGameObject) super.clone();
@@ -93,9 +94,11 @@ public abstract class AbstractGameObject implements Cloneable {
     }
 
     protected abstract void updateCollisionMask();
-    public abstract boolean onCollision(Vector2 point);
+
 
     public long getObjectId() {
         return ObjectId;
     }
+
+    public abstract boolean onCollision(Vector2 point);
 }

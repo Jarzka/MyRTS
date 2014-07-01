@@ -6,7 +6,6 @@ import org.voimala.myrts.screens.gameplay.world.AbstractGameObject;
 
 public abstract class AbstractUnit extends AbstractGameObject {
 
-    protected Object collisionMask;
     protected int player = 0;
     protected int team = 0;
     protected AbstractMovement movement = null;

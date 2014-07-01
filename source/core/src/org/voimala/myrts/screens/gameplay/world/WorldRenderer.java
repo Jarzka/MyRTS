@@ -120,8 +120,10 @@ public class WorldRenderer implements Disposable {
                     unitToRender = unitClone;
                 }
 
-                batch.begin();
                 Sprite sprite = SpriteContainer.getInstance().getSprite("m4-stopped-0");
+                
+                // Draw unit
+                batch.begin();
                 sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2 - 70);
                 sprite.setPosition(unitToRender.getX() - sprite.getWidth() / 2, unitToRender.getY() - sprite.getWidth() / 2 + 70);
                 sprite.setRotation(unitToRender.getAngle() - 90);
@@ -129,7 +131,7 @@ public class WorldRenderer implements Disposable {
                 batch.end();
             } catch (CloneNotSupportedException e) {
                 Gdx.app.debug(TAG, "ERROR: " + e.getMessage());
-            }
+        }
         }
     }
 
