@@ -148,8 +148,7 @@ public class GameplayScreen extends AbstractGameScreen {
         if (gameMode == GameMode.SINGLEPLAYER) {
             worldRenderer.render(RenderMode.GAME_STATE);
         } else if (gameMode == GameMode.MULTIPLAYER) {
-            worldRenderer.render(RenderMode.GAME_STATE); // TODO TESTING
-            //worldRenderer.render(RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION);
+            worldRenderer.render(RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION);
         }
     }
 
@@ -228,7 +227,8 @@ public class GameplayScreen extends AbstractGameScreen {
         String hash = "";
 
         // TODO Make sure that every client has a same container (units are in the same order etc.)
-
+        /* This is has is used for development and easy bug hunting. */
+        /*
         StringBuilder hashBuilder = new StringBuilder();
         hashBuilder.append("simtick " + MultiplayerSynchronizationManager.getInstance().getSimTick() + ". ");
         for (AbstractUnit unit : worldController.getUnitContainer().getUnits()) {
@@ -240,8 +240,9 @@ public class GameplayScreen extends AbstractGameScreen {
 
         hash += hashBuilder.toString();
         return hash;
+        */
 
-        /* Final hash for production version
+        // Final hash for production version
         for (AbstractUnit unit : worldController.getUnitContainer().getUnits()) {
             StringBuilder hashBuilder = new StringBuilder();
             hashBuilder.append(unit.getX());
@@ -251,7 +252,7 @@ public class GameplayScreen extends AbstractGameScreen {
         }
 
         return md5(hash);
-        */
+
     }
 
     // TODO http://javarevisited.blogspot.fi/2013/03/generate-md5-hash-in-java-string-byte-array-example-tutorial.html
