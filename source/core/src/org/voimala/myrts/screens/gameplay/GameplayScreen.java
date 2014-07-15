@@ -112,15 +112,16 @@ public class GameplayScreen extends AbstractGameScreen {
                 updateWorldUsingFixedPhysics();
             }
 
-            // New SimTick reached.
+            // Update SimTick between 5 world updates.
             // TODO Variable turn length?
-            if (worldUpdateTick % 5.0 == 0 && gameMode == GameMode.MULTIPLAYER) {
+            if (Float.valueOf(MultiplayerSynchronizationManager.getInstance().getSimTick()) == worldUpdateTick / 5f) {
                 MultiplayerSynchronizationManager.getInstance().handleNewSimTick();
             }
         }
     }
 
     private void updateWorldUsingVariablePhysics(final float deltaTime) {
+        Gdx.app.debug(TAG, "Updating world with variable physics...");
         worldController.updateWorld(deltaTime);
         worldUpdateTick++;
         lastWorldUpdateTimestamp = System.currentTimeMillis();
@@ -131,6 +132,7 @@ public class GameplayScreen extends AbstractGameScreen {
         final long fixedPhysicsFps = 20;
         if (System.currentTimeMillis() >= lastWorldUpdateTimestamp + (long) (((float) 1 / (float) fixedPhysicsFps) * 1000)) {
             float deltaTime = (float) 1 / (float) fixedPhysicsFps;
+            Gdx.app.debug(TAG, "Updating world with fixed physics...");
             worldController.updateWorld(deltaTime);
             worldUpdateTick++;
             lastWorldUpdateTimestamp = System.currentTimeMillis();
