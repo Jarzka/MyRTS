@@ -46,7 +46,6 @@ public class RTSProtocolManager {
                     || handleNetworkMessageAdminStart(message, listenSocketThread)
                     || handleNetworkMessageStartGame(message, listenSocketThread.getSocketType())
                     || handleNetworkMessageGameStateHash(message, listenSocketThread)) {
-                Gdx.app.debug(TAG, "Message handled successfully.");
                 return true;
             } else {
                 Gdx.app.debug(TAG, "WARNING: Unable to handle message: " + message);
@@ -122,7 +121,7 @@ public class RTSProtocolManager {
                     MultiplayerSynchronizationManager.getInstance().addPlayerInputToQueue(message);
                 }
             } else if (client.getSocketType() == SocketType.PLAYER_SOCKET) {
-                /* The message came to the server from a player. Append player number to the message and
+                /* The message arrived to the server from a player. Append player number to the message and
                  * send it to all players. */
                 ServerThread server = NetworkManager.getInstance().getServerThread();
                 if (server != null) {
@@ -350,6 +349,7 @@ public class RTSProtocolManager {
         return "<COMMAND_AND_CONQUER>";
     }
 
+    // TODO Does the client need to send his player number because server knows it? If not, update protocol document too.
     public String createNetworkMessageGameStateHash(final int playerNumber, final long simTick, final String hash) {
         return "<HASH|" + playerNumber + "|" + simTick + "|" + hash + ">";
     }

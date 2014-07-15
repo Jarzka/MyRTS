@@ -151,9 +151,9 @@ public class ListenSocketThread extends Thread {
     public void sendMessage(final String message) {
         try {
             if (socketType == SocketType.SERVER_SOCKET) {
-                Gdx.app.debug(TAG, "Sending message to the server: " + message);
+                Gdx.app.debug(TAG, "Player " + GameMain.getInstance().getPlayer().getNumber() + ": Sending message to the server: " + message);
             } else if (socketType == SocketType.PLAYER_SOCKET) {
-                Gdx.app.debug(TAG, "Sending message to the player: " + message);
+                Gdx.app.debug(TAG, "Server: Sending message to the player " + player.getNumber() + ": " + message);
             }
 
             socket.getOutputStream().write(message.getBytes());

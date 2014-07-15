@@ -225,6 +225,20 @@ public class GameplayScreen extends AbstractGameScreen {
         String hash = "";
 
         // TODO Make sure that every client has a same container (units are in the same order etc.)
+
+        StringBuilder hashBuilder = new StringBuilder();
+        hashBuilder.append("simtick " + MultiplayerSynchronizationManager.getInstance().getSimTick() + ". ");
+        for (AbstractUnit unit : worldController.getUnitContainer().getUnits()) {
+            hashBuilder.append("unit" + unit.getObjectId() + "x:" + unit.getX() + ". ");
+            hashBuilder.append("unit" + unit.getObjectId() + "y:" +unit.getY() + ". ");
+            hashBuilder.append("unit" + unit.getObjectId() + "angle:" + unit.getAngleInRadians() + ". ");
+
+        }
+
+        hash += hashBuilder.toString();
+        return hash;
+
+        /* Final hash for production version
         for (AbstractUnit unit : worldController.getUnitContainer().getUnits()) {
             StringBuilder hashBuilder = new StringBuilder();
             hashBuilder.append(unit.getX());
@@ -234,6 +248,7 @@ public class GameplayScreen extends AbstractGameScreen {
         }
 
         return md5(hash);
+        */
     }
 
     // TODO http://javarevisited.blogspot.fi/2013/03/generate-md5-hash-in-java-string-byte-array-example-tutorial.html

@@ -28,8 +28,8 @@ public class ServerThread extends Thread {
     private HashMap<Integer, String> slots = new HashMap<Integer, String>();
     private String motd = "Welcome to the server!";
     private String serverChatName = "Server";
-    /** SimTick, PlayerNumber, Hash */
-    private HashMap<Long, HashMap<Integer, String>> playerGameStateHashes = new HashMap<Long, HashMap<Integer, String>>();
+    /** The first string is in the following format: SimTick_PlayerNumber, the second string contains the Hash */
+    private HashMap<String, String> playerGameStateHashes = new HashMap<String, String>();
 
     public ServerThread(final int port) {
         super(ServerThread.class.getName());
@@ -184,10 +184,7 @@ public class ServerThread extends Thread {
 
     // Stores the given hash in memory and checks if hashes match for this simTick.
     public void addAndCheckGameStateHashes(final int playerNumber, final long simTick, final String hash) {
-        HashMap<Integer, String> playerHash = new HashMap<Integer, String>();
-        playerHash.put(playerNumber, hash);
-        playerGameStateHashes.put(simTick, playerHash);
-
+        playerGameStateHashes.put(simTick + "_" + playerNumber, hash);
         checkHashesMatchForSimTick(simTick);
     }
 
@@ -197,25 +194,25 @@ public class ServerThread extends Thread {
                 continue;
             }
 
-            if (playerGameStateHashes.get(simTick).get(i) == null) {
+            if (playerGameStateHashes.get(simTick + "_" + i) == null) {
                 continue; // This player has not sent his hash for this simtick (yet)
             }
 
             // Get this player's hash for the current simTick
-            String playerHash = playerGameStateHashes.get(simTick).get(i);
+            String playerHash = playerGameStateHashes.get(simTick + "_" + i);
 
             // Compare it to other hashes
             for (int j = 1; j <= 8; j++) {
-                if (playerGameStateHashes.get(simTick).get(j) == null) {
+                if (playerGameStateHashes.get(simTick + "_" + j) == null) {
                     continue; // The other player has not sent his hash for this simtick (yet)
                 }
 
-                String otherHash = playerGameStateHashes.get(simTick).get(j);
+                String otherHash = playerGameStateHashes.get(simTick + "_" + j);
                 if (!playerHash.equals(otherHash)) {
                     Gdx.app.debug(TAG, "player " + i + " hash " + playerHash + " is not the same as player " + j
                             + " hash " + otherHash);
                     sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageChatMessage(serverChatName,
-                            "WARNING! GAME IS OUT OF SYNC!"));
+                            "WARNING! GAME IS OUT OF SYNC AT SIMTICK " + simTick + "!"));
                 }
             }
         }
