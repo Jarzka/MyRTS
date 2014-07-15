@@ -70,6 +70,8 @@ public class MultiplayerSynchronizationManager {
             sendGameStateHash();
             isWaitingInputForNextSimTick = false;
             simTick++;
+            Gdx.app.debug(TAG, "Player " + GameMain.getInstance().getPlayer().getNumber() + " world tick is "
+                            + gameplayScreen.getWorldUpdateTick() + " and simtick is " + simTick);
             removeOldInputs();
             return true;
         }
@@ -140,6 +142,7 @@ public class MultiplayerSynchronizationManager {
             }
 
             if (!doesPlayerInputExist(i, simTick)) {
+                Gdx.app.debug(TAG, "Player " + i + " input for simtick " + simTick + " is still missing. Waiting...");
                 return false;
             }
         }

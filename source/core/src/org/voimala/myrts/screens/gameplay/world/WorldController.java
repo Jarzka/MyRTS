@@ -48,8 +48,8 @@ public class WorldController {
     }
 
     private void createTestUnit() {
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 3; j++) {
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < 1; j++) {
                 M4Unit unit = new M4Unit(AbstractUnit.getNextFreeId());
                 unit.setPosition(new Vector2(500 + TILE_SIZE_PIXELS * i, 500 + TILE_SIZE_PIXELS  * j));
                 unit.setTeam(1);
@@ -59,8 +59,9 @@ public class WorldController {
             }
         }
 
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 3; j++) {
+        /* Testing single unit sync
+        for (int i = 0; i < 1; i++) {
+            for (int j = 0; j < 1; j++) {
                 M4Unit unit = new M4Unit(AbstractUnit.getNextFreeId());
                 unit.setPosition(new Vector2(4000 + TILE_SIZE_PIXELS * i, 4000 + TILE_SIZE_PIXELS  * j));
                 unit.setPlayerNumber(2);
@@ -69,6 +70,7 @@ public class WorldController {
                 unitContainer.addUnit(unit);
             }
         }
+        */
     }
 
     public UnitContainer getUnitContainer() {

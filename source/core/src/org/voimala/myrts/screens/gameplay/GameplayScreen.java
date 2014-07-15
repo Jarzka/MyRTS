@@ -86,7 +86,6 @@ public class GameplayScreen extends AbstractGameScreen {
 
     @Override
     public void render(float deltaTime) {
-        deltaTime = fixDeltaTimeMinAndMaxValues(deltaTime);
         currentState.update(deltaTime);
     }
 
@@ -106,6 +105,7 @@ public class GameplayScreen extends AbstractGameScreen {
 
     public void updateWorld(float deltaTime) {
         if (gameMode == GameMode.SINGLEPLAYER) {
+            deltaTime = fixDeltaTimeMinAndMaxValues(deltaTime);
             updateWorldUsingVariablePhysics(deltaTime);
         } else if (gameMode == GameMode.MULTIPLAYER) {
             if (!MultiplayerSynchronizationManager.getInstance().isWaitingInputForNextSimTick()) {
@@ -128,7 +128,7 @@ public class GameplayScreen extends AbstractGameScreen {
 
     private void updateWorldUsingFixedPhysics() {
         // Update game world when 1 / fixedPhysicsFps seconds have passed. Use a constant delta time.
-        long fixedPhysicsFps = 20;
+        final long fixedPhysicsFps = 20;
         if (System.currentTimeMillis() >= lastWorldUpdateTimestamp + (long) (((float) 1 / (float) fixedPhysicsFps) * 1000)) {
             float deltaTime = (float) 1 / (float) fixedPhysicsFps;
             worldController.updateWorld(deltaTime);
@@ -146,7 +146,8 @@ public class GameplayScreen extends AbstractGameScreen {
         if (gameMode == GameMode.SINGLEPLAYER) {
             worldRenderer.render(RenderMode.GAME_STATE);
         } else if (gameMode == GameMode.MULTIPLAYER) {
-            worldRenderer.render(RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION);
+            worldRenderer.render(RenderMode.GAME_STATE); // TODO TESTING
+            //worldRenderer.render(RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION);
         }
     }
 

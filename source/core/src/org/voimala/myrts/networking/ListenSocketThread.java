@@ -92,7 +92,7 @@ public class ListenSocketThread extends Thread {
                         if (socketType == SocketType.SERVER_SOCKET) {
                             Gdx.app.debug(TAG, "Got message from the server: " + constructMessage);
                         } else if (socketType == SocketType.PLAYER_SOCKET) {
-                            Gdx.app.debug(TAG, "Got message from the player: " + constructMessage);
+                            Gdx.app.debug(TAG, "Got message from the player " + player.getNumber() + ": " + constructMessage);
                         }
 
                         RTSProtocolManager.getInstance().handleNetworkMessage(constructMessage.toString(),

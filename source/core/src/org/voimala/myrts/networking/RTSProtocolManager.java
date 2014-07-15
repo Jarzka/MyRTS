@@ -117,9 +117,7 @@ public class RTSProtocolManager {
             if (client.getSocketType() == SocketType.SERVER_SOCKET) {
                 // The message came from the server. Add the input to the queue.
                 String messageSplitted[] = splitNetworkMessage(message);
-                if (worldController != null) {
-                    MultiplayerSynchronizationManager.getInstance().addPlayerInputToQueue(message);
-                }
+                MultiplayerSynchronizationManager.getInstance().addPlayerInputToQueue(message);
             } else if (client.getSocketType() == SocketType.PLAYER_SOCKET) {
                 /* The message arrived to the server from a player. Append player number to the message and
                  * send it to all players. */

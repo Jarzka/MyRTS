@@ -1,5 +1,6 @@
 package org.voimala.myrts.screens.gameplay.units.movements;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
 import org.voimala.utility.MathHelper;
@@ -17,6 +18,9 @@ public class CarMovement extends AbstractMovement {
     }
 
     public void update(final float deltaTime) {
+        if (pathPoints.size() != 0) {
+            Gdx.app.debug("asd", "asd"); // TODO Testing when the game goes out of sync. Insert breakpoint here.
+        }
         handlePhysicalMotion(deltaTime);
         handleLogicalMotion(deltaTime);
     }
@@ -194,7 +198,6 @@ public class CarMovement extends AbstractMovement {
     public String getStateHash() {
         StringBuilder hashBuilder = new StringBuilder();
 
-        // TODO Include velocity etc.
         hashBuilder.append(ownerUnit.getX() + ". ");
         hashBuilder.append(ownerUnit.getY() + ". ");
         hashBuilder.append(ownerUnit.getAngle() + ". ");
