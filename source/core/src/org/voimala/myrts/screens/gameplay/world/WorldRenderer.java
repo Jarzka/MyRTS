@@ -197,7 +197,8 @@ public class WorldRenderer implements Disposable {
                 10,
                 Gdx.graphics.getHeight() - 10);
         defaultFont.draw(hudBatch,
-                String.valueOf(Gdx.graphics.getFramesPerSecond()) + "fps",
+                String.valueOf(Gdx.graphics.getFramesPerSecond()) + "fps (frame "
+                        + worldController.getGameplayScreen().getRenderTick() + ")",
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight());
         defaultFont.draw(hudBatch,
@@ -205,13 +206,9 @@ public class WorldRenderer implements Disposable {
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 2);
         defaultFont.draw(hudBatch,
-                "Render Frame: " + worldController.getGameplayScreen().getRenderTick(),
-                10,
-                Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 3);
-        defaultFont.draw(hudBatch,
                 "SimTick: " + MultiplayerSynchronizationManager.getInstance().getSimTick(),
                 10,
-                Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 4);
+                Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 3);
         hudBatch.end();
     }
 
