@@ -1,5 +1,6 @@
 package org.voimala.myrts.screens.gameplay.multiplayer;
 
+import org.voimala.myrts.app.GameMain;
 import org.voimala.myrts.networking.LocalMultiplayerInfo;
 import org.voimala.myrts.networking.NetworkManager;
 import org.voimala.myrts.networking.RTSProtocolManager;
@@ -64,6 +65,7 @@ public class MultiplayerSynchronizationManager {
         if (doesAllInputExistForSimTick(simTick - 1)) {
             performAllInputs(simTick - 1);
             sendNoInput();
+            sendGameStateHash();
             isWaitingInputForNextSimTick = false;
             simTick++;
             removeOldInputs();
@@ -77,6 +79,16 @@ public class MultiplayerSynchronizationManager {
         NetworkManager.getInstance().getClientThread().sendMessage(
                 RTSProtocolManager.getInstance().createNetworkMessageInputNoInput(simTick));
         isNoInputSentForTheNextTurn = true;
+    }
+
+    private void sendGameStateHash() {
+        String hash = gameplayScreen.getGameStateHash();
+
+        NetworkManager.getInstance().getClientThread().sendMessage(
+                RTSProtocolManager.getInstance().createNetworkMessageGameStateHash(
+                        GameMain.getInstance().getPlayer().getNumber(),
+                        simTick,
+                        hash));
     }
 
     private void removeOldInputs() {

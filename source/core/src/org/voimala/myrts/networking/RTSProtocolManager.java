@@ -9,6 +9,7 @@ import org.voimala.myrts.screens.gameplay.world.WorldController;
 
 /** This class is used to send network messages that respect the game's protocol. */
 
+// RTS Extract this class
 public class RTSProtocolManager {
 
     private static final String TAG = RTSProtocolManager.class.getName();
@@ -43,7 +44,8 @@ public class RTSProtocolManager {
                     || handleNetworkMessageNewConnectionInfo(message, listenSocketThread)
                     || handleNetworkMessageAdminRights(message, listenSocketThread.getSocketType())
                     || handleNetworkMessageAdminStart(message, listenSocketThread)
-                    || handleNetworkMessageStartGame(message, listenSocketThread.getSocketType())) {
+                    || handleNetworkMessageStartGame(message, listenSocketThread.getSocketType())
+                    || handleNetworkMessageGameStateHash(message, listenSocketThread)) {
                 Gdx.app.debug(TAG, "Message handled successfully.");
                 return true;
             } else {
@@ -243,6 +245,25 @@ public class RTSProtocolManager {
         return false;
     }
 
+    private boolean handleNetworkMessageGameStateHash(final String message, final ListenSocketThread client) {
+        if (message.startsWith("<HASH|")) {
+            if (client.getSocketType() == SocketType.PLAYER_SOCKET) {
+                String messageSplitted[] = splitNetworkMessage(message);
+                ServerThread serverThread = NetworkManager.getInstance().getServerThread();
+                if (serverThread != null) {
+                    serverThread.addAndCheckGameStateHashes(
+                            Integer.valueOf(messageSplitted[1]),
+                            Long.valueOf(messageSplitted[2]),
+                            messageSplitted[3]);
+                }
+            }
+
+            return true;
+        }
+
+        return false;
+    }
+
     private boolean handleNetworkMessageNewConnectionInfo(final String message, final ListenSocketThread listenSocketThread) {
         if (message.startsWith("<NEW_CONNECTION_INFO|")) {
             if (listenSocketThread.getSocketType() == SocketType.PLAYER_SOCKET) {
@@ -327,6 +348,10 @@ public class RTSProtocolManager {
 
     public String createNetworkMessageStartGame() {
         return "<COMMAND_AND_CONQUER>";
+    }
+
+    public String createNetworkMessageGameStateHash(final int playerNumber, final long simTick, final String hash) {
+        return "<HASH|" + playerNumber + "|" + simTick + "|" + hash + ">";
     }
 
     public String createNetworkMessageSlotContent(final int slotNumber, final String content) {

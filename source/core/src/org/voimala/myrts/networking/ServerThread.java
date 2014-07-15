@@ -28,6 +28,8 @@ public class ServerThread extends Thread {
     private HashMap<Integer, String> slots = new HashMap<Integer, String>();
     private String motd = "Welcome to the server!";
     private String serverChatName = "Server";
+    /** SimTick, PlayerNumber, Hash */
+    private HashMap<Long, HashMap<Integer, String>> playerGameStateHashes = new HashMap<Long, HashMap<Integer, String>>();
 
     public ServerThread(final int port) {
         super(ServerThread.class.getName());
@@ -178,6 +180,45 @@ public class ServerThread extends Thread {
         }
 
         return null;
+    }
+
+    // Stores the given hash in memory and checks if hashes match for this simTick.
+    public void addAndCheckGameStateHashes(final int playerNumber, final long simTick, final String hash) {
+        HashMap<Integer, String> playerHash = new HashMap<Integer, String>();
+        playerHash.put(playerNumber, hash);
+        playerGameStateHashes.put(simTick, playerHash);
+
+        checkHashesMatchForSimTick(simTick);
+    }
+
+    private void checkHashesMatchForSimTick(final long simTick) {
+        for (int i = 1; i <= 8; i++) {
+            if (!slots.get(i).startsWith("PLAYER")) {
+                continue;
+            }
+
+            if (playerGameStateHashes.get(simTick).get(i) == null) {
+                continue; // This player has not sent his hash for this simtick (yet)
+            }
+
+            // Get this player's hash for the current simTick
+            String playerHash = playerGameStateHashes.get(simTick).get(i);
+
+            // Compare it to other hashes
+            for (int j = 1; j <= 8; j++) {
+                if (playerGameStateHashes.get(simTick).get(j) == null) {
+                    continue; // The other player has not sent his hash for this simtick (yet)
+                }
+
+                String otherHash = playerGameStateHashes.get(simTick).get(j);
+                if (!playerHash.equals(otherHash)) {
+                    Gdx.app.debug(TAG, "player " + i + " hash " + playerHash + " is not the same as player " + j
+                            + " hash " + otherHash);
+                    sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageChatMessage(serverChatName,
+                            "WARNING! GAME IS OUT OF SYNC!"));
+                }
+            }
+        }
     }
 
     public String getServerChatName() {

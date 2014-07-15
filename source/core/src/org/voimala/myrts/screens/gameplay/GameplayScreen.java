@@ -15,12 +15,19 @@ import org.voimala.myrts.screens.gameplay.multiplayer.GameplayChatInputManager;
 import org.voimala.myrts.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrts.screens.gameplay.states.AbstractGameplayState;
 import org.voimala.myrts.screens.gameplay.states.GameplayStateRunning;
+import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrts.screens.gameplay.world.GameMode;
 import org.voimala.myrts.screens.gameplay.world.RenderMode;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
 import org.voimala.myrts.screens.gameplay.world.WorldRenderer;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 public class GameplayScreen extends AbstractGameScreen {
+
+    private static final String TAG = GameplayScreen.class.getName();
 
     private WorldController worldController;
     private WorldRenderer worldRenderer;
@@ -213,4 +220,44 @@ public class GameplayScreen extends AbstractGameScreen {
     public RTSCommandExecuter getRTSCommandExecuter() {
         return rtsCommandExecuter;
     }
+
+    public String getGameStateHash() {
+        String hash = "";
+
+        // TODO Make sure that every client has a same container (units are in the same order etc.)
+        for (AbstractUnit unit : worldController.getUnitContainer().getUnits()) {
+            StringBuilder hashBuilder = new StringBuilder();
+            hashBuilder.append(unit.getX());
+            hashBuilder.append(unit.getY());
+            hashBuilder.append(unit.getAngleInRadians());
+            hash += hashBuilder.toString();
+        }
+
+        return md5(hash);
+    }
+
+    // TODO http://javarevisited.blogspot.fi/2013/03/generate-md5-hash-in-java-string-byte-array-example-tutorial.html
+    public static String md5(String message){
+        String digest = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] hash = md.digest(message.getBytes("UTF-8"));
+
+            //converting byte array to Hexadecimal String
+            StringBuilder sb = new StringBuilder(2*hash.length);
+            for(byte b : hash){
+                sb.append(String.format("%02x", b&0xff));
+            }
+
+            digest = sb.toString();
+
+        } catch (UnsupportedEncodingException e) {
+            Gdx.app.debug(TAG, e.getMessage());
+        } catch (NoSuchAlgorithmException e) {
+            Gdx.app.debug(TAG, e.getMessage());
+        }
+
+        return digest;
+    }
+
 }
