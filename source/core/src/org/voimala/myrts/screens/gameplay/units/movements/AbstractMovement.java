@@ -127,6 +127,14 @@ public abstract class AbstractMovement implements Cloneable {
                 point.y) <= 8;
     }
 
+    public boolean hasReachedDestination() {
+        if (pathPoints.isEmpty()) {
+            return true;
+        }
+
+        return false;
+    }
+
     public double getRotationAcceleration() {
         return rotationAcceleration;
     }
@@ -149,7 +157,7 @@ public abstract class AbstractMovement implements Cloneable {
         pathPoints.add(point);
     }
 
-    public void setPathPoint(final Vector2 point) {
+    public void setSinglePathPoint(final Vector2 point) {
         pathPoints.clear();
         pathPoints.add(point);
     }
@@ -165,4 +173,7 @@ public abstract class AbstractMovement implements Cloneable {
     public void setOwner(AbstractUnit owner) {
         this.ownerUnit = owner;
     }
+
+    /** Used mainly for testing purposes */
+    public abstract String getStateHash();
 }

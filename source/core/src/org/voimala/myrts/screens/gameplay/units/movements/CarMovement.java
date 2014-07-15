@@ -17,11 +17,11 @@ public class CarMovement extends AbstractMovement {
     }
 
     public void update(final float deltaTime) {
-        handleMotion(deltaTime);
-        handleAI(deltaTime);
+        handlePhysicalMotion(deltaTime);
+        handleLogicalMotion(deltaTime);
     }
 
-    private void handleMotion(float deltaTime) {
+    private void handlePhysicalMotion(float deltaTime) {
         handleAcceleration(deltaTime);
         handleDeceleration(deltaTime);
         handleVelocity(deltaTime);
@@ -97,7 +97,7 @@ public class CarMovement extends AbstractMovement {
         }
     }
 
-    private void handleAI(float deltaTime) {
+    private void handleLogicalMotion(float deltaTime) {
         if(!pathPoints.isEmpty()) {
             drive(deltaTime);
         } else {
@@ -188,5 +188,17 @@ public class CarMovement extends AbstractMovement {
     private void stop(final float deltaTime) {
         acceleratorPedal = 0;
         steeringWheel = 0;
+    }
+
+    /** Used mainly for testing purposes */
+    public String getStateHash() {
+        StringBuilder hashBuilder = new StringBuilder();
+
+        // TODO Include velocity etc.
+        hashBuilder.append(ownerUnit.getX() + ". ");
+        hashBuilder.append(ownerUnit.getY() + ". ");
+        hashBuilder.append(ownerUnit.getAngle() + ". ");
+
+        return hashBuilder.toString();
     }
 }

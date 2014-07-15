@@ -8,7 +8,6 @@ import org.voimala.myrts.networking.RTSProtocolManager;
 import org.voimala.myrts.screens.gameplay.GameplayScreen;
 import org.voimala.myrts.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
-import org.voimala.myrts.screens.gameplay.world.GameMode;
 
 /** This class is used to perform RTS commands. */
 public class RTSCommandExecuter {
@@ -35,7 +34,7 @@ public class RTSCommandExecuter {
 
     private void handleCommandMoveUnit(final ExecuteCommandMethod method, AbstractUnit unit, final float targetX, final float targetY) {
         if (method == ExecuteCommandMethod.EXECUTE_LOCALLY) {
-            unit.getMovement().setPathPoint(new Vector2(targetX, targetY));
+            unit.getMovement().setSinglePathPoint(new Vector2(targetX, targetY));
         }
 
         if (method == ExecuteCommandMethod.SEND_TO_NETWORK) {
