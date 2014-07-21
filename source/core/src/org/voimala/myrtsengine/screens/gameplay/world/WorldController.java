@@ -85,6 +85,7 @@ public class WorldController {
                 storeUnitInContainer(unit);
             }
         }
+
     }
 
     public void storeUnitInContainer(AbstractUnit unit) {

@@ -49,6 +49,7 @@ public class WorldRenderer implements Disposable {
     private void initializeSprites() {
         initializeGroundSprites();
         initializeUnitSprites();
+        initializeAmmunitionSprites();
     }
 
     private void initializeGroundSprites() {
@@ -61,6 +62,16 @@ public class WorldRenderer implements Disposable {
         Texture texture = new Texture("graphics/units/m4/m4-stopped-0.png");
         Sprite sprite = new Sprite(texture);
         SpriteContainer.getInstance().addSprite("m4-stopped-0", sprite);
+
+        Texture texture2 = new Texture("graphics/units/m4/m4-stopped-0_enemytemp.png");
+        Sprite sprite2 = new Sprite(texture2);
+        SpriteContainer.getInstance().addSprite("m4-stopped-0_enemytemp", sprite2);
+    }
+
+    private void initializeAmmunitionSprites() {
+        Texture texture = new Texture("graphics/weapons/m4-bullet.png");
+        Sprite sprite = new Sprite(texture);
+        SpriteContainer.getInstance().addSprite("m4-bullet", sprite);
     }
 
     private void initializePointer() {
@@ -155,32 +166,30 @@ public class WorldRenderer implements Disposable {
 
     private void renderAmmunition(final RenderMode renderMode) {
         for (AbstractAmmunition ammunition : worldController.getAmmunitionContainer()) {
-            /* TODO
             try {
 
-                AbstractUnit unitToRender = unit;
+                AbstractAmmunition ammunitionToRender = ammunition;
 
                 if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
-                    AbstractUnit unitClone = unit.clone();
+                    AbstractAmmunition ammunitionClone = ammunition.clone();
                     float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
-                    unitClone.updateState(deltaTime);
-                    unitToRender = unitClone;
+                    ammunitionClone.updateState(deltaTime);
+                    ammunitionToRender = ammunitionClone;
                 }
 
-                Sprite sprite = SpriteContainer.getInstance().getSprite("m4-stopped-0");
+                Sprite sprite = ammunition.getSprite();
 
                 // Draw unit
                 batch.begin();
-                sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2 - 70);
-                sprite.setPosition(unitToRender.getX() - sprite.getWidth() / 2, unitToRender.getY() - sprite.getWidth() / 2 + 70);
-                sprite.setRotation(unitToRender.getAngle() - 90);
+                sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
+                sprite.setPosition(ammunitionToRender.getX() - sprite.getWidth() / 2, ammunitionToRender.getY() - sprite.getWidth() / 2);
+                sprite.setRotation(ammunitionToRender.getAngle() - 90);
                 sprite.draw(batch);
                 batch.end();
 
             } catch (CloneNotSupportedException e) {
                 Gdx.app.debug(TAG, "ERROR: " + e.getMessage());
             }
-            */
         }
     }
 

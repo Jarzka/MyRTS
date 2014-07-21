@@ -19,7 +19,12 @@ public class M4Turret extends AbstractTurret {
 
     @Override
     public Sprite getSprite() {
-        return SpriteContainer.getInstance().getSprite("m4-stopped-0");
+        // TODO "enemytemp" sprite is temporary solution until colors can be set in runtime.
+        if (owner.getPlayerNumber() == 1) {
+            return SpriteContainer.getInstance().getSprite("m4-stopped-0");
+        } else {
+            return SpriteContainer.getInstance().getSprite("m4-stopped-0_enemytemp");
+        }
     }
 
 }

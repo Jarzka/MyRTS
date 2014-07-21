@@ -17,7 +17,7 @@ public class BulletMovement extends AbstractMovement {
         handleVelocity(deltaTime);
     }
 
-    private void handleVelocity(float deltaTime) {
+    private void handleVelocity(float deltaTime) { // TODO Makes turret go crazy??
         owner.moveX(Math.cos(owner.getAngleInRadians()) * currentVelocity * deltaTime);
         owner.moveY(Math.sin(owner.getAngleInRadians()) * currentVelocity * deltaTime);
     }

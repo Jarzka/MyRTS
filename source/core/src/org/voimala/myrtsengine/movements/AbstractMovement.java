@@ -177,4 +177,8 @@ public abstract class AbstractMovement implements Cloneable {
     public void setOwner(AbstractGameObject owner) {
         this.owner = owner;
     }
+
+    public void setVelocity(final int velocity) {
+        this.currentVelocity = velocity;
+    }
 }

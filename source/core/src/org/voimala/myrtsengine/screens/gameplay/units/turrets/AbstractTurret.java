@@ -22,8 +22,10 @@ public abstract class AbstractTurret extends AbstractGameObject {
     protected double rotationDeceleration = 0; /// deg/s
     protected RotationDirection currentRotationDirection;
     protected double steeringWheel = 0; // 1 = full clockwise, -1 = full counter-clockwise
+    protected double accuracy = 0; // Accuracy in degrees (0 - 90);
 
     protected Vector2 relativePosition = new Vector2(0, 0); // Turrets position relative to the owner unit.
+    protected Vector2 relativeShootPosition = new Vector2(0, 0); // Turrets shoot position relative to the owner unit.
 
     protected long range = 100;
 
@@ -44,8 +46,8 @@ public abstract class AbstractTurret extends AbstractGameObject {
     }
 
     protected void updatePosition() {
-        position.x = owner.getX() + relativePosition.x;
-        position.y = owner.getY() + relativePosition.y;
+        position.x = owner.getX() + relativeShootPosition.x;
+        position.y = owner.getY() + relativeShootPosition.y;
     }
 
     private void updateWeaponState() {
@@ -191,16 +193,19 @@ public abstract class AbstractTurret extends AbstractGameObject {
     private void checkTarget() {
         if (hasTarget()) {
             if (isTargetInRange()) {
-                /* TODO
-                AbstractAmmunition ammunition = weapon.shoot(getPosition(), angle);
-                if (ammunition != null) {
-                    owner.getWorldController().getAmmunitionContainer().add(ammunition);
-                }*/
+                tryToShoot();
             } else {
                 target = null; // Give up
             }
         } else {
             findNewTarget();
+        }
+    }
+
+    private void tryToShoot() {
+        AbstractAmmunition ammunition = weapon.shoot(new Vector2(position.x, position.y), angle);
+        if (ammunition != null) {
+            owner.getWorldController().getAmmunitionContainer().add(ammunition);
         }
     }
 
@@ -253,22 +258,22 @@ public abstract class AbstractTurret extends AbstractGameObject {
 
     @Override
     protected void initializeDimensions() {
-        // TODO Can be left null.
+        // Can be left null.
     }
 
     @Override
     protected void initializeCollisionMask() {
-        // TODO Can be left null.
+        // Can be left null.
     }
 
     @Override
     protected void initializeMovement() {
-        // TODO Can be left null.
+        // Can be left null.
     }
 
     @Override
     protected void updateCollisionMask() {
-        // TODO Can be left null.
+        // Can be left null.
     }
 
     @Override
@@ -285,10 +290,10 @@ public abstract class AbstractTurret extends AbstractGameObject {
     }
 
     public Vector2 getRelativePosition() {
-        return relativePosition;
+        return relativeShootPosition;
     }
 
     public void setRelativePosition(Vector2 relativePosition) {
-        this.relativePosition = relativePosition;
+        this.relativeShootPosition = relativePosition;
     }
 }
