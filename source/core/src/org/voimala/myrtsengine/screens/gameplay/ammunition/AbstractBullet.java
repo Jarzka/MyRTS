@@ -1,10 +1,11 @@
 package org.voimala.myrtsengine.screens.gameplay.ammunition;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.movements.BulletMovement;
 
-public class AbstractBullet extends AbstractAmmunition {
+public abstract class AbstractBullet extends AbstractAmmunition {
 
     @Override
     protected void initializeDimensions() {

@@ -17,7 +17,6 @@ public class WorldController {
 
     private static final String TAG = WorldController.class.getName();
 
-
     /** Contains all units used in the game */
     private UnitContainer unitContainerAllUnits = new UnitContainer();
     /** Contains all units used by a specific player for fast access. Integer = Player number */
@@ -67,7 +66,7 @@ public class WorldController {
     private void createTestUnit() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 6; j++) {
-                M4Unit unit = new M4Unit();
+                M4Unit unit = new M4Unit(this);
                 unit.setPosition(new Vector2(500 + TILE_SIZE_PIXELS * i, 500 + TILE_SIZE_PIXELS  * j));
                 unit.setTeam(1);
                 unit.setPlayerNumber(1);
@@ -78,7 +77,7 @@ public class WorldController {
 
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 4; j++) {
-                M4Unit unit = new M4Unit();
+                M4Unit unit = new M4Unit(this);
                 unit.setPosition(new Vector2(4000 + TILE_SIZE_PIXELS * i, 4000 + TILE_SIZE_PIXELS  * j));
                 unit.setPlayerNumber(2);
                 unit.setTeam(2);
@@ -106,11 +105,18 @@ public class WorldController {
 
     public void updateWorld(final float deltaTime) {
         updateUnits(deltaTime);
+        updateAmmunition(deltaTime);
     }
 
-    private void updateUnits(float deltaTime) {
+    private void updateUnits(final float deltaTime) {
         for (AbstractUnit unit : unitContainerAllUnits.getUnits()) {
-            unit.update(deltaTime);
+            unit.updateState(deltaTime);
+        }
+    }
+
+    private void updateAmmunition(final float deltaTime) {
+        for (AbstractAmmunition ammunition : ammunitionContainer) {
+            ammunition.updateState(deltaTime);
         }
     }
 

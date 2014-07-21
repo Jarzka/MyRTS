@@ -1,5 +1,6 @@
 package org.voimala.myrtsengine.screens.gameplay.world;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.movements.AbstractMovement;
 
@@ -15,6 +16,7 @@ public abstract class AbstractGameObject implements Cloneable {
     protected float height = 0;
     protected Object collisionMask;
     private static long nextFreeId = 0;
+    private Sprite sprite;
 
     public AbstractGameObject clone() throws CloneNotSupportedException {
         AbstractGameObject gameObjectClone = (AbstractGameObject) super.clone();
@@ -43,6 +45,9 @@ public abstract class AbstractGameObject implements Cloneable {
     protected abstract void initializeCollisionMask();
     protected abstract void initializeMovement();
 
+    /** Should return a sprite that corresponds the object's current state */
+    public abstract Sprite getSprite();
+
     public void setMovement(final AbstractMovement movement) {
         this.movement = movement;
     }
@@ -51,7 +56,7 @@ public abstract class AbstractGameObject implements Cloneable {
         return movement;
     }
 
-    public void update(final float deltaTime) {
+    public void updateState(final float deltaTime) {
         updateMovement(deltaTime);
         updateCollisionMask();
     }

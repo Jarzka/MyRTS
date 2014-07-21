@@ -2,20 +2,25 @@ package org.voimala.myrtsengine.screens.gameplay.units;
 
 import org.voimala.myrtsengine.exceptions.GameLogicException;
 import org.voimala.myrtsengine.movements.AbstractMovement;
-import org.voimala.myrtsengine.screens.gameplay.units.turrets.Turret;
+import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
+import org.voimala.myrtsengine.screens.gameplay.units.turrets.AbstractTurret;
 import org.voimala.myrtsengine.screens.gameplay.world.AbstractGameObject;
+import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractUnit extends AbstractGameObject {
 
+    protected WorldController worldController;
     protected int player = 0;
     protected int team = 0;
     protected UnitType type;
     protected boolean isSelected = false;
-    protected ArrayList<Turret> turrets = new ArrayList<Turret>();
+    protected ArrayList<AbstractTurret> turrets = new ArrayList<AbstractTurret>();
 
-    public AbstractUnit() {
+    public AbstractUnit(final WorldController worldController) {
+        this.worldController = worldController;
         initializeTurrets();
     }
 
@@ -72,4 +77,11 @@ public abstract class AbstractUnit extends AbstractGameObject {
         this.type = type;
     }
 
+    public WorldController getWorldController() {
+        return worldController;
+    }
+
+    public List<AbstractTurret> getTurrets() {
+        return turrets;
+    }
 }

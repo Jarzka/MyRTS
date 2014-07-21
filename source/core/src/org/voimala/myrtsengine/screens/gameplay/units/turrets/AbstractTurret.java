@@ -1,20 +1,22 @@
 package org.voimala.myrtsengine.screens.gameplay.units.turrets;
 
 import com.badlogic.gdx.math.Vector2;
+import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.weapons.AbstractWeapon;
 import org.voimala.myrtsengine.screens.gameplay.world.AbstractGameObject;
 import org.voimala.utility.MathHelper;
 
-public class Turret extends AbstractGameObject {
+public abstract class AbstractTurret extends AbstractGameObject {
 
     private AbstractUnit owner;
     private AbstractUnit target;
     private AbstractWeapon weapon;
+    private Vector2 relativePosition = new Vector2(0, 0); // Turrets position relative to the owner unit.
 
     private long range = 100;
 
-    public Turret(AbstractUnit owner, AbstractWeapon weapon) {
+    public AbstractTurret(AbstractUnit owner, AbstractWeapon weapon) {
         this.owner = owner;
         this.weapon = weapon;
     }
@@ -32,8 +34,21 @@ public class Turret extends AbstractGameObject {
 
 
     private void updateTurretState() {
+        updatePosition();
+        checkTarget();
+    }
+
+    protected void updatePosition() {
+        position.x = owner.getX() + relativePosition.x;
+        position.y = owner.getY() + relativePosition.y;
+    }
+
+    private void checkTarget() {
         if (hasTarget() && isTargetInRange()) {
-            weapon.shoot(getPosition(), angle);
+            AbstractAmmunition ammunition = weapon.shoot(getPosition(), angle);
+            if (ammunition != null) {
+                owner.getWorldController().getAmmunitionContainer().add(ammunition);
+            }
         }
     }
 
@@ -72,5 +87,13 @@ public class Turret extends AbstractGameObject {
         }
 
         return false;
+    }
+
+    public Vector2 getRelativePosition() {
+        return relativePosition;
+    }
+
+    public void setRelativePosition(Vector2 relativePosition) {
+        this.relativePosition = relativePosition;
     }
 }

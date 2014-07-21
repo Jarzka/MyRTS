@@ -1,17 +1,27 @@
 package org.voimala.myrtsengine.screens.gameplay.units.infantry;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
+import org.voimala.myrtsengine.graphics.SpriteContainer;
 import org.voimala.myrtsengine.movements.CarMovement;
-import org.voimala.myrtsengine.screens.gameplay.units.infantry.AbstractInfantry;
-import org.voimala.myrtsengine.screens.gameplay.units.turrets.Turret;
+import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
+import org.voimala.myrtsengine.screens.gameplay.units.turrets.AbstractTurret;
+import org.voimala.myrtsengine.screens.gameplay.units.turrets.M4Turret;
 import org.voimala.myrtsengine.screens.gameplay.weapons.M4;
+import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
 
 public class M4Unit extends AbstractInfantry {
 
+    public M4Unit(WorldController worldController) {
+        super(worldController);
+    }
+
     @Override
     protected void initializeTurrets() {
-        turrets.add(new Turret(this, new M4()));
+        AbstractTurret turret = new M4Turret(this);
+        turret.setAngle(angle);
+        turrets.add(turret);
     }
 
     protected void initializeDimensions() {
@@ -31,6 +41,11 @@ public class M4Unit extends AbstractInfantry {
         movement.setMaxRotationVelocity(600);
         movement.setRotationAcceleration(400);
         movement.setRotationDeceleration(400);
+    }
+
+    @Override
+    public Sprite getSprite() {
+        return null; // TODO M4 unit should have a sprite
     }
 
     @Override

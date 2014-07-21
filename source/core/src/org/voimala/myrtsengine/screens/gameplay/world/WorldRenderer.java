@@ -14,8 +14,10 @@ import com.badlogic.gdx.utils.Disposable;
 import org.voimala.myrtsengine.app.GameMain;
 import org.voimala.myrtsengine.graphics.SpriteContainer;
 import org.voimala.myrtsengine.networking.ChatContainer;
+import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrtsengine.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
+import org.voimala.myrtsengine.screens.gameplay.units.turrets.AbstractTurret;
 import org.voimala.utility.ArrayHelper;
 
 public class WorldRenderer implements Disposable {
@@ -86,6 +88,7 @@ public class WorldRenderer implements Disposable {
 
         renderGround();
         renderUnits(renderMode);
+        renderAmmunition(renderMode);
         renderUnitEnergyBars(renderMode);
         renderHud();
         renderUnitSelectionRectangle();
@@ -116,12 +119,56 @@ public class WorldRenderer implements Disposable {
                 if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
                     AbstractUnit unitClone = unit.clone();
                     float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
-                    unitClone.update(deltaTime);
+                    unitClone.updateState(deltaTime);
+                    unitToRender = unitClone;
+                }
+
+                // Draw unit
+                Sprite unitSprite = unit.getSprite();
+                if (unitSprite != null) {
+                    batch.begin();
+                    unitSprite.setOrigin(unitSprite.getWidth() / 2, unitSprite.getHeight() / 2 - 70);
+                    unitSprite.setPosition(unitToRender.getX() - unitSprite.getWidth() / 2, unitToRender.getY() - unitSprite.getWidth() / 2 + 70);
+                    unitSprite.setRotation(unitToRender.getAngle() - 90);
+                    unitSprite.draw(batch);
+                    batch.end();
+                }
+
+                // Draw turrets
+                for (AbstractTurret turret : unit.getTurrets()) {
+                    Sprite turretSprite = turret.getSprite();
+                    if (turretSprite != null) {
+                        batch.begin();
+                        turretSprite.setOrigin(turretSprite.getWidth() / 2, turretSprite.getHeight() / 2 - 70);
+                        turretSprite.setPosition(turret.getX() - turretSprite.getWidth() / 2, turret.getY() - turretSprite.getWidth() / 2 + 70);
+                        turretSprite.setRotation(turret.getAngle() - 90);
+                        turretSprite.draw(batch);
+                        batch.end();
+                    }
+                }
+
+            } catch (CloneNotSupportedException e) {
+                Gdx.app.debug(TAG, "ERROR: " + e.getMessage());
+        }
+        }
+    }
+
+    private void renderAmmunition(final RenderMode renderMode) {
+        for (AbstractAmmunition ammunition : worldController.getAmmunitionContainer()) {
+            /* TODO
+            try {
+
+                AbstractUnit unitToRender = unit;
+
+                if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
+                    AbstractUnit unitClone = unit.clone();
+                    float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
+                    unitClone.updateState(deltaTime);
                     unitToRender = unitClone;
                 }
 
                 Sprite sprite = SpriteContainer.getInstance().getSprite("m4-stopped-0");
-                
+
                 // Draw unit
                 batch.begin();
                 sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2 - 70);
@@ -129,9 +176,11 @@ public class WorldRenderer implements Disposable {
                 sprite.setRotation(unitToRender.getAngle() - 90);
                 sprite.draw(batch);
                 batch.end();
+
             } catch (CloneNotSupportedException e) {
                 Gdx.app.debug(TAG, "ERROR: " + e.getMessage());
-        }
+            }
+            */
         }
     }
 
@@ -144,7 +193,7 @@ public class WorldRenderer implements Disposable {
                     if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
                         AbstractUnit unitClone = unit.clone();
                         float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
-                        unitClone.update(deltaTime);
+                        unitClone.updateState(deltaTime);
                         unitToRender = unitClone;
                     }
 
