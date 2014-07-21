@@ -15,7 +15,7 @@ import org.voimala.myrtsengine.app.GameMain;
 import org.voimala.myrtsengine.graphics.SpriteContainer;
 import org.voimala.myrtsengine.networking.ChatContainer;
 import org.voimala.myrtsengine.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
-import org.voimala.myrtsengine.screens.gameplay.units.AbstractGameplayObject;
+import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.utility.ArrayHelper;
 
 public class WorldRenderer implements Disposable {
@@ -109,12 +109,12 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnits(final RenderMode renderMode) {
-        for (AbstractGameplayObject unit : worldController.getAllUnits()) {
+        for (AbstractUnit unit : worldController.getAllUnits()) {
             try {
-                AbstractGameplayObject unitToRender = unit;
+                AbstractUnit unitToRender = unit;
 
                 if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
-                    AbstractGameplayObject unitClone = unit.clone();
+                    AbstractUnit unitClone = unit.clone();
                     float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
                     unitClone.update(deltaTime);
                     unitToRender = unitClone;
@@ -136,13 +136,13 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnitEnergyBars(final RenderMode renderMode) {
-        for (AbstractGameplayObject unit : worldController.getAllUnits()) {
+        for (AbstractUnit unit : worldController.getAllUnits()) {
             if (unit.isSelected()) {
                 try {
-                    AbstractGameplayObject unitToRender = unit;
+                    AbstractUnit unitToRender = unit;
 
                     if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
-                        AbstractGameplayObject unitClone = unit.clone();
+                        AbstractUnit unitClone = unit.clone();
                         float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
                         unitClone.update(deltaTime);
                         unitToRender = unitClone;

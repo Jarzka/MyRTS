@@ -1,20 +1,20 @@
 package org.voimala.myrtsengine.screens.gameplay.units.turrets;
 
 import com.badlogic.gdx.math.Vector2;
-import org.voimala.myrtsengine.screens.gameplay.units.AbstractGameplayObject;
+import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.weapons.AbstractWeapon;
 import org.voimala.myrtsengine.screens.gameplay.world.AbstractGameObject;
 import org.voimala.utility.MathHelper;
 
 public class Turret extends AbstractGameObject {
 
-    private AbstractGameplayObject owner;
-    private AbstractGameplayObject target;
+    private AbstractUnit owner;
+    private AbstractUnit target;
     private AbstractWeapon weapon;
 
     private long range = 100;
 
-    public Turret(AbstractGameplayObject owner, AbstractWeapon weapon) {
+    public Turret(AbstractUnit owner, AbstractWeapon weapon) {
         this.owner = owner;
         this.weapon = weapon;
     }

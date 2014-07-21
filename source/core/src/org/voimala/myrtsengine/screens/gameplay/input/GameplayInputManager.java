@@ -9,7 +9,7 @@ import org.voimala.myrtsengine.app.GameMain;
 import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
 import org.voimala.myrtsengine.screens.gameplay.input.commands.ExecuteCommandMethod;
 import org.voimala.myrtsengine.screens.gameplay.input.commands.RTSCommandUnitMove;
-import org.voimala.myrtsengine.screens.gameplay.units.AbstractGameplayObject;
+import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.world.GameMode;
 
 /** This class is used for handling local player input.
@@ -69,7 +69,7 @@ public class GameplayInputManager {
     private void handleMouseInputSelectSingleUnit() {
         if (mouseButtonLeftPressedLastFrame && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             unselectAllUnits();
-            for (AbstractGameplayObject unit : gameplayScreen.getWorldController().getUnitContainerForSpecificPlayer(
+            for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainerForSpecificPlayer(
                     GameMain.getInstance().getPlayer().getNumber()).getUnits()) {
                 Vector3 mouseLocationInWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(new Vector3(
                         Gdx.input.getX(),
@@ -115,7 +115,7 @@ public class GameplayInputManager {
                         rectangleBottomRightWorld.x - rectangleBottomLeftWorld.x,
                         rectangleTopRightWorld.y - rectangleBottomRightWorld.y);
 
-                for (AbstractGameplayObject unit : gameplayScreen.getWorldController().getUnitContainerForSpecificPlayer(
+                for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainerForSpecificPlayer(
                         GameMain.getInstance().getPlayer().getNumber()).getUnits()) {
                     if (rectangleWorld.contains(unit.getX(), unit.getY())
                             && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
@@ -189,7 +189,7 @@ public class GameplayInputManager {
         if (cameraManager.timeSinceCameraMovementStoppedInMs() > 100
                 && mouseButtonRightPressedLastFrame
                 && !Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-            for (AbstractGameplayObject unit : gameplayScreen.getWorldController().getUnitContainerForSpecificPlayer(
+            for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainerForSpecificPlayer(
                     GameMain.getInstance().getPlayer().getNumber()).getUnits()) {
                 if (unit.isSelected() && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
                     handleCommandMoveUnit(unit);
@@ -198,7 +198,7 @@ public class GameplayInputManager {
         }
     }
 
-    private void handleCommandMoveUnit(AbstractGameplayObject unit) {
+    private void handleCommandMoveUnit(AbstractUnit unit) {
         Vector3 mouseLocationInWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
                 new Vector3(Gdx.input.getX(),
                         Gdx.input.getY(),
@@ -220,7 +220,7 @@ public class GameplayInputManager {
     }
 
     private void unselectAllUnits() {
-        for (AbstractGameplayObject unit : gameplayScreen.getWorldController().getUnitContainerForSpecificPlayer(
+        for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainerForSpecificPlayer(
                 GameMain.getInstance().getPlayer().getNumber()).getUnits()) {
             unit.setSelected(false);
         }

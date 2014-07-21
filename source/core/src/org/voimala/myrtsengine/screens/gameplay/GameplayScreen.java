@@ -15,7 +15,7 @@ import org.voimala.myrtsengine.screens.gameplay.multiplayer.GameplayChatInputMan
 import org.voimala.myrtsengine.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrtsengine.screens.gameplay.states.AbstractGameplayState;
 import org.voimala.myrtsengine.screens.gameplay.states.GameplayStateRunning;
-import org.voimala.myrtsengine.screens.gameplay.units.AbstractGameplayObject;
+import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.world.GameMode;
 import org.voimala.myrtsengine.screens.gameplay.world.RenderMode;
 import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
@@ -242,7 +242,7 @@ public class GameplayScreen extends AbstractGameScreen {
         */
 
         // Final hash for production version
-        for (AbstractGameplayObject unit : worldController.getAllUnits()) {
+        for (AbstractUnit unit : worldController.getAllUnits()) {
             StringBuilder hashBuilder = new StringBuilder();
             hashBuilder.append(unit.getX());
             hashBuilder.append(unit.getY());

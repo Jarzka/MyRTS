@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
-import org.voimala.myrtsengine.screens.gameplay.units.AbstractGameplayObject;
+import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.units.UnitContainer;
 import org.voimala.myrtsgame.screens.gameplay.units.infantry.M4Unit;
 
@@ -88,7 +88,7 @@ public class WorldController {
         }
     }
 
-    public void storeUnitInContainer(AbstractGameplayObject unit) {
+    public void storeUnitInContainer(AbstractUnit unit) {
         if (getUnitContainerForSpecificPlayer(unit.getPlayerNumber()) != null) {
             getUnitContainerForSpecificPlayer(unit.getPlayerNumber()).addUnit(unit);
         }
@@ -109,7 +109,7 @@ public class WorldController {
     }
 
     private void updateUnits(float deltaTime) {
-        for (AbstractGameplayObject unit : unitContainerAllUnits.getUnits()) {
+        for (AbstractUnit unit : unitContainerAllUnits.getUnits()) {
             unit.update(deltaTime);
         }
     }
@@ -126,7 +126,7 @@ public class WorldController {
         this.gameplayScreen = gameplayScreen;
     }
 
-    public List<AbstractGameplayObject> getAllUnits() {
+    public List<AbstractUnit> getAllUnits() {
         return unitContainerAllUnits.getUnits();
     }
 

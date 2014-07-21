@@ -7,7 +7,7 @@ import org.voimala.myrtsengine.screens.gameplay.world.AbstractGameObject;
 
 import java.util.ArrayList;
 
-public abstract class AbstractGameplayObject extends AbstractGameObject {
+public abstract class AbstractUnit extends AbstractGameObject {
 
     protected int player = 0;
     protected int team = 0;
@@ -15,15 +15,15 @@ public abstract class AbstractGameplayObject extends AbstractGameObject {
     protected boolean isSelected = false;
     protected ArrayList<Turret> turrets = new ArrayList<Turret>();
 
-    public AbstractGameplayObject() {
+    public AbstractUnit() {
         initializeTurrets();
     }
 
     protected abstract void initializeTurrets();
 
     @Override
-    public AbstractGameplayObject clone() throws CloneNotSupportedException {
-        AbstractGameplayObject unitClone = (AbstractGameplayObject) super.clone();
+    public AbstractUnit clone() throws CloneNotSupportedException {
+        AbstractUnit unitClone = (AbstractUnit) super.clone();
         AbstractMovement movementClone = movement.clone();
         movementClone.setOwner(unitClone);
         // Object collisionMaskClone = collisionMask.clone(); TODO CLONE COLLISION MASK
