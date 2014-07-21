@@ -1,11 +1,11 @@
 package org.voimala.myrtsengine.screens.gameplay.input.commands;
 
-public class RTSCommandUnitMove extends AbstractRTSCommandUnit {
+public class RTSCommandMoveUnit extends AbstractRTSUnitCommand {
 
     private float targetX;
     private float targetY;
 
-    public RTSCommandUnitMove(final long id, final float targetX, final float targetY) {
+    public RTSCommandMoveUnit(final long id, final float targetX, final float targetY) {
         super(id);
 
         this.targetX = targetX;

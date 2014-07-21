@@ -8,7 +8,8 @@ import com.badlogic.gdx.math.Vector3;
 import org.voimala.myrtsengine.app.GameMain;
 import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
 import org.voimala.myrtsengine.screens.gameplay.input.commands.ExecuteCommandMethod;
-import org.voimala.myrtsengine.screens.gameplay.input.commands.RTSCommandUnitMove;
+import org.voimala.myrtsengine.screens.gameplay.input.commands.RTSCommandMoveUnit;
+import org.voimala.myrtsengine.screens.gameplay.input.commands.RTSCommandSelectUnit;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.world.GameMode;
 
@@ -77,8 +78,8 @@ public class GameplayInputManager {
                         0));
                 if (unit.onCollision(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y))
                         && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
-                    // TODO Create RTSCommand object
-                    unit.setSelected(true);
+                    gameplayScreen.getRTSCommandExecuter().executeCommand(ExecuteCommandMethod.EXECUTE_LOCALLY,
+                            new RTSCommandSelectUnit(unit.getObjectId()));
                     break;
                 }
             }
@@ -119,7 +120,8 @@ public class GameplayInputManager {
                         GameMain.getInstance().getPlayer().getNumber()).getUnits()) {
                     if (rectangleWorld.contains(unit.getX(), unit.getY())
                             && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
-                        // TODO Create RTSCommand object
+                       gameplayScreen.getRTSCommandExecuter().executeCommand(ExecuteCommandMethod.EXECUTE_LOCALLY,
+                               new RTSCommandSelectUnit(unit.getObjectId()));
                         unit.setSelected(true);
                     }
                 }
@@ -213,7 +215,7 @@ public class GameplayInputManager {
 
         gameplayScreen.getRTSCommandExecuter().executeCommand(
                 method,
-                new RTSCommandUnitMove(
+                new RTSCommandMoveUnit(
                         unit.getObjectId(),
                         mouseLocationInWorld.x,
                         mouseLocationInWorld.y));

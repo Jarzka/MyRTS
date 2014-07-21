@@ -11,6 +11,7 @@ public class SoundContainer {
     private static final String TAG = SoundContainer.class.getName();
     private static SoundContainer instanceOfThis = null;
     private HashMap<String, Sound> sounds = new HashMap<String, Sound>();
+    private long unitCommandSoundLastGetTimestamp = 0;
 
     public static SoundContainer getInstance() {
         if (instanceOfThis == null) {
@@ -34,6 +35,11 @@ public class SoundContainer {
 
     /** @param id The id should be in the following format: UNITNAME-COMMAND For example: m4-move */
     public Sound getUnitCommandSound(final String id) {
+        // Do not allow the game to play too many unit command sounds at the same time.
+        if (System.currentTimeMillis() < unitCommandSoundLastGetTimestamp + 200) {
+            return null;
+        }
+
         // TODO Use RegEx here?
         if (id.contains("-move") || id.contains("-select") || id.contains("-attack")) {
             // Check the number of available audio files and choose one randomly
@@ -44,10 +50,13 @@ public class SoundContainer {
                     continue;
                 }
 
+                maxIndex--;
                 break;
             }
 
-            return sounds.get(id + RandomNumberGenerator.random(1, maxIndex));
+            unitCommandSoundLastGetTimestamp = System.currentTimeMillis();
+            Sound sound = sounds.get(id + RandomNumberGenerator.random(1, maxIndex));
+            return sound;
         }
 
         Gdx.app.debug(TAG, "WARNING: Audio file not found: " + id);

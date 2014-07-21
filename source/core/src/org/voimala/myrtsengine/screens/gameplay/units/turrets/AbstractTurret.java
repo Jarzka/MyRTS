@@ -218,7 +218,7 @@ public abstract class AbstractTurret extends AbstractGameObject {
                     new AudioEffect(
                             owner.getWorldController(),
                             SoundContainer.getInstance().getSound("m4"),
-                            0.2f,
+                            0.08f,
                             position.x,
                             position.y));
             owner.getWorldController().getAmmunitionContainer().add(ammunition);

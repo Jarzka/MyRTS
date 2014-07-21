@@ -25,9 +25,14 @@ public class RTSCommandExecuter {
     public void executeCommand(final ExecuteCommandMethod method, final AbstractRTSCommand command) {
         if (command != null) {
             if (command.getCommandName() == RTSCommand.MOVE_UNIT) {
-                RTSCommandUnitMove moveCommand = (RTSCommandUnitMove) command;
+                RTSCommandMoveUnit moveCommand = (RTSCommandMoveUnit) command;
                 handleCommandMoveUnit(method, gameplayScreen.getWorldController().getUnitContainerAllUnits().findUnitById(
                                 moveCommand.getObjectId()), moveCommand.getTargetX(), moveCommand.getTargetY()
+                );
+            } else if (command.getCommandName() == RTSCommand.SELECT_UNIT) {
+                RTSCommandSelectUnit selectCommand = (RTSCommandSelectUnit) command;
+                handleCommandSelectUnit(method, gameplayScreen.getWorldController().getUnitContainerAllUnits().findUnitById(
+                                selectCommand.getObjectId())
                 );
             }
         }
@@ -59,6 +64,22 @@ public class RTSCommandExecuter {
         }
     }
 
+    private void handleCommandSelectUnit(final ExecuteCommandMethod method, AbstractUnit unit) {
+        if (method == ExecuteCommandMethod.EXECUTE_LOCALLY) {
+            unit.getWorldController().getAudioEffectContainer().add(new AudioEffect(
+                    unit.getWorldController(),
+                    SoundContainer.getInstance().getUnitCommandSound("m4-select"), // TODO Hardcoded value!
+                    1f,
+                    unit.getX(),
+                    unit.getY()));
+            unit.setSelected(true);
+        }
+
+        if (method == ExecuteCommandMethod.SEND_TO_NETWORK) {
+            // It is not necessary to send this command to the network.
+        }
+    }
+
     /** @return null if message could not be constructed. */
     public static PlayerInput createPlayerInputFromNetworkMessage(final String inputMessage) {
         if (inputMessage.startsWith("<INPUT|UNIT_MOVE|")) {
@@ -85,7 +106,7 @@ public class RTSCommandExecuter {
         return new PlayerInput(
                 Integer.valueOf(messageSplitted[2]),
                 Integer.valueOf(messageSplitted[3]),
-                new RTSCommandUnitMove(Long.valueOf(messageSplitted[4]),
+                new RTSCommandMoveUnit(Long.valueOf(messageSplitted[4]),
                         Float.valueOf(messageSplitted[5]),
                         Float.valueOf(messageSplitted[6]))
                 );
