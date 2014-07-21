@@ -17,7 +17,10 @@ public abstract class AbstractUnit extends AbstractGameObject {
 
     public AbstractUnit(final long id) {
         super(id);
+        initializeTurrets();
     }
+
+    protected abstract void initializeTurrets();
 
     @Override
     public AbstractUnit clone() throws CloneNotSupportedException {

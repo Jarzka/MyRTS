@@ -109,7 +109,7 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnits(final RenderMode renderMode) {
-        for (AbstractUnit unit : worldController.getUnitContainer().getUnits()) {
+        for (AbstractUnit unit : worldController.getAllUnits()) {
             try {
                 AbstractUnit unitToRender = unit;
 
@@ -134,7 +134,7 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnitEnergyBars(final RenderMode renderMode) {
-        for (AbstractUnit unit : worldController.getUnitContainer().getUnits()) {
+        for (AbstractUnit unit : worldController.getAllUnits()) {
             if (unit.isSelected()) {
                 try {
                     AbstractUnit unitToRender = unit;

@@ -8,11 +8,16 @@ import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.units.UnitContainer;
 import org.voimala.myrtsgame.screens.gameplay.units.infantry.M4Unit;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class WorldController {
 
     private static final String TAG = WorldController.class.getName();
 
-    private UnitContainer unitContainer = new UnitContainer();
+    /** Integer = Player number */
+    private HashMap<Integer, UnitContainer> unitContainers = new HashMap<Integer, UnitContainer>();
 
     private GameplayScreen gameplayScreen;
     private OrthographicCamera worldCamera;
@@ -23,14 +28,22 @@ public class WorldController {
 
     private long currentSimTick = 1; // "Communication turn" in multiplayer game. // TODO Move to NetworkManager?
     private long SimTickDurationMs = 100;
+    private AbstractUnit[] allUnits;
 
     public WorldController() {
         initialize();
     }
 
     private void initialize() {
+        initializeContainers();
         initializeCamera();
         initializeMap();
+    }
+
+    private void initializeContainers() {
+        for (int i = 1; i <= 8; i++) {
+            unitContainers.put(i, new UnitContainer());
+        }
     }
 
     private void initializeCamera() {
@@ -55,7 +68,7 @@ public class WorldController {
                 unit.setTeam(1);
                 unit.setPlayerNumber(1);
                 unit.setAngle(0);
-                unitContainer.addUnit(unit);
+                unitContainers.get(1).addUnit(unit);
             }
         }
 
@@ -66,13 +79,13 @@ public class WorldController {
                 unit.setPlayerNumber(2);
                 unit.setTeam(2);
                 unit.setAngle(180);
-                unitContainer.addUnit(unit);
+                unitContainers.get(2).addUnit(unit);
             }
         }
     }
 
-    public UnitContainer getUnitContainer() {
-        return unitContainer;
+    public UnitContainer getUnitContainer(final int playerNumber) {
+        return unitContainers.get(playerNumber);
     }
 
     public void updateWorld(final float deltaTime) {
@@ -80,8 +93,10 @@ public class WorldController {
     }
 
     private void updateUnits(float deltaTime) {
-        for (AbstractUnit unit : unitContainer.getUnits()) {
-            unit.update(deltaTime);
+        for (int i = 1; i <= 8; i++) {
+            for (AbstractUnit unit : unitContainers.get(i).getUnits()) {
+                unit.update(deltaTime);
+            }
         }
     }
 
@@ -96,4 +111,15 @@ public class WorldController {
     public void setGameplayScreen(final GameplayScreen gameplayScreen) {
         this.gameplayScreen = gameplayScreen;
     }
+
+    public List<AbstractUnit> getAllUnits() {
+        ArrayList<AbstractUnit> units= new ArrayList<AbstractUnit>();
+        
+        for (int i = 1; i <= 8; i++) {
+            units.addAll(this.unitContainers.get(i).getUnits());
+        }
+
+        return units;
+    }
+
 }
