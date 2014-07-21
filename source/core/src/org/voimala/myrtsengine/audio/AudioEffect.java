@@ -9,28 +9,34 @@ public class AudioEffect {
     private AudioEffectType audioEffectType = AudioEffectType.GLOBAL;
     private float x;
     private float y;
-    private String audioEffectName;
     private Sound sound;
     private long soundStartedPlayingTimestamp = 0;
+    private float volume;
 
-    /** Default constructor creates a global audio effect. */
-    public AudioEffect(final WorldController worldController, final String audioEffectName) {
+    /** Default constructor creates a global audio effect.
+     * @param volume Between 0 and 1. */
+    public AudioEffect(final WorldController worldController, final Sound sound, final float volume) {
         this.worldController = worldController;
-        this.audioEffectName = audioEffectName;
+        this.sound = sound;
+        this.volume = volume;
         play();
     }
 
-    /** Creates a local audio effect.*/
-    public AudioEffect(final WorldController worldController, final String audioEffectName, final float x, final float y) {
+    /** Creates a local audio effect.
+     * @param volume Between 0 and 1. */
+    public AudioEffect(final WorldController worldController, Sound sound, final float volume, final float x, final float y) {
         this.worldController = worldController;
-        this.audioEffectName = audioEffectName;
+        this.sound = sound;
         audioEffectType = AudioEffectType.LOCAL;
         this.x = x;
         this.y = y;
+        this.volume = volume;
         play();
     }
 
     public void updateState() {
+        // TODO Implement master sound and local sound volume.
+
         if (sound == null) {
             die();
         }
@@ -50,9 +56,8 @@ public class AudioEffect {
 
     private void play() {
         soundStartedPlayingTimestamp = System.currentTimeMillis();
-        sound = SoundContainer.getInstance().getSound(audioEffectName);
         if (sound != null) {
-            sound.play(0.1f); // TODO Implement master sound and local sound volume.
+            sound.play(volume);
         }
     }
 

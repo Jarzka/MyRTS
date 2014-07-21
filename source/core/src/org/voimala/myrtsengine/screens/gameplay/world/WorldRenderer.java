@@ -78,8 +78,37 @@ public class WorldRenderer implements Disposable {
     }
 
     private void initializeAudioEffects() {
+        initializeM4AudioEffects();
+    }
+
+    private void initializeM4AudioEffects() {
         Sound m4 = Gdx.audio.newSound(Gdx.files.internal("sound/weapons/m4.ogg"));
         SoundContainer.getInstance().addSound("m4", m4);
+
+        initializeUnitCommandAudioEffects("m4");
+    }
+
+    private void initializeUnitCommandAudioEffects(final String unitName) {
+        /* Unit command sound effects are located in:
+        * sound/units/UNIT_NAME/COMMAND_NAME/NUMBER
+        * Audio files should be named NUMBER.ogg starting from 1, for example
+        * 1.ogg, 2.ogg, 3.ogg etc. */
+        loadUnitCommandAudioEffectsFromFolder(unitName, "select");
+        loadUnitCommandAudioEffectsFromFolder(unitName, "move");
+        loadUnitCommandAudioEffectsFromFolder(unitName, "attack");
+    }
+
+    private void loadUnitCommandAudioEffectsFromFolder(final String unitName, final String commandName) {
+        int i = 1;
+        while (true) {
+            try {
+                Sound sound = Gdx.audio.newSound(Gdx.files.internal("sound/units/m4/" + commandName + "/" + i + ".ogg"));
+                SoundContainer.getInstance().addSound(unitName + "-" + commandName + i, sound);
+                i++;
+            } catch (Exception e) {
+                break;
+            }
+        }
     }
 
     private void initializePointer() {

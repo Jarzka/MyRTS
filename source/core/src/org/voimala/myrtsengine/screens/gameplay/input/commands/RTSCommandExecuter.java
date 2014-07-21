@@ -2,6 +2,8 @@ package org.voimala.myrtsengine.screens.gameplay.input.commands;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import org.voimala.myrtsengine.audio.AudioEffect;
+import org.voimala.myrtsengine.audio.SoundContainer;
 import org.voimala.myrtsengine.networking.ListenSocketThread;
 import org.voimala.myrtsengine.networking.NetworkManager;
 import org.voimala.myrtsengine.networking.RTSProtocolManager;
@@ -34,6 +36,12 @@ public class RTSCommandExecuter {
 
     private void handleCommandMoveUnit(final ExecuteCommandMethod method, AbstractUnit unit, final float targetX, final float targetY) {
         if (method == ExecuteCommandMethod.EXECUTE_LOCALLY) {
+            unit.getWorldController().getAudioEffectContainer().add(new AudioEffect(
+                    unit.getWorldController(),
+                    SoundContainer.getInstance().getUnitCommandSound("m4-move"), // TODO Hardcoded value!
+                    1f,
+                    unit.getX(),
+                    unit.getY()));
             unit.getMovement().setSinglePathPoint(new Vector2(targetX, targetY));
         }
 
@@ -49,22 +57,6 @@ public class RTSCommandExecuter {
                 Gdx.app.debug(TAG, "WARNING: Unable to send move command to the network because socket is null.");
             }
         }
-
-        /* OLD VERSION
-        if (gameplayScreen.getWorldController().getGameplayScreen().getGameMode() == GameMode.SINGLEPLAYER) {
-            // Process command locally
-        } else if (gameplayScreen.getWorldController().getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
-            // Send command to the server
-            String message = RTSProtocolManager.getInstance().createNetworkMessageInputMoveUnit(
-                    unit.getObjectId(),
-                    gameplayScreen.getWorldController().getGameplayScreen().getMultiplayerSynchronizationManager().getSimTick(),
-                    new Vector2(targetX, targetY));
-            ListenSocketThread listenSocketThread = NetworkManager.getInstance().getClientThread();
-            if (listenSocketThread != null) {
-                listenSocketThread.sendMessage(message);
-            }
-        }
-        */
     }
 
     /** @return null if message could not be constructed. */

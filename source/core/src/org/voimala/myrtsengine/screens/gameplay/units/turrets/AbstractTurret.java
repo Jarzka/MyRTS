@@ -2,6 +2,7 @@ package org.voimala.myrtsengine.screens.gameplay.units.turrets;
 
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.audio.AudioEffect;
+import org.voimala.myrtsengine.audio.SoundContainer;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.weapons.AbstractWeapon;
@@ -210,12 +211,14 @@ public abstract class AbstractTurret extends AbstractGameObject {
         AbstractAmmunition ammunition = weapon.shoot(owner.getWorldController(), new Vector2(
                 position.x,
                 position.y),
-                angle + RandomNumberGenerator.random(0, accuracy) - RandomNumberGenerator.random(0, accuracy));
+                angle /* + RandomNumberGenerator.random(0, accuracy) - RandomNumberGenerator.random(0, accuracy)*/);
+                // TODO Can not use random numbers in multiplayer game?
         if (ammunition != null) {
             owner.getWorldController().getAudioEffectContainer().add(
                     new AudioEffect(
                             owner.getWorldController(),
-                            "m4",
+                            SoundContainer.getInstance().getSound("m4"),
+                            0.2f,
                             position.x,
                             position.y));
             owner.getWorldController().getAmmunitionContainer().add(ammunition);
