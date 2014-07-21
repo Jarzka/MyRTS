@@ -145,14 +145,14 @@ public class CarMovement extends AbstractMovement {
             double timeToStopRotationInSeconds = currentRotationVelocity / rotationDeceleration;
 
             // Calculate distance between current angle and the next (final) angle
-            double distanceBetweenCurrentAngleAndEndAngle = MathHelper.getDistanceFromAngle1ToAngle2(
+            double distanceBetweenCurrentAngleAndTargetAngle = MathHelper.getDistanceFromAngle1ToAngle2(
                     owner.getAngleInRadians(),
                     angleBetweenUnitAndPointInRadians,
                     targetRotationDirection);
-            double distanceBetweenCurrentAngleAndEndAngleDegree =
-                    Math.toDegrees(distanceBetweenCurrentAngleAndEndAngle);
+            double distanceBetweenCurrentAngleAndTargetAngleDegree =
+                    Math.toDegrees(distanceBetweenCurrentAngleAndTargetAngle);
 
-            if (distanceBetweenCurrentAngleAndEndAngleDegree <= currentRotationVelocity * timeToStopRotationInSeconds) {
+            if (distanceBetweenCurrentAngleAndTargetAngleDegree <= currentRotationVelocity * timeToStopRotationInSeconds) {
                 this.steeringWheel = 0;
             }
         } else {

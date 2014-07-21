@@ -115,7 +115,43 @@ public abstract class AbstractTurret extends AbstractGameObject {
     }
 
     private void rotateTowardsTarget() {
-        // TODO
+        double angleBetweenTurretAndTargetInRadians = MathHelper.getAngleBetweenPointsInRadians(
+                position.x,
+                position.y,
+                target.getPosition().x,
+                target.getPosition().y);
+
+        // If Turret is not looking at the point, set the correct rotation direction
+        if (MathHelper.round(getAngle(), 1)
+                != MathHelper.round(Math.toDegrees(angleBetweenTurretAndTargetInRadians), 1)) {
+            RotationDirection targetRotationDirection = MathHelper.getFasterTurningDirection(getAngleInRadians(),
+                    angleBetweenTurretAndTargetInRadians);
+
+            if (targetRotationDirection == RotationDirection.CLOCKWISE) {
+                this.steeringWheel = 1;
+            } else if (targetRotationDirection == RotationDirection.COUNTERCLOCKWISE) {
+                this.steeringWheel = -1;
+            }
+
+            // Stop the rotation at the right time so that the rotation stops at the final angle
+
+            // How much time does it take to stop rotation
+            double timeToStopRotationInSeconds = currentRotationVelocity / rotationDeceleration;
+
+            // Calculate distance between current angle and the next (final) angle
+            double distanceBetweenCurrentAngleAndTargetAngle = MathHelper.getDistanceFromAngle1ToAngle2(
+                    getAngleInRadians(),
+                    angleBetweenTurretAndTargetInRadians,
+                    targetRotationDirection);
+            double distanceBetweenCurrentAngleAndTargetAngleDegree =
+                    Math.toDegrees(distanceBetweenCurrentAngleAndTargetAngle);
+
+            if (distanceBetweenCurrentAngleAndTargetAngleDegree <= currentRotationVelocity * timeToStopRotationInSeconds) {
+                this.steeringWheel = 0;
+            }
+        } else {
+            this.steeringWheel = 0;
+        }
     }
 
     private void rotateTowardsOwnerUnit() {
@@ -155,10 +191,11 @@ public abstract class AbstractTurret extends AbstractGameObject {
     private void checkTarget() {
         if (hasTarget()) {
             if (isTargetInRange()) {
+                /* TODO
                 AbstractAmmunition ammunition = weapon.shoot(getPosition(), angle);
                 if (ammunition != null) {
                     owner.getWorldController().getAmmunitionContainer().add(ammunition);
-                }
+                }*/
             } else {
                 target = null; // Give up
             }
