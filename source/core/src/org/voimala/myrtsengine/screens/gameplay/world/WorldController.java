@@ -7,7 +7,7 @@ import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.units.UnitContainer;
-import org.voimala.myrtsgame.screens.gameplay.units.infantry.M4Unit;
+import org.voimala.myrtsengine.screens.gameplay.units.infantry.M4Unit;
 
 import java.util.ArrayList;
 import java.util.HashMap;

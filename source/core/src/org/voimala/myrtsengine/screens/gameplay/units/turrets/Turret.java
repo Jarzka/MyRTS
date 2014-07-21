@@ -43,8 +43,7 @@ public class Turret extends AbstractGameObject {
 
     @Override
     protected void initializeDimensions() {
-        width = 156;
-        height = 252;
+        // TODO Can be left null.
     }
 
     @Override

@@ -1,4 +1,4 @@
-package org.voimala.myrtsgame.screens.gameplay.units.infantry;
+package org.voimala.myrtsengine.screens.gameplay.units.infantry;
 
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
@@ -15,8 +15,8 @@ public class M4Unit extends AbstractInfantry {
     }
 
     protected void initializeDimensions() {
-        width = 50;
-        height = 50;
+        width = 156;
+        height = 252;
     }
 
     protected void initializeCollisionMask() {
