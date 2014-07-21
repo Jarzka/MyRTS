@@ -1,7 +1,7 @@
 package org.voimala.myrtsengine.movements;
 
 import com.badlogic.gdx.math.Vector2;
-import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
+import org.voimala.myrtsengine.screens.gameplay.units.AbstractGameplayObject;
 import org.voimala.utility.MathHelper;
 import org.voimala.utility.RotationDirection;
 
@@ -12,8 +12,8 @@ public class CarMovement extends AbstractMovement {
     private int currentRotationDirection = 0; // 1 = clockwise, -1 = counter-clockwise
     private boolean stopAtFinalPoint = true;
 
-    public CarMovement(AbstractUnit ownerUnit) {
-        super(ownerUnit);
+    public CarMovement(AbstractGameplayObject owner) {
+        super(owner);
     }
 
     public void update(final float deltaTime) {

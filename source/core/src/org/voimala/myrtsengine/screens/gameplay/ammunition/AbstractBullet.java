@@ -5,11 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.movements.BulletMovement;
 import org.voimala.myrtsengine.screens.gameplay.world.AbstractGameObject;
 
-public class Bullet extends AbstractGameObject{
-
-    public Bullet(final long id) {
-        super(id);
-    }
+public class AbstractBullet extends AbstractAmmunition {
 
     @Override
     protected void initializeDimensions() {

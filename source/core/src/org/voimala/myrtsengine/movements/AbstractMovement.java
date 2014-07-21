@@ -19,7 +19,7 @@ public abstract class AbstractMovement implements Cloneable {
     protected AbstractGameObject owner = null;
     protected ArrayList<Vector2> pathPoints = new ArrayList<Vector2>();
 
-    public AbstractMovement(final AbstractGameObject ownert) {
+    public AbstractMovement(final AbstractGameObject owner) {
         this.owner = owner;
     }
 

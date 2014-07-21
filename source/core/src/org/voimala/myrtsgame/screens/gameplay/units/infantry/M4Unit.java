@@ -3,20 +3,15 @@ package org.voimala.myrtsgame.screens.gameplay.units.infantry;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.movements.CarMovement;
-import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.units.infantry.AbstractInfantry;
 import org.voimala.myrtsengine.screens.gameplay.units.turrets.Turret;
 import org.voimala.myrtsengine.screens.gameplay.weapons.M4;
 
 public class M4Unit extends AbstractInfantry {
 
-    public M4Unit(final long id) {
-        super(id);
-    }
-
     @Override
     protected void initializeTurrets() {
-        turrets.add(new Turret(AbstractUnit.getNextFreeId(), this, new M4()));
+        turrets.add(new Turret(this, new M4()));
     }
 
     protected void initializeDimensions() {

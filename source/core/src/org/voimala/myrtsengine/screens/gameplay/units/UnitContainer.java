@@ -4,24 +4,24 @@ import java.util.ArrayList;
 
 public class UnitContainer {
 
-    private ArrayList<AbstractUnit> units = new ArrayList<AbstractUnit>();
+    private ArrayList<AbstractGameplayObject> units = new ArrayList<AbstractGameplayObject>();
 
-    public ArrayList<AbstractUnit> getUnits() {
+    public ArrayList<AbstractGameplayObject> getUnits() {
         return units;
     }
 
-    public void addUnit(final AbstractUnit unit) {
+    public void addUnit(final AbstractGameplayObject unit) {
         units.add(unit);
     }
 
-    public void removeUnit(final AbstractUnit unit) {
+    public void removeUnit(final AbstractGameplayObject unit) {
         units.remove(unit);
     }
 
     /** Returns null if unit is not found. */
-    public AbstractUnit findUnitById(final long id) {
+    public AbstractGameplayObject findUnitById(final long id) {
         // TODO Do not use linear search here?
-        for (AbstractUnit unit : getUnits()) {
+        for (AbstractGameplayObject unit : getUnits()) {
             if (unit.getObjectId() == id) {
                 return unit;
             }

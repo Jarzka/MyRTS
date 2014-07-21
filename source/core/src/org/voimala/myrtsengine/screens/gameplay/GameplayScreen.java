@@ -15,7 +15,7 @@ import org.voimala.myrtsengine.screens.gameplay.multiplayer.GameplayChatInputMan
 import org.voimala.myrtsengine.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrtsengine.screens.gameplay.states.AbstractGameplayState;
 import org.voimala.myrtsengine.screens.gameplay.states.GameplayStateRunning;
-import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
+import org.voimala.myrtsengine.screens.gameplay.units.AbstractGameplayObject;
 import org.voimala.myrtsengine.screens.gameplay.world.GameMode;
 import org.voimala.myrtsengine.screens.gameplay.world.RenderMode;
 import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
@@ -225,11 +225,12 @@ public class GameplayScreen extends AbstractGameScreen {
         String hash = "";
 
         // TODO Make sure that every client has a same container (units are in the same order etc.)
+
         /* This is has is used for development and easy bug hunting. */
         /*
         StringBuilder hashBuilder = new StringBuilder();
         hashBuilder.append("simtick " + MultiplayerSynchronizationManager.getInstance().getSimTick() + ". ");
-        for (AbstractUnit unit : worldController.getUnitContainer().getUnits()) {
+        for (AbstractUnit unit : worldController.getAllUnits()) {
             hashBuilder.append("unit" + unit.getObjectId() + "x:" + unit.getX() + ". ");
             hashBuilder.append("unit" + unit.getObjectId() + "y:" +unit.getY() + ". ");
             hashBuilder.append("unit" + unit.getObjectId() + "angle:" + unit.getAngleInRadians() + ". ");
@@ -241,7 +242,7 @@ public class GameplayScreen extends AbstractGameScreen {
         */
 
         // Final hash for production version
-        for (AbstractUnit unit : worldController.getUnitContainer().getUnits()) {
+        for (AbstractGameplayObject unit : worldController.getAllUnits()) {
             StringBuilder hashBuilder = new StringBuilder();
             hashBuilder.append(unit.getX());
             hashBuilder.append(unit.getY());

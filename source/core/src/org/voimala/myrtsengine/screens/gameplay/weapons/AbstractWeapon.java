@@ -1,5 +1,8 @@
 package org.voimala.myrtsengine.screens.gameplay.weapons;
 
+import com.badlogic.gdx.math.Vector2;
+import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
+
 public abstract class AbstractWeapon {
 
     protected long reloadTimeMs; // How much time does it take to reload the weapon in milliseconds
@@ -41,7 +44,13 @@ public abstract class AbstractWeapon {
     }
 
     protected abstract void initialize();
-    public abstract void shoot();
+
+    /**
+     * @param position The point where to spawn the shot
+     * @param angle The target angle for the shot
+     * @return The shot object (bullet, missile etc.)
+     */
+    public abstract AbstractAmmunition shoot(final Vector2 position, final float angle);
 
 
 }

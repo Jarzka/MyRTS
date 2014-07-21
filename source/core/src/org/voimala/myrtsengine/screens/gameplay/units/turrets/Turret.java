@@ -1,28 +1,44 @@
 package org.voimala.myrtsengine.screens.gameplay.units.turrets;
 
 import com.badlogic.gdx.math.Vector2;
-import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
+import org.voimala.myrtsengine.screens.gameplay.units.AbstractGameplayObject;
 import org.voimala.myrtsengine.screens.gameplay.weapons.AbstractWeapon;
 import org.voimala.myrtsengine.screens.gameplay.world.AbstractGameObject;
+import org.voimala.utility.MathHelper;
 
 public class Turret extends AbstractGameObject {
 
-    private AbstractUnit owner;
-    private AbstractUnit target;
+    private AbstractGameplayObject owner;
+    private AbstractGameplayObject target;
     private AbstractWeapon weapon;
 
-    public Turret(final long id, AbstractUnit owner, AbstractWeapon weapon) {
-        super(id);
+    private long range = 100;
+
+    public Turret(AbstractGameplayObject owner, AbstractWeapon weapon) {
         this.owner = owner;
         this.weapon = weapon;
     }
 
     public void updateState(final float deltaTime) {
         updateWeaponState();
+        updateTurretState();
     }
 
     private void updateWeaponState() {
+        if (weapon != null) {
+            weapon.updateState();
+        }
+    }
 
+
+    private void updateTurretState() {
+        if (hasTarget() && isTargetInRange()) {
+            weapon.shoot(getPosition(), angle);
+        }
+    }
+
+    private boolean hasTarget() {
+        return target != null;
     }
 
     @Override
@@ -48,6 +64,14 @@ public class Turret extends AbstractGameObject {
 
     @Override
     public boolean onCollision(Vector2 point) {
+        return false;
+    }
+
+    public boolean isTargetInRange() {
+        if (hasTarget()) {
+            return MathHelper.getDistanceBetweenPoints(position.x, position.y, target.getX(), target.getY()) <= range;
+        }
+
         return false;
     }
 }

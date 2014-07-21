@@ -24,19 +24,19 @@ public abstract class AbstractGameObject implements Cloneable {
         return gameObjectClone;
     }
 
-    public AbstractGameObject(final long id) {
-        initialize(id);
+    public AbstractGameObject() {
+        initialize();
     }
 
-    private void initialize(final long id) {
-        initializeId(id);
+    private void initialize() {
+        initializeId();
         initializeDimensions();
         initializeCollisionMask();
         initializeMovement();
     }
 
-    private void initializeId(final long id) {
-        this.ObjectId = id;
+    private void initializeId() {
+        this.ObjectId = getNextFreeId();
     }
 
     protected abstract void initializeDimensions();
@@ -65,7 +65,7 @@ public abstract class AbstractGameObject implements Cloneable {
     /** Updates the current position / size of the collision mask. Called on every world update. */
     protected abstract void updateCollisionMask();
 
-    public static long getNextFreeId() {
+    private static long getNextFreeId() {
         return nextFreeId++;
     }
 
@@ -91,6 +91,10 @@ public abstract class AbstractGameObject implements Cloneable {
 
     public void setPosition(Vector2 position) {
         this.position = position;
+    }
+
+    public Vector2 getPosition() {
+        return position;
     }
 
     public float getAngle() {

@@ -1,9 +1,7 @@
 package org.voimala.myrtsengine.screens.gameplay.units.infantry;
 
-import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
+import org.voimala.myrtsengine.screens.gameplay.units.AbstractGameplayObject;
 
-public abstract class AbstractInfantry extends AbstractUnit {
-    public AbstractInfantry(final long id) {
-        super(id);
-    }
+public abstract class AbstractInfantry extends AbstractGameplayObject {
+
 }

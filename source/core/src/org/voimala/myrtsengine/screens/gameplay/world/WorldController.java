@@ -4,7 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
-import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
+import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
+import org.voimala.myrtsengine.screens.gameplay.units.AbstractGameplayObject;
 import org.voimala.myrtsengine.screens.gameplay.units.UnitContainer;
 import org.voimala.myrtsgame.screens.gameplay.units.infantry.M4Unit;
 
@@ -16,8 +17,12 @@ public class WorldController {
 
     private static final String TAG = WorldController.class.getName();
 
-    /** Integer = Player number */
-    private HashMap<Integer, UnitContainer> unitContainers = new HashMap<Integer, UnitContainer>();
+
+    /** Contains all units used in the game */
+    private UnitContainer unitContainerAllUnits = new UnitContainer();
+    /** Contains all units used by a specific player for fast access. Integer = Player number */
+    private HashMap<Integer, UnitContainer> unitContainersForSpecificPlayers = new HashMap<Integer, UnitContainer>();
+    private ArrayList<AbstractAmmunition> ammunitionContainer = new ArrayList<AbstractAmmunition>();
 
     private GameplayScreen gameplayScreen;
     private OrthographicCamera worldCamera;
@@ -28,7 +33,6 @@ public class WorldController {
 
     private long currentSimTick = 1; // "Communication turn" in multiplayer game. // TODO Move to NetworkManager?
     private long SimTickDurationMs = 100;
-    private AbstractUnit[] allUnits;
 
     public WorldController() {
         initialize();
@@ -42,7 +46,7 @@ public class WorldController {
 
     private void initializeContainers() {
         for (int i = 1; i <= 8; i++) {
-            unitContainers.put(i, new UnitContainer());
+            unitContainersForSpecificPlayers.put(i, new UnitContainer());
         }
     }
 
@@ -63,29 +67,41 @@ public class WorldController {
     private void createTestUnit() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 6; j++) {
-                M4Unit unit = new M4Unit(AbstractUnit.getNextFreeId());
+                M4Unit unit = new M4Unit();
                 unit.setPosition(new Vector2(500 + TILE_SIZE_PIXELS * i, 500 + TILE_SIZE_PIXELS  * j));
                 unit.setTeam(1);
                 unit.setPlayerNumber(1);
                 unit.setAngle(0);
-                unitContainers.get(1).addUnit(unit);
+                storeUnitInContainer(unit);
             }
         }
 
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 4; j++) {
-                M4Unit unit = new M4Unit(AbstractUnit.getNextFreeId());
+                M4Unit unit = new M4Unit();
                 unit.setPosition(new Vector2(4000 + TILE_SIZE_PIXELS * i, 4000 + TILE_SIZE_PIXELS  * j));
                 unit.setPlayerNumber(2);
                 unit.setTeam(2);
                 unit.setAngle(180);
-                unitContainers.get(2).addUnit(unit);
+                storeUnitInContainer(unit);
             }
         }
     }
 
-    public UnitContainer getUnitContainer(final int playerNumber) {
-        return unitContainers.get(playerNumber);
+    public void storeUnitInContainer(AbstractGameplayObject unit) {
+        if (getUnitContainerForSpecificPlayer(unit.getPlayerNumber()) != null) {
+            getUnitContainerForSpecificPlayer(unit.getPlayerNumber()).addUnit(unit);
+        }
+
+        unitContainerAllUnits.addUnit(unit);
+    }
+
+    public UnitContainer getUnitContainerForSpecificPlayer(final int playerNumber) {
+        return unitContainersForSpecificPlayers.get(playerNumber);
+    }
+
+    public UnitContainer getUnitContainerAllUnits() {
+        return unitContainerAllUnits;
     }
 
     public void updateWorld(final float deltaTime) {
@@ -93,10 +109,8 @@ public class WorldController {
     }
 
     private void updateUnits(float deltaTime) {
-        for (int i = 1; i <= 8; i++) {
-            for (AbstractUnit unit : unitContainers.get(i).getUnits()) {
-                unit.update(deltaTime);
-            }
+        for (AbstractGameplayObject unit : unitContainerAllUnits.getUnits()) {
+            unit.update(deltaTime);
         }
     }
 
@@ -112,14 +126,12 @@ public class WorldController {
         this.gameplayScreen = gameplayScreen;
     }
 
-    public List<AbstractUnit> getAllUnits() {
-        ArrayList<AbstractUnit> units= new ArrayList<AbstractUnit>();
-        
-        for (int i = 1; i <= 8; i++) {
-            units.addAll(this.unitContainers.get(i).getUnits());
-        }
+    public List<AbstractGameplayObject> getAllUnits() {
+        return unitContainerAllUnits.getUnits();
+    }
 
-        return units;
+    public List<AbstractAmmunition> getAmmunitionContainer() {
+        return ammunitionContainer;
     }
 
 }

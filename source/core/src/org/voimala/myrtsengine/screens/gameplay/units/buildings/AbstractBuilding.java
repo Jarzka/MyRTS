@@ -1,9 +1,6 @@
 package org.voimala.myrtsengine.screens.gameplay.units.buildings;
 
-import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
+import org.voimala.myrtsengine.screens.gameplay.units.AbstractGameplayObject;
 
-public abstract class AbstractBuilding extends AbstractUnit {
-    public AbstractBuilding(final long id) {
-        super(id);
-    }
+public abstract class AbstractBuilding extends AbstractGameplayObject {
 }

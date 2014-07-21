@@ -1,9 +1,6 @@
 package org.voimala.myrtsengine.screens.gameplay.units.vehicles;
 
-import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
+import org.voimala.myrtsengine.screens.gameplay.units.AbstractGameplayObject;
 
-public abstract class AbstractVehicle extends AbstractUnit {
-    public AbstractVehicle(final long id) {
-        super(id);
-    }
+public abstract class AbstractVehicle extends AbstractGameplayObject {
 }

@@ -1,10 +1,6 @@
 package org.voimala.myrtsengine.screens.gameplay.units.aircraft;
 
-import com.badlogic.gdx.math.Vector2;
-import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
+import org.voimala.myrtsengine.screens.gameplay.units.AbstractGameplayObject;
 
-public abstract class AbstractAircraft extends AbstractUnit {
-    public AbstractAircraft(final long id) {
-        super(id);
-    }
+public abstract class AbstractAircraft extends AbstractGameplayObject {
 }
