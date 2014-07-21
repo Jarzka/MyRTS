@@ -7,6 +7,7 @@ import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.weapons.AbstractWeapon;
 import org.voimala.myrtsengine.screens.gameplay.world.AbstractGameObject;
 import org.voimala.utility.MathHelper;
+import org.voimala.utility.RandomNumberGenerator;
 import org.voimala.utility.RotationDirection;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public abstract class AbstractTurret extends AbstractGameObject {
     protected double rotationDeceleration = 0; /// deg/s
     protected RotationDirection currentRotationDirection;
     protected double steeringWheel = 0; // 1 = full clockwise, -1 = full counter-clockwise
-    protected double accuracy = 0; // Accuracy in degrees (0 - 90);
+    protected int accuracy = 0; // Accuracy in degrees (0 - 90);
 
     protected Vector2 relativePosition = new Vector2(0, 0); // Turrets position relative to the owner unit.
     protected Vector2 relativeShootPosition = new Vector2(0, 0); // Turrets shoot position relative to the owner unit.
@@ -206,7 +207,10 @@ public abstract class AbstractTurret extends AbstractGameObject {
     }
 
     private void tryToShoot() {
-        AbstractAmmunition ammunition = weapon.shoot(owner.getWorldController(), new Vector2(position.x, position.y), angle);
+        AbstractAmmunition ammunition = weapon.shoot(owner.getWorldController(), new Vector2(
+                position.x,
+                position.y),
+                angle + RandomNumberGenerator.random(0, accuracy) - RandomNumberGenerator.random(0, accuracy));
         if (ammunition != null) {
             owner.getWorldController().getAudioEffectContainer().add(
                     new AudioEffect(

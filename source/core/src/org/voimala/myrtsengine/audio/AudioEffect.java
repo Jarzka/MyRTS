@@ -45,14 +45,14 @@ public class AudioEffect {
 
     private void die() {
         // Remove this object from the world
-        worldController.removeAudio(this);
+        worldController.tagAudioToBeRemovedInNextWorldUpdate(this);
     }
 
     private void play() {
         soundStartedPlayingTimestamp = System.currentTimeMillis();
         sound = SoundContainer.getInstance().getSound(audioEffectName);
         if (sound != null) {
-            sound.play();
+            sound.play(0.1f); // TODO Implement master sound and local sound volume.
         }
     }
 

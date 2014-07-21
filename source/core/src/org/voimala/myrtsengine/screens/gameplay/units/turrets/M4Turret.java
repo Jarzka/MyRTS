@@ -15,6 +15,7 @@ public class M4Turret extends AbstractTurret {
         rotationAcceleration = 800;
         rotationDeceleration = 800;
         range = 2000;
+        accuracy = 10;
     }
 
     @Override

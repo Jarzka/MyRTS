@@ -8,7 +8,7 @@ import org.voimala.utility.MathHelper;
 
 public abstract class AbstractBullet extends AbstractAmmunition {
 
-    protected Vector2 startPosition = new Vector2(0, 0);
+    protected Vector2 startPosition = null;
     protected long maxTravelDistance = 0;
 
     public AbstractBullet(final WorldController worldController1, final double velocity, final long maxTravelDistance) {
@@ -47,20 +47,23 @@ public abstract class AbstractBullet extends AbstractAmmunition {
     }
 
     private void checkDistanceLeft() {
+        double asd = MathHelper.getDistanceBetweenPoints(position.x, position.y, startPosition.x, startPosition.y);
         if (MathHelper.getDistanceBetweenPoints(position.x, position.y, startPosition.x, startPosition.y) >= maxTravelDistance) {
             die();
         }
     }
 
     private void die() {
-        worldController.removeAmmunition(this);
+        worldController.tagAmmunitionToBeRemovedInNextWorldUpdate(this);
     }
-
 
     @Override
     public void setPosition(Vector2 position) {
         this.position = position;
-        startPosition = new Vector2(position.x, position.y);
+
+        if (startPosition == null) {
+            startPosition = new Vector2(position.x, position.y);
+        }
     }
 
     @Override

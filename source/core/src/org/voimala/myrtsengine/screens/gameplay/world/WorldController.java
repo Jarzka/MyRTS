@@ -24,7 +24,9 @@ public class WorldController {
     /** Contains all units used by a specific player for fast access. Integer = Player number */
     private HashMap<Integer, UnitContainer> unitContainersForSpecificPlayers = new HashMap<Integer, UnitContainer>();
     private ArrayList<AbstractAmmunition> ammunitionContainer = new ArrayList<AbstractAmmunition>();
+    private ArrayList<AbstractAmmunition> ammunitionToBeRemoved = new ArrayList<AbstractAmmunition>();
     private ArrayList<AudioEffect> audioEffectContainer = new ArrayList<AudioEffect>();
+    private ArrayList<AudioEffect> audioEffectsToBeRemoved = new ArrayList<AudioEffect>();
 
     private GameplayScreen gameplayScreen;
     private OrthographicCamera worldCamera;
@@ -108,9 +110,25 @@ public class WorldController {
     }
 
     public void updateWorld(final float deltaTime) {
+        removeTaggedObjects();
         updateUnits(deltaTime);
         updateAmmunition(deltaTime);
         updateAudioEffects();
+    }
+
+    /** If objects were removed during world update, it would cause problems since the WorldController would be
+     * still looping trough all objects. That's way objects that need to me removed will be added to a special
+     * container. Objects in that container will be deleted before the next world update. */
+    private void removeTaggedObjects() {
+        for (AudioEffect audioEffect : audioEffectsToBeRemoved) {
+            audioEffectContainer.remove(audioEffect);
+        }
+        audioEffectsToBeRemoved.clear();
+
+        for (AbstractAmmunition ammunition : ammunitionToBeRemoved) {
+            ammunitionContainer.remove(ammunition);
+        }
+        ammunitionToBeRemoved.clear();
     }
 
     private void updateUnits(final float deltaTime) {
@@ -155,11 +173,11 @@ public class WorldController {
         return audioEffectContainer;
     }
 
-    public void removeAudio(final AudioEffect audioEffectToBeRemoved) {
-        audioEffectContainer.remove(audioEffectToBeRemoved); // TODO Causes concurrent modification
+    public void tagAudioToBeRemovedInNextWorldUpdate(final AudioEffect audioEffectToBeRemoved) {
+        audioEffectsToBeRemoved.add(audioEffectToBeRemoved);
     }
 
-    public void removeAmmunition(AbstractAmmunition ammunitionToBeRemoved) {
-        ammunitionContainer.remove(ammunitionToBeRemoved); // TODO Causes concurrent modification
+    public void tagAmmunitionToBeRemovedInNextWorldUpdate(AbstractAmmunition ammunitionToBeRemoved) {
+        this.ammunitionToBeRemoved.add(ammunitionToBeRemoved);
     }
 }
