@@ -1,0 +1,137 @@
+package org.voimala.myrtsengine.screens.gameplay.world;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
+import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
+import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
+import org.voimala.myrtsengine.screens.gameplay.units.AbstractGameplayObject;
+import org.voimala.myrtsengine.screens.gameplay.units.UnitContainer;
+import org.voimala.myrtsgame.screens.gameplay.units.infantry.M4Unit;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+public class WorldController {
+
+    private static final String TAG = WorldController.class.getName();
+
+
+    /** Contains all units used in the game */
+    private UnitContainer unitContainerAllUnits = new UnitContainer();
+    /** Contains all units used by a specific player for fast access. Integer = Player number */
+    private HashMap<Integer, UnitContainer> unitContainersForSpecificPlayers = new HashMap<Integer, UnitContainer>();
+    private ArrayList<AbstractAmmunition> ammunitionContainer = new ArrayList<AbstractAmmunition>();
+
+    private GameplayScreen gameplayScreen;
+    private OrthographicCamera worldCamera;
+
+    private double hudSize = 1; // TODO Hud needs to be implemented
+
+    public final int TILE_SIZE_PIXELS = 256;
+
+    private long currentSimTick = 1; // "Communication turn" in multiplayer game. // TODO Move to NetworkManager?
+    private long SimTickDurationMs = 100;
+
+    public WorldController() {
+        initialize();
+    }
+
+    private void initialize() {
+        initializeContainers();
+        initializeCamera();
+        initializeMap();
+    }
+
+    private void initializeContainers() {
+        for (int i = 1; i <= 8; i++) {
+            unitContainersForSpecificPlayers.put(i, new UnitContainer());
+        }
+    }
+
+    private void initializeCamera() {
+        worldCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        worldCamera.lookAt(0, 0, 0);
+        worldCamera.translate(800, 800);
+        worldCamera.zoom = 4;
+        worldCamera.update();
+    }
+
+    private void initializeMap() {
+        // TODO For now we just create a simple test map.
+        // The final implementation should load the map from hard disk.
+        createTestUnit();
+    }
+
+    private void createTestUnit() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 6; j++) {
+                M4Unit unit = new M4Unit();
+                unit.setPosition(new Vector2(500 + TILE_SIZE_PIXELS * i, 500 + TILE_SIZE_PIXELS  * j));
+                unit.setTeam(1);
+                unit.setPlayerNumber(1);
+                unit.setAngle(0);
+                storeUnitInContainer(unit);
+            }
+        }
+
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 4; j++) {
+                M4Unit unit = new M4Unit();
+                unit.setPosition(new Vector2(4000 + TILE_SIZE_PIXELS * i, 4000 + TILE_SIZE_PIXELS  * j));
+                unit.setPlayerNumber(2);
+                unit.setTeam(2);
+                unit.setAngle(180);
+                storeUnitInContainer(unit);
+            }
+        }
+    }
+
+    public void storeUnitInContainer(AbstractGameplayObject unit) {
+        if (getUnitContainerForSpecificPlayer(unit.getPlayerNumber()) != null) {
+            getUnitContainerForSpecificPlayer(unit.getPlayerNumber()).addUnit(unit);
+        }
+
+        unitContainerAllUnits.addUnit(unit);
+    }
+
+    public UnitContainer getUnitContainerForSpecificPlayer(final int playerNumber) {
+        return unitContainersForSpecificPlayers.get(playerNumber);
+    }
+
+    public UnitContainer getUnitContainerAllUnits() {
+        return unitContainerAllUnits;
+    }
+
+    public void updateWorld(final float deltaTime) {
+        updateUnits(deltaTime);
+    }
+
+    private void updateUnits(float deltaTime) {
+        for (AbstractGameplayObject unit : unitContainerAllUnits.getUnits()) {
+            unit.update(deltaTime);
+        }
+    }
+
+    public OrthographicCamera getWorldCamera() {
+        return worldCamera;
+    }
+
+    public GameplayScreen getGameplayScreen() {
+        return gameplayScreen;
+    }
+
+    public void setGameplayScreen(final GameplayScreen gameplayScreen) {
+        this.gameplayScreen = gameplayScreen;
+    }
+
+    public List<AbstractGameplayObject> getAllUnits() {
+        return unitContainerAllUnits.getUnits();
+    }
+
+    public List<AbstractAmmunition> getAmmunitionContainer() {
+        return ammunitionContainer;
+    }
+
+}
