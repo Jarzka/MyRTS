@@ -160,6 +160,6 @@ public class WorldController {
     }
 
     public void removeAmmunition(AbstractAmmunition ammunitionToBeRemoved) {
-        ammunitionContainer.remove(ammunitionToBeRemoved); TODO Causes concurrent modification
+        ammunitionContainer.remove(ammunitionToBeRemoved); // TODO Causes concurrent modification
     }
 }
