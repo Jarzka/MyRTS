@@ -1,6 +1,7 @@
 package org.voimala.myrtsengine.screens.gameplay.units.turrets;
 
 import com.badlogic.gdx.math.Vector2;
+import org.voimala.myrtsengine.audio.AudioEffect;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.weapons.AbstractWeapon;
@@ -28,8 +29,10 @@ public abstract class AbstractTurret extends AbstractGameObject {
     protected Vector2 relativeShootPosition = new Vector2(0, 0); // Turrets shoot position relative to the owner unit.
 
     protected long range = 100;
+    private boolean targetInSight;
 
     public AbstractTurret(AbstractUnit owner, AbstractWeapon weapon) {
+        super(owner.getWorldController());
         this.owner = owner;
         this.weapon = weapon;
     }
@@ -192,7 +195,7 @@ public abstract class AbstractTurret extends AbstractGameObject {
 
     private void checkTarget() {
         if (hasTarget()) {
-            if (isTargetInRange()) {
+            if (isTargetInRange() && isTargetInSight()) {
                 tryToShoot();
             } else {
                 target = null; // Give up
@@ -203,8 +206,14 @@ public abstract class AbstractTurret extends AbstractGameObject {
     }
 
     private void tryToShoot() {
-        AbstractAmmunition ammunition = weapon.shoot(new Vector2(position.x, position.y), angle);
+        AbstractAmmunition ammunition = weapon.shoot(owner.getWorldController(), new Vector2(position.x, position.y), angle);
         if (ammunition != null) {
+            owner.getWorldController().getAudioEffectContainer().add(
+                    new AudioEffect(
+                            owner.getWorldController(),
+                            "m4",
+                            position.x,
+                            position.y));
             owner.getWorldController().getAmmunitionContainer().add(ammunition);
         }
     }
@@ -289,6 +298,16 @@ public abstract class AbstractTurret extends AbstractGameObject {
         return false;
     }
 
+    public boolean isTargetInSight() {
+        double angleBetweenTurretAndTargetInRadians = MathHelper.getAngleBetweenPointsInRadians(
+                position.x,
+                position.y,
+                target.getPosition().x,
+                target.getPosition().y);
+
+        return MathHelper.round(getAngle(), 1) != MathHelper.round(Math.toDegrees(angleBetweenTurretAndTargetInRadians), 1);
+    }
+
     public Vector2 getRelativePosition() {
         return relativeShootPosition;
     }
@@ -296,4 +315,6 @@ public abstract class AbstractTurret extends AbstractGameObject {
     public void setRelativePosition(Vector2 relativePosition) {
         this.relativeShootPosition = relativePosition;
     }
+
+
 }

@@ -8,6 +8,7 @@ import org.voimala.myrtsengine.movements.AbstractMovement;
 
 public abstract class AbstractGameObject implements Cloneable {
 
+    protected WorldController worldController;
     protected AbstractMovement movement = null;
     protected long ObjectId; // Every object should have an unique id
     protected Vector2 position = new Vector2(0, 0); /* Object's position in 2D space. Origin at center. */
@@ -26,7 +27,8 @@ public abstract class AbstractGameObject implements Cloneable {
         return gameObjectClone;
     }
 
-    public AbstractGameObject() {
+    public AbstractGameObject(final WorldController worldController) {
+        this.worldController = worldController;
         initialize();
     }
 

@@ -3,8 +3,10 @@ package org.voimala.myrtsengine.screens.gameplay.world;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
+import org.voimala.myrtsengine.audio.AudioEffect;
 import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
+import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractBullet;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.units.UnitContainer;
 import org.voimala.myrtsengine.screens.gameplay.units.infantry.M4Unit;
@@ -22,6 +24,7 @@ public class WorldController {
     /** Contains all units used by a specific player for fast access. Integer = Player number */
     private HashMap<Integer, UnitContainer> unitContainersForSpecificPlayers = new HashMap<Integer, UnitContainer>();
     private ArrayList<AbstractAmmunition> ammunitionContainer = new ArrayList<AbstractAmmunition>();
+    private ArrayList<AudioEffect> audioEffectContainer = new ArrayList<AudioEffect>();
 
     private GameplayScreen gameplayScreen;
     private OrthographicCamera worldCamera;
@@ -107,6 +110,7 @@ public class WorldController {
     public void updateWorld(final float deltaTime) {
         updateUnits(deltaTime);
         updateAmmunition(deltaTime);
+        updateAudioEffects();
     }
 
     private void updateUnits(final float deltaTime) {
@@ -118,6 +122,12 @@ public class WorldController {
     private void updateAmmunition(final float deltaTime) {
         for (AbstractAmmunition ammunition : ammunitionContainer) {
             ammunition.updateState(deltaTime);
+        }
+    }
+
+    private void updateAudioEffects() {
+        for (AudioEffect audioEffect : audioEffectContainer) {
+            audioEffect.updateState();
         }
     }
 
@@ -141,4 +151,15 @@ public class WorldController {
         return ammunitionContainer;
     }
 
+    public ArrayList<AudioEffect> getAudioEffectContainer() {
+        return audioEffectContainer;
+    }
+
+    public void removeAudio(final AudioEffect audioEffectToBeRemoved) {
+        audioEffectContainer.remove(audioEffectToBeRemoved); // TODO Causes concurrent modification
+    }
+
+    public void removeAmmunition(AbstractAmmunition ammunitionToBeRemoved) {
+        ammunitionContainer.remove(ammunitionToBeRemoved); TODO Causes concurrent modification
+    }
 }

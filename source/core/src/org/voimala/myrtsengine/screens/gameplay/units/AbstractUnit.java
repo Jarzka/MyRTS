@@ -12,7 +12,6 @@ import java.util.List;
 
 public abstract class AbstractUnit extends AbstractGameObject {
 
-    protected WorldController worldController;
     protected int player = 0;
     protected int team = 0;
     protected UnitType type;
@@ -20,7 +19,7 @@ public abstract class AbstractUnit extends AbstractGameObject {
     protected ArrayList<AbstractTurret> turrets = new ArrayList<AbstractTurret>();
 
     public AbstractUnit(final WorldController worldController) {
-        this.worldController = worldController;
+        super(worldController);
         initializeTurrets();
     }
 

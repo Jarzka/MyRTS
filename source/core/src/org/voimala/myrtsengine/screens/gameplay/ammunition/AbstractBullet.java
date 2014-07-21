@@ -1,11 +1,21 @@
 package org.voimala.myrtsengine.screens.gameplay.ammunition;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.movements.BulletMovement;
+import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
+import org.voimala.utility.MathHelper;
 
 public abstract class AbstractBullet extends AbstractAmmunition {
+
+    protected Vector2 startPosition = new Vector2(0, 0);
+    protected long maxTravelDistance = 0;
+
+    public AbstractBullet(final WorldController worldController1, final double velocity, final long maxTravelDistance) {
+        super(worldController1);
+        this.movement.setVelocity(velocity);
+        this.maxTravelDistance = maxTravelDistance;
+    }
 
     @Override
     protected void initializeDimensions() {
@@ -28,6 +38,29 @@ public abstract class AbstractBullet extends AbstractAmmunition {
             Circle collisionCircle = (Circle) collisionMask;
             collisionCircle.setPosition(position.x, position.y);
         }
+    }
+
+    @Override
+    public void updateState(final float deltaTime) {
+        super.updateState(deltaTime);
+        checkDistanceLeft();
+    }
+
+    private void checkDistanceLeft() {
+        if (MathHelper.getDistanceBetweenPoints(position.x, position.y, startPosition.x, startPosition.y) >= maxTravelDistance) {
+            die();
+        }
+    }
+
+    private void die() {
+        worldController.removeAmmunition(this);
+    }
+
+
+    @Override
+    public void setPosition(Vector2 position) {
+        this.position = position;
+        startPosition = new Vector2(position.x, position.y);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package org.voimala.myrtsengine.screens.gameplay.world;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Disposable;
 import org.voimala.myrtsengine.app.GameMain;
+import org.voimala.myrtsengine.audio.SoundContainer;
 import org.voimala.myrtsengine.graphics.SpriteContainer;
 import org.voimala.myrtsengine.networking.ChatContainer;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
@@ -41,6 +43,7 @@ public class WorldRenderer implements Disposable {
 
     private void initialize () {
         initializeSprites();
+        initializeAudioEffects();
         initializePointer();
         initializeFonts();
         initializeBatches();
@@ -72,6 +75,11 @@ public class WorldRenderer implements Disposable {
         Texture texture = new Texture("graphics/weapons/m4-bullet.png");
         Sprite sprite = new Sprite(texture);
         SpriteContainer.getInstance().addSprite("m4-bullet", sprite);
+    }
+
+    private void initializeAudioEffects() {
+        Sound m4 = Gdx.audio.newSound(Gdx.files.internal("sound/weapons/m4.ogg"));
+        SoundContainer.getInstance().addSound("m4", m4);
     }
 
     private void initializePointer() {
