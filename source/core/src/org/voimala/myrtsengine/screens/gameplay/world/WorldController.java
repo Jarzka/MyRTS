@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.units.UnitContainer;
-import org.voimala.myrtsengine.screens.gameplay.units.infantry.M4Unit;
+import org.voimala.myrtsgame.screens.gameplay.units.infantry.M4Unit;
 
 public class WorldController {
 
