@@ -121,7 +121,6 @@ public class GameplayScreen extends AbstractGameScreen {
     }
 
     private void updateWorldUsingVariablePhysics(final float deltaTime) {
-        Gdx.app.debug(TAG, "Updating world with variable physics...");
         worldController.updateWorld(deltaTime);
         worldUpdateTick++;
         lastWorldUpdateTimestamp = System.currentTimeMillis();
@@ -132,7 +131,6 @@ public class GameplayScreen extends AbstractGameScreen {
         final long fixedPhysicsFps = 20;
         if (System.currentTimeMillis() >= lastWorldUpdateTimestamp + (long) (((float) 1 / (float) fixedPhysicsFps) * 1000)) {
             float deltaTime = (float) 1 / (float) fixedPhysicsFps;
-            Gdx.app.debug(TAG, "Updating world with fixed physics...");
             worldController.updateWorld(deltaTime);
             worldUpdateTick++;
             lastWorldUpdateTimestamp = System.currentTimeMillis();

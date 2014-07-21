@@ -1,4 +1,4 @@
-package org.voimala.myrts.screens.gameplay.units.movements;
+package org.voimala.myrts.movements;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
@@ -18,9 +18,6 @@ public class CarMovement extends AbstractMovement {
     }
 
     public void update(final float deltaTime) {
-        if (pathPoints.size() != 0) {
-            Gdx.app.debug("asd", "asd"); // TODO Testing when the game goes out of sync. Insert breakpoint here.
-        }
         handlePhysicalMotion(deltaTime);
         handleLogicalMotion(deltaTime);
     }
@@ -36,8 +33,8 @@ public class CarMovement extends AbstractMovement {
     }
 
     private void handleVelocity(float deltaTime) {
-        ownerUnit.moveX(Math.cos(ownerUnit.getAngleInRadians()) * currentVelocity * deltaTime);
-        ownerUnit.moveY(Math.sin(ownerUnit.getAngleInRadians()) * currentVelocity * deltaTime);
+        owner.moveX(Math.cos(owner.getAngleInRadians()) * currentVelocity * deltaTime);
+        owner.moveY(Math.sin(owner.getAngleInRadians()) * currentVelocity * deltaTime);
     }
 
     private void handleAcceleration(final float deltaTime) {
@@ -72,9 +69,9 @@ public class CarMovement extends AbstractMovement {
 
         // Handle current rotation direction
         if (currentRotationDirection == 1) {
-            ownerUnit.rotate(-(float) (deltaTime * currentRotationVelocity));
+            owner.rotate(-(float) (deltaTime * currentRotationVelocity));
         } else if (currentRotationDirection == -1) {
-            ownerUnit.rotate((float) (deltaTime * currentRotationVelocity));
+            owner.rotate((float) (deltaTime * currentRotationVelocity));
         }
     }
 
@@ -140,7 +137,7 @@ public class CarMovement extends AbstractMovement {
 
             // Calculate distance between current point and the next (final) point
             double distanceBetweenCurrentPointAndEndPoint = MathHelper.getDistanceBetweenPoints(
-                    ownerUnit.getX(), ownerUnit.getY(), nextPoint.x, nextPoint.y);
+                    owner.getX(), owner.getY(), nextPoint.x, nextPoint.y);
 
             if (distanceBetweenCurrentPointAndEndPoint <= currentVelocity * timeToStopInSeconds) {
                 acceleratorPedal = 0;
@@ -150,15 +147,15 @@ public class CarMovement extends AbstractMovement {
 
     private void rotateTowardsPoint(final float deltaTime, final Vector2 point) {
         double angleBetweenUnitAndPointInRadians = MathHelper.getAngleBetweenPointsInRadians(
-                ownerUnit.getX(),
-                ownerUnit.getY(),
+                owner.getX(),
+                owner.getY(),
                 point.x,
                 point.y);
 
         // If unit is not looking at the point, set the correct rotation direction
-        if (MathHelper.round(ownerUnit.getAngle(), 1)
+        if (MathHelper.round(owner.getAngle(), 1)
                 != MathHelper.round(Math.toDegrees(angleBetweenUnitAndPointInRadians), 1)) {
-            RotationDirection rotationDirection = MathHelper.getFasterTurningDirection(ownerUnit.getAngleInRadians(),
+            RotationDirection rotationDirection = MathHelper.getFasterTurningDirection(owner.getAngleInRadians(),
                     angleBetweenUnitAndPointInRadians);
 
             if (rotationDirection == RotationDirection.CLOCKWISE) {
@@ -174,7 +171,7 @@ public class CarMovement extends AbstractMovement {
 
             // Calculate distance between current angle and the next (final) angle
             double distanceBetweenCurrentAngleAndEndAngle = MathHelper.getDistanceFromAngle1ToAngle2(
-                    ownerUnit.getAngleInRadians(),
+                    owner.getAngleInRadians(),
                     angleBetweenUnitAndPointInRadians,
                     rotationDirection);
             double distanceBetweenCurrentAngleAndEndAngleDegree =
@@ -194,14 +191,4 @@ public class CarMovement extends AbstractMovement {
         steeringWheel = 0;
     }
 
-    /** Used mainly for testing purposes */
-    public String getStateHash() {
-        StringBuilder hashBuilder = new StringBuilder();
-
-        hashBuilder.append(ownerUnit.getX() + ". ");
-        hashBuilder.append(ownerUnit.getY() + ". ");
-        hashBuilder.append(ownerUnit.getAngle() + ". ");
-
-        return hashBuilder.toString();
-    }
 }

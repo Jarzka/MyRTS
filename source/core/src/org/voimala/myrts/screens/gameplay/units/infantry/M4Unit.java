@@ -2,7 +2,7 @@ package org.voimala.myrts.screens.gameplay.units.infantry;
 
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
-import org.voimala.myrts.screens.gameplay.units.movements.CarMovement;
+import org.voimala.myrts.movements.CarMovement;
 
 public class M4Unit extends AbstractInfantry {
 

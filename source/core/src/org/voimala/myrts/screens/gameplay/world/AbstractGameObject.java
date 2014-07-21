@@ -1,16 +1,20 @@
 package org.voimala.myrts.screens.gameplay.world;
 
 import com.badlogic.gdx.math.Vector2;
+import org.voimala.myrts.movements.AbstractMovement;
 
 ;
 
 public abstract class AbstractGameObject implements Cloneable {
 
+    protected Object collisionMask;
+    protected AbstractMovement movement = null;
     protected long ObjectId; // Every object should have an unique id
     protected Vector2 position = new Vector2(0, 0);
     protected float angle = 0; // 0 = right, 90 = top, 180 = left, 270 = down. Always between 0 and 360 (inclusive)
     protected float width = 0;
     protected float height = 0;
+    private static long nextFreeId = 0;
 
     public AbstractGameObject clone() throws CloneNotSupportedException {
         AbstractGameObject gameObjectClone = (AbstractGameObject) super.clone();
@@ -18,6 +22,55 @@ public abstract class AbstractGameObject implements Cloneable {
         gameObjectClone.setPosition(positionClone);
 
         return gameObjectClone;
+    }
+
+    public AbstractGameObject(final long id) {
+        initialize(id);
+    }
+
+    private void initialize(final long id) {
+        initializeId(id);
+        initializeDimensions();
+        initializeCollisionMask();
+        initializeMovement();
+    }
+
+    private void initializeId(final long id) {
+        this.ObjectId = id;
+    }
+
+    protected abstract void initializeDimensions();
+    protected abstract void initializeCollisionMask();
+    protected abstract void initializeMovement();
+
+    public void setMovement(final AbstractMovement movement) {
+        this.movement = movement;
+    }
+
+    public AbstractMovement getMovement() {
+        return movement;
+    }
+
+    public void update(final float deltaTime) {
+        updateMovement(deltaTime);
+        updateCollisionMask();
+    }
+
+    private void updateMovement(float deltaTime) {
+        if (movement != null) {
+            movement.update(deltaTime);
+        }
+    }
+
+    /** Updates the current position / size of the collision mask. Called on every world update. */
+    protected abstract void updateCollisionMask();
+
+    public static long getNextFreeId() {
+        return nextFreeId++;
+    }
+
+    public static void resetNextFreeId() {
+        nextFreeId = 0;
     }
 
     public float getX() {
@@ -92,10 +145,20 @@ public abstract class AbstractGameObject implements Cloneable {
         this.height = height;
     }
 
-    protected abstract void updateCollisionMask();
+    /** @return Is the given point inside this object's collission mask */
     public abstract boolean onCollision(Vector2 point);
 
     public long getObjectId() {
         return ObjectId;
+    }
+
+    /** Adds the given value to unit's x value. */
+    public void moveX(final double x) {
+        position.x += x;
+    }
+
+    /** Adds the given value to unit's y value. */
+    public void moveY(final double y) {
+        position.y += y;
     }
 }

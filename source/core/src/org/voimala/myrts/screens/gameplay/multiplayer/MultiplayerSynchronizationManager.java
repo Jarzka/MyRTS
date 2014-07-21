@@ -168,6 +168,7 @@ public class MultiplayerSynchronizationManager {
         return simTick;
     }
 
+    /** Warning: SimTick should be set manually only when the game is not running! */
     public void setSimTick(final long simTick) {
         this.simTick = simTick;
     }

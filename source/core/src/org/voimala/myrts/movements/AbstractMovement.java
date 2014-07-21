@@ -1,8 +1,9 @@
-package org.voimala.myrts.screens.gameplay.units.movements;
+package org.voimala.myrts.movements;
 
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.exceptions.GameLogicException;
 import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
+import org.voimala.myrts.screens.gameplay.world.AbstractGameObject;
 import org.voimala.utility.MathHelper;
 
 import java.util.ArrayList;
@@ -16,8 +17,12 @@ public abstract class AbstractMovement implements Cloneable {
     protected double currentRotationVelocity = 0; /// px/s
     protected double rotationAcceleration = 0; /// px/s
     protected double rotationDeceleration = 0; /// px/s
-    protected AbstractUnit ownerUnit = null;
+    protected AbstractGameObject owner = null;
     protected ArrayList<Vector2> pathPoints = new ArrayList<Vector2>();
+
+    public AbstractMovement(final AbstractGameObject ownert) {
+        this.owner = owner;
+    }
 
     private void checkMaxRotationVelocity(double maxRotationVelocity) {
         if (maxRotationVelocity < 0) {
@@ -78,10 +83,6 @@ public abstract class AbstractMovement implements Cloneable {
         }
     }
 
-    public AbstractMovement(final AbstractUnit ownerUnit) {
-        this.ownerUnit = ownerUnit;
-    }
-
     public double getMaxVelocity() {
         return maxVelocity;
     }
@@ -121,8 +122,8 @@ public abstract class AbstractMovement implements Cloneable {
     public abstract void update(final float deltaTime);
 
     protected boolean hasReachedPoint(Vector2 point) {
-        return MathHelper.getDistanceBetweenPoints(ownerUnit.getX(),
-                ownerUnit.getY(),
+        return MathHelper.getDistanceBetweenPoints(owner.getX(),
+                owner.getY(),
                 point.x,
                 point.y) <= 8;
     }
@@ -170,10 +171,7 @@ public abstract class AbstractMovement implements Cloneable {
         this.pathPoints = pathPoints;
     }
 
-    public void setOwner(AbstractUnit owner) {
-        this.ownerUnit = owner;
+    public void setOwner(AbstractGameObject owner) {
+        this.owner = owner;
     }
-
-    /** Used mainly for testing purposes */
-    public abstract String getStateHash();
 }
