@@ -1,6 +1,5 @@
 package org.voimala.myrts.movements;
 
-import org.voimala.myrts.screens.gameplay.weapons.Bullet;
 import org.voimala.myrts.screens.gameplay.world.AbstractGameObject;
 
 public class BulletMovement extends AbstractMovement {

@@ -11,8 +11,8 @@ public class M4Unit extends AbstractInfantry {
     }
 
     protected void initializeDimensions() {
-        width = 156;
-        height = 252;
+        width = 50;
+        height = 50;
     }
 
     protected void initializeCollisionMask() {

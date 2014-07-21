@@ -2,14 +2,18 @@ package org.voimala.myrts.screens.gameplay.units;
 
 import org.voimala.myrts.exceptions.GameLogicException;
 import org.voimala.myrts.movements.AbstractMovement;
+import org.voimala.myrts.screens.gameplay.units.turrets.Turret;
 import org.voimala.myrts.screens.gameplay.world.AbstractGameObject;
+
+import java.util.ArrayList;
 
 public abstract class AbstractUnit extends AbstractGameObject {
 
     protected int player = 0;
     protected int team = 0;
     protected UnitType type;
-    private boolean isSelected = false;
+    protected boolean isSelected = false;
+    protected ArrayList<Turret> turrets = new ArrayList<Turret>();
 
     public AbstractUnit(final long id) {
         super(id);
