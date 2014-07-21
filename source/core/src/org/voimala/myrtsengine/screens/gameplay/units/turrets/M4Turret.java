@@ -10,6 +10,11 @@ public class M4Turret extends AbstractTurret {
 
     public M4Turret(AbstractUnit owner) {
         super(owner, new M4());
+
+        maxRotationVelocity = 800;
+        rotationAcceleration = 800;
+        rotationDeceleration = 800;
+        range = 2000;
     }
 
     @Override

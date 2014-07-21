@@ -37,6 +37,18 @@ public abstract class AbstractUnit extends AbstractGameObject {
         return unitClone;
     }
 
+    @Override
+    public void updateState(final float deltaTime) {
+        super.updateState(deltaTime);
+        updateTurretState(deltaTime);
+    }
+
+    private void updateTurretState(final float deltaTime) {
+        for (AbstractTurret turret : turrets) {
+            turret.updateState(deltaTime);
+        }
+    }
+
     public boolean isSelected() {
         return isSelected;
     }

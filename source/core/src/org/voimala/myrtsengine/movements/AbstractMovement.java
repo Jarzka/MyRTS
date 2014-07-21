@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.exceptions.GameLogicException;
 import org.voimala.myrtsengine.screens.gameplay.world.AbstractGameObject;
 import org.voimala.utility.MathHelper;
+import org.voimala.utility.RotationDirection;
 
 import java.util.ArrayList;
 
@@ -12,10 +13,13 @@ public abstract class AbstractMovement implements Cloneable {
     protected double maxVelocity = 0; /// px/s
     protected double acceleration = 0; /// px/s
     protected double deceleration = 0; /// px/s
-    protected double maxRotationVelocity = 0; /// px/s
-    protected double currentRotationVelocity = 0; /// px/s
-    protected double rotationAcceleration = 0; /// px/s
-    protected double rotationDeceleration = 0; /// px/s
+
+    protected double currentRotationVelocity = 0; /// deg/s
+    protected double maxRotationVelocity = 0; /// deg/s
+    protected double rotationAcceleration = 0; /// deg/s
+    protected double rotationDeceleration = 0; /// deg/s
+    protected RotationDirection currentRotationDirection;
+
     protected AbstractGameObject owner = null;
     protected ArrayList<Vector2> pathPoints = new ArrayList<Vector2>();
 

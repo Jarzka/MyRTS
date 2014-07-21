@@ -9,8 +9,6 @@ public class CarMovement extends AbstractMovement {
 
     private double acceleratorPedal = 0; /// 0 = no acceleration, 1 = full acceleration.
     private double steeringWheel = 0; // 1 = full clockwise, -1 = full counter-clockwise
-    private int currentRotationDirection = 0; // 1 = clockwise, -1 = counter-clockwise
-    private boolean stopAtFinalPoint = true;
 
     public CarMovement(AbstractUnit owner) {
         super(owner);
@@ -22,21 +20,21 @@ public class CarMovement extends AbstractMovement {
     }
 
     private void handlePhysicalMotion(float deltaTime) {
-        handleAcceleration(deltaTime);
-        handleDeceleration(deltaTime);
-        handleVelocity(deltaTime);
+        handlePhysicalAcceleration(deltaTime);
+        handlePhysicalDeceleration(deltaTime);
+        handlePhysicalVelocity(deltaTime);
 
-        handleRotationAcceleration(deltaTime);
-        handleRotationDeceleration(deltaTime);
-        handleRotationVelocity(deltaTime);
+        handlePhysicalRotationAcceleration(deltaTime);
+        handlePhysicalRotationDeceleration(deltaTime);
+        handlePhysicalRotationVelocity(deltaTime);
     }
 
-    private void handleVelocity(float deltaTime) {
+    private void handlePhysicalVelocity(float deltaTime) {
         owner.moveX(Math.cos(owner.getAngleInRadians()) * currentVelocity * deltaTime);
         owner.moveY(Math.sin(owner.getAngleInRadians()) * currentVelocity * deltaTime);
     }
 
-    private void handleAcceleration(final float deltaTime) {
+    private void handlePhysicalAcceleration(final float deltaTime) {
         if (acceleratorPedal > 0) {
             currentVelocity += acceleration * deltaTime;
 
@@ -46,7 +44,7 @@ public class CarMovement extends AbstractMovement {
         }
     }
 
-    private void handleDeceleration(final float deltaTime) {
+    private void handlePhysicalDeceleration(final float deltaTime) {
         if (acceleratorPedal == 0) {
             currentVelocity -= deceleration * deltaTime;
 
@@ -56,27 +54,27 @@ public class CarMovement extends AbstractMovement {
         }
     }
 
-    private void handleRotationVelocity(float deltaTime) {
+    private void handlePhysicalRotationVelocity(float deltaTime) {
         // Change current rotation direction if rotation is stopped and steering wheel is turned.
         if (currentRotationVelocity == 0) {
             if (steeringWheel > 0) {
-                currentRotationDirection = 1;
+                currentRotationDirection = RotationDirection.CLOCKWISE;
             } else if (steeringWheel < 0) {
-                currentRotationDirection = -1;
+                currentRotationDirection = RotationDirection.COUNTERCLOCKWISE;
             }
         }
 
         // Handle current rotation direction
-        if (currentRotationDirection == 1) {
+        if (currentRotationDirection == RotationDirection.CLOCKWISE) {
             owner.rotate(-(float) (deltaTime * currentRotationVelocity));
-        } else if (currentRotationDirection == -1) {
+        } else if (currentRotationDirection == RotationDirection.COUNTERCLOCKWISE) {
             owner.rotate((float) (deltaTime * currentRotationVelocity));
         }
     }
 
-    private void handleRotationAcceleration(final float deltaTime) {
-        if ((steeringWheel > 0 && currentRotationDirection == 1)
-                || (steeringWheel < 0 && currentRotationDirection == -1)) {
+    private void handlePhysicalRotationAcceleration(final float deltaTime) {
+        if ((steeringWheel > 0 && currentRotationDirection == RotationDirection.CLOCKWISE)
+                || (steeringWheel < 0 &&currentRotationDirection == RotationDirection.COUNTERCLOCKWISE)) {
             currentRotationVelocity += rotationAcceleration * deltaTime;
 
             if (currentRotationVelocity > maxRotationVelocity) {
@@ -85,10 +83,10 @@ public class CarMovement extends AbstractMovement {
         }
     }
 
-    private void handleRotationDeceleration(final float deltaTime) {
+    private void handlePhysicalRotationDeceleration(final float deltaTime) {
         if (steeringWheel == 0
-                || (steeringWheel > 0 && currentRotationDirection != 1)
-                || (steeringWheel < 0 && currentRotationDirection != -1)) {
+                || (steeringWheel > 0 && currentRotationDirection != RotationDirection.CLOCKWISE)
+                || (steeringWheel < 0 && currentRotationDirection != RotationDirection.COUNTERCLOCKWISE)) {
             currentRotationVelocity -= rotationDeceleration * deltaTime;
 
             if (currentRotationVelocity < 0) {
@@ -108,11 +106,9 @@ public class CarMovement extends AbstractMovement {
     }
 
     private void drive(final float deltaTime) {
-        acceleratorPedal = 1;
-
         Vector2 nextPoint = pathPoints.get(0);
         driveTowardsPoint(deltaTime, nextPoint);
-        predictMovement(nextPoint);
+        stopAtFinalPoint(nextPoint);
 
         if (hasReachedPoint(nextPoint)) {
             pathPoints.remove(nextPoint);
@@ -120,28 +116,8 @@ public class CarMovement extends AbstractMovement {
     }
 
     private void driveTowardsPoint(final float deltaTime, final Vector2 nextPoint) {
+        acceleratorPedal = 1;
         rotateTowardsPoint(deltaTime, nextPoint);
-    }
-
-    private void predictMovement(final Vector2 nextPoint) {
-        stopAtFinalPoint(nextPoint);
-    }
-
-    private void stopAtFinalPoint(final Vector2 nextPoint) {
-        if (stopAtFinalPoint && pathPoints.size() == 1) {
-            // Release accelerator at the right time so that the car stops at the final point
-
-            // How much time does it take for the car to stop
-            double timeToStopInSeconds = currentVelocity / deceleration;
-
-            // Calculate distance between current point and the next (final) point
-            double distanceBetweenCurrentPointAndEndPoint = MathHelper.getDistanceBetweenPoints(
-                    owner.getX(), owner.getY(), nextPoint.x, nextPoint.y);
-
-            if (distanceBetweenCurrentPointAndEndPoint <= currentVelocity * timeToStopInSeconds) {
-                acceleratorPedal = 0;
-            }
-        }
     }
 
     private void rotateTowardsPoint(final float deltaTime, final Vector2 point) {
@@ -154,34 +130,51 @@ public class CarMovement extends AbstractMovement {
         // If unit is not looking at the point, set the correct rotation direction
         if (MathHelper.round(owner.getAngle(), 1)
                 != MathHelper.round(Math.toDegrees(angleBetweenUnitAndPointInRadians), 1)) {
-            RotationDirection rotationDirection = MathHelper.getFasterTurningDirection(owner.getAngleInRadians(),
+            RotationDirection targetRotationDirection = MathHelper.getFasterTurningDirection(owner.getAngleInRadians(),
                     angleBetweenUnitAndPointInRadians);
 
-            if (rotationDirection == RotationDirection.CLOCKWISE) {
+            if (targetRotationDirection == RotationDirection.CLOCKWISE) {
                 this.steeringWheel = 1;
-            } else if (rotationDirection == RotationDirection.COUNTERCLOCKWISE) {
+            } else if (targetRotationDirection == RotationDirection.COUNTERCLOCKWISE) {
                 this.steeringWheel = -1;
             }
 
             // Stop the rotation at the right time so that the rotation stops at the final angle
 
-            // How much time does it take for the car to stop rotation
+            // How much time does it take to stop rotation
             double timeToStopRotationInSeconds = currentRotationVelocity / rotationDeceleration;
 
             // Calculate distance between current angle and the next (final) angle
             double distanceBetweenCurrentAngleAndEndAngle = MathHelper.getDistanceFromAngle1ToAngle2(
                     owner.getAngleInRadians(),
                     angleBetweenUnitAndPointInRadians,
-                    rotationDirection);
+                    targetRotationDirection);
             double distanceBetweenCurrentAngleAndEndAngleDegree =
                     Math.toDegrees(distanceBetweenCurrentAngleAndEndAngle);
 
-            // TODO
             if (distanceBetweenCurrentAngleAndEndAngleDegree <= currentRotationVelocity * timeToStopRotationInSeconds) {
                 this.steeringWheel = 0;
             }
         } else {
             this.steeringWheel = 0;
+        }
+    }
+
+
+    private void stopAtFinalPoint(final Vector2 nextPoint) {
+        if (pathPoints.size() == 1) {
+            // Release accelerator at the right time so that the car stops at the final point
+
+            // How much time does it take for the car to stop
+            double timeToStopInSeconds = currentVelocity / deceleration;
+
+            // Calculate distance between current point and the next (final) point
+            double distanceBetweenCurrentPointAndTargetPoint = MathHelper.getDistanceBetweenPoints(
+                    owner.getX(), owner.getY(), nextPoint.x, nextPoint.y);
+
+            if (distanceBetweenCurrentPointAndTargetPoint <= currentVelocity * timeToStopInSeconds) {
+                acceleratorPedal = 0;
+            }
         }
     }
 
