@@ -1,5 +1,6 @@
 package org.voimala.myrtsengine.movements;
 
+import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.screens.gameplay.world.AbstractGameObject;
 
 public class BulletMovement extends AbstractMovement {
@@ -17,9 +18,10 @@ public class BulletMovement extends AbstractMovement {
         handleVelocity(deltaTime);
     }
 
-    private void handleVelocity(float deltaTime) { // TODO Makes turret go crazy??
-        owner.moveX(Math.cos(owner.getAngleInRadians()) * currentVelocity * deltaTime);
-        owner.moveY(Math.sin(owner.getAngleInRadians()) * currentVelocity * deltaTime);
+    private void handleVelocity(float deltaTime) {
+        owner.setPosition(new Vector2(
+                (float) (owner.getX() + Math.cos(owner.getAngleInRadians()) * currentVelocity * deltaTime),
+                (float) (owner.getY() + Math.sin(owner.getAngleInRadians()) * currentVelocity * deltaTime)));
     }
 
 }

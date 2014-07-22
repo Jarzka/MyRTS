@@ -30,8 +30,9 @@ public class CarMovement extends AbstractMovement {
     }
 
     private void handlePhysicalVelocity(float deltaTime) {
-        owner.moveX(Math.cos(owner.getAngleInRadians()) * currentVelocity * deltaTime);
-        owner.moveY(Math.sin(owner.getAngleInRadians()) * currentVelocity * deltaTime);
+        owner.setPosition(new Vector2(
+                (float) (owner.getX() + Math.cos(owner.getAngleInRadians()) * currentVelocity * deltaTime),
+                (float) (owner.getY() + Math.sin(owner.getAngleInRadians()) * currentVelocity * deltaTime)));
     }
 
     private void handlePhysicalAcceleration(final float deltaTime) {

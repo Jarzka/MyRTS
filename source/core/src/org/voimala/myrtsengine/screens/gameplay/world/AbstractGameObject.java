@@ -16,8 +16,8 @@ public abstract class AbstractGameObject implements Cloneable {
     protected float width = 0;
     protected float height = 0;
     protected Object collisionMask;
-    private static long nextFreeId = 0;
-    private Sprite sprite;
+    protected static long nextFreeId = 0;
+    protected Sprite sprite;
 
     public AbstractGameObject clone() throws CloneNotSupportedException {
         AbstractGameObject gameObjectClone = (AbstractGameObject) super.clone();
@@ -84,16 +84,8 @@ public abstract class AbstractGameObject implements Cloneable {
         return position.x;
     }
 
-    public void setX(final float x) {
-        position.x = x;
-    }
-
     public float getY() {
         return position.y;
-    }
-
-    public void setY(final float y) {
-        position.y = y;
     }
 
     public void setPosition(Vector2 position) {
@@ -162,16 +154,6 @@ public abstract class AbstractGameObject implements Cloneable {
 
     public long getObjectId() {
         return ObjectId;
-    }
-
-    /** Adds the given value to unit's x value. */
-    public void moveX(final double x) {
-        position.x += x;
-    }
-
-    /** Adds the given value to unit's y value. */
-    public void moveY(final double y) {
-        position.y += y;
     }
 
 }

@@ -95,7 +95,6 @@ public class WorldController {
                 storeUnitInContainer(unit);
             }
         }
-
     }
 
     public void storeUnitInContainer(AbstractUnit unit) {
@@ -197,6 +196,8 @@ public class WorldController {
             hashBuilder.append("x:" + unit.getObjectId() + unit.getX() + " ");
             hashBuilder.append("y:" + unit.getY() + " ");
             hashBuilder.append("angle:" + unit.getAngleInRadians() + " ");
+            hashBuilder.append("player:" + unit.getPlayerNumber() + " ");
+            hashBuilder.append("team:" + unit.getTeam() + " ");
             for (AbstractTurret turret : unit.getTurrets()) {
                 hashBuilder.append("turret:" + turret.getObjectId() + " ");
                 hashBuilder.append("x:" + turret.getX() + " ");

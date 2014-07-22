@@ -172,7 +172,7 @@ public class WorldRenderer implements Disposable {
                 }
 
                 // Draw unit
-                Sprite unitSprite = unit.getSprite();
+                Sprite unitSprite = unitToRender.getSprite();
                 if (unitSprite != null) {
                     batch.begin();
                     unitSprite.setOrigin(unitSprite.getWidth() / 2, unitSprite.getHeight() / 2 - 70);
@@ -183,7 +183,7 @@ public class WorldRenderer implements Disposable {
                 }
 
                 // Draw turrets
-                for (AbstractTurret turret : unit.getTurrets()) {
+                for (AbstractTurret turret : unitToRender.getTurrets()) {
                     Sprite turretSprite = turret.getSprite();
                     if (turretSprite != null) {
                         batch.begin();

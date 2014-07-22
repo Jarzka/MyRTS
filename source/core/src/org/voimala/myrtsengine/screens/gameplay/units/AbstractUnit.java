@@ -1,5 +1,6 @@
 package org.voimala.myrtsengine.screens.gameplay.units;
 
+import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.exceptions.GameLogicException;
 import org.voimala.myrtsengine.movements.AbstractMovement;
 import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
@@ -28,12 +29,27 @@ public abstract class AbstractUnit extends AbstractGameObject {
     @Override
     public AbstractUnit clone() throws CloneNotSupportedException {
         AbstractUnit unitClone = (AbstractUnit) super.clone();
+
         AbstractMovement movementClone = movement.clone();
         movementClone.setOwner(unitClone);
-        // Object collisionMaskClone = collisionMask.clone(); TODO CLONE COLLISION MASK
         unitClone.setMovement(movementClone);
 
+        // Clone turrets
+        ArrayList<AbstractTurret> turretsClone = new ArrayList<AbstractTurret>();
+        for (AbstractTurret turret : turrets) {
+            AbstractTurret turretClone = turret.clone();
+            turretClone.setOwner(unitClone);
+            turretsClone.add(turretClone);
+        }
+        unitClone.setTurrets(turretsClone);
+
+        // Object collisionMaskClone = collisionMask.clone(); TODO CLONE COLLISION MASK
+
         return unitClone;
+    }
+
+    private void setTurrets(final ArrayList<AbstractTurret> turrets) {
+        this.turrets = turrets;
     }
 
     @Override

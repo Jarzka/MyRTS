@@ -13,7 +13,7 @@ import org.voimala.utility.RotationDirection;
 
 import java.util.ArrayList;
 
-public abstract class AbstractTurret extends AbstractGameObject {
+public abstract class AbstractTurret extends AbstractGameObject implements Cloneable {
 
     protected AbstractUnit owner;
     protected AbstractUnit target;
@@ -31,15 +31,26 @@ public abstract class AbstractTurret extends AbstractGameObject {
     protected Vector2 relativeShootPosition = new Vector2(0, 0); // Turrets shoot position relative to the owner unit.
 
     protected long range = 100;
-    private boolean targetInSight;
 
     public AbstractTurret(AbstractUnit owner, AbstractWeapon weapon) {
         super(owner.getWorldController());
         this.owner = owner;
+        this.position = new Vector2(owner.getX(), owner.getY());
+        this.angle = owner.getAngle();
         this.weapon = weapon;
     }
 
+    /** By default the clone will have the same owner as the original. */
+    public AbstractTurret clone() throws CloneNotSupportedException {
+        AbstractTurret turretClone = (AbstractTurret) super.clone();
+        turretClone.setRelativePosition(new Vector2(relativePosition.x, relativePosition.y));
+        turretClone.setRelativeShootPosition(new Vector2(relativeShootPosition.x, relativeShootPosition.y));
+
+        return turretClone;
+    }
+
     public void updateState(final float deltaTime) {
+        // TODO Goes out of sync!
         updateTurretState(deltaTime);
         updateWeaponState();
     }
@@ -51,8 +62,8 @@ public abstract class AbstractTurret extends AbstractGameObject {
     }
 
     protected void updatePosition() {
-        position.x = owner.getX() + relativeShootPosition.x;
-        position.y = owner.getY() + relativeShootPosition.y;
+        position.x = owner.getX() + relativePosition.x;
+        position.y = owner.getY() + relativePosition.y;
     }
 
     private void updateWeaponState() {
@@ -320,8 +331,14 @@ public abstract class AbstractTurret extends AbstractGameObject {
     }
 
     public void setRelativePosition(Vector2 relativePosition) {
+        this.relativePosition = relativePosition;
+    }
+
+    public void setRelativeShootPosition(Vector2 relativePosition) {
         this.relativeShootPosition = relativePosition;
     }
 
-
+    public void setOwner(final AbstractUnit owner) {
+        this.owner = owner;
+    }
 }
