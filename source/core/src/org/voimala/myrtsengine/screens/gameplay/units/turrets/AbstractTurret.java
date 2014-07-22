@@ -39,11 +39,19 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
         this.weapon = weapon;
     }
 
-    /** By default the clone will have the same owner as the original. */
+    /**
+     * By default the clone will have the same owner as the original object. Target will be set to null.
+     */
     public AbstractTurret clone() throws CloneNotSupportedException {
         AbstractTurret turretClone = (AbstractTurret) super.clone();
+
+        AbstractWeapon weaponClone = weapon.clone();
+        turretClone.setWeapon(weaponClone);
+
         turretClone.setRelativePosition(new Vector2(relativePosition.x, relativePosition.y));
         turretClone.setRelativeShootPosition(new Vector2(relativeShootPosition.x, relativeShootPosition.y));
+
+        target = null;
 
         return turretClone;
     }
@@ -55,9 +63,13 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
     }
 
     private void updateTurretState(final float deltaTime) {
+        if (!hasTarget()) {
+            findNewClosestTarget();
+        }
+
+        checkTarget();
         updatePosition();
         updateRotation(deltaTime);
-        checkTarget();
     }
 
     protected void updatePosition() {
@@ -212,8 +224,6 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
             } else {
                 target = null; // Give up
             }
-        } else {
-            findNewTarget();
         }
     }
 
@@ -225,10 +235,10 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
         ); // TODO Can not use random numbers in multiplayer game? Use SimTick as hash?
 
         if (ammunition != null) {
-            owner.getWorldController().getAmmunitionContainer().add(ammunition);
+            worldController.getAmmunitionContainer().add(ammunition);
 
-            if (!owner.getWorldController().isPredictedWorld()) {
-                owner.getWorldController().getAudioEffectContainer().add(
+            if (!worldController.isPredictedWorld()) {
+                worldController.getAudioEffectContainer().add(
                         new AudioEffect(
                                 owner.getWorldController(),
                                 SoundContainer.getInstance().getSound("m4"),
@@ -238,7 +248,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
         }
     }
 
-    private void findNewTarget() {
+    private void findNewClosestTarget() {
         // Can return null so the target is also be null if nothing is found.
         target = findClosestEnemyInRange();
     }
@@ -251,6 +261,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
                 continue;
             }
 
+            double asd = MathHelper.getDistanceBetweenPoints(position.x, position.y, unit.getX(), unit.getY());
             if (MathHelper.getDistanceBetweenPoints(position.x, position.y, unit.getX(), unit.getY()) <= range) {
                 targetsInRange.add(unit);
             }
@@ -329,7 +340,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
     }
 
     public Vector2 getRelativePosition() {
-        return relativeShootPosition;
+        return relativePosition;
     }
 
     public void setRelativePosition(Vector2 relativePosition) {
@@ -342,5 +353,9 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
 
     public void setOwner(final AbstractUnit owner) {
         this.owner = owner;
+    }
+
+    public void setWeapon(final AbstractWeapon weapon) {
+        this.weapon = weapon;
     }
 }

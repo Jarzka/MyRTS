@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
 
-public abstract class AbstractWeapon {
+public abstract class AbstractWeapon implements Cloneable {
 
     protected float reloadState;
     protected float reloadTimeSeconds;
@@ -22,6 +22,10 @@ public abstract class AbstractWeapon {
 
     public AbstractWeapon() {
         initialize();
+    }
+
+    public AbstractWeapon clone() throws CloneNotSupportedException {
+        return (AbstractWeapon) super.clone();
     }
 
     public void updateState(final float deltaTime) {

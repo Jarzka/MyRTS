@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.audio.AudioEffect;
-import org.voimala.myrtsengine.movements.CarMovement;
 import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
@@ -44,13 +43,15 @@ public class WorldController {
     public final int TILE_SIZE_PIXELS = 256;
 
     /** Copy constructor. */
-    public WorldController (final WorldController source) {
-        initialize(); // TODO Is it necessary to initialize everything?
+    public WorldController(final WorldController source) {
+        initializeContainers();
 
         // Clone containers
         for (AbstractUnit unit : source.getAllUnits()){
             try {
-                storeUnitInContainer(unit.clone());
+                AbstractUnit unitClone = unit.clone();
+                unitClone.setWorldController(this);
+                storeUnitInContainer(unitClone);
             } catch (CloneNotSupportedException e) {
                 // This should never happen. Continue without cloning this object.
             }
@@ -58,7 +59,9 @@ public class WorldController {
 
         for (AbstractAmmunition abstractAmmunition : source.getAmmunitionContainer()) {
             try {
-                ammunitionContainer.add(abstractAmmunition.clone());
+                AbstractAmmunition ammunitionClone = abstractAmmunition.clone();
+                ammunitionClone.setWorldController(this);
+                ammunitionContainer.add(ammunitionClone);
             } catch (CloneNotSupportedException e) {
                 // This should never happen. Continue without cloning this object.
             }
@@ -114,7 +117,7 @@ public class WorldController {
         unit2.setAngle(180);
         unit2.getTurrets().get(0).setAngle(unit2.getAngle());
         storeUnitInContainer(unit2);
-        */
+*/
         /* For harder testing */
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 6; j++) {
@@ -137,6 +140,7 @@ public class WorldController {
                 storeUnitInContainer(unit);
             }
         }
+
     }
 
     public void storeUnitInContainer(AbstractUnit unit) {
@@ -200,7 +204,7 @@ public class WorldController {
     }
 
     private void finishWorldUpdating() {
-        getGameplayScreen().getWorldRenderer().worldUpdated();
+        getGameplayScreen().getWorldRenderer().notifyWorldUpdated();
     }
 
     public OrthographicCamera getWorldCamera() {

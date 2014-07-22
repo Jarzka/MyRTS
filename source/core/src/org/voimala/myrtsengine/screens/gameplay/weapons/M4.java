@@ -9,8 +9,8 @@ public class M4 extends AbstractWeapon {
 
     @Override
     protected void initialize() {
-        reloadTimeSeconds = 3;
-        shootTimeSeconds = 0.08f;
+        reloadTimeSeconds = 2;
+        shootTimeSeconds = 0.12f;
         shootTimes = 30;
         maxTravelDistance = 2000;
         bulletVelocity = 2000;

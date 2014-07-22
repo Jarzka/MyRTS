@@ -16,6 +16,8 @@ import org.voimala.myrtsengine.app.GameMain;
 import org.voimala.myrtsengine.audio.SoundContainer;
 import org.voimala.myrtsengine.graphics.SpriteContainer;
 import org.voimala.myrtsengine.networking.ChatContainer;
+import org.voimala.myrtsengine.networking.ConnectionState;
+import org.voimala.myrtsengine.networking.NetworkManager;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrtsengine.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
@@ -30,7 +32,6 @@ public class WorldRenderer implements Disposable {
     private WorldController worldController;
     private WorldController worldControllerPredicted;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
-    private long lastRenderTimestamp = 0;
 
     private int chatMessagesXScreen = 80;
     private int chatMessagesYScreen = Gdx.graphics.getHeight() - 70;
@@ -128,41 +129,34 @@ public class WorldRenderer implements Disposable {
         hudBatch = new SpriteBatch();
     }
 
-    public void render(RenderMode renderMode) {
+    public void render(RenderMode renderMode, final float deltaTime) {
         /* This game uses the standard mathematic circle where 0 degrees point to right,
          * 90 degrees point to up etc. Libgdx seems to use a circle where 0 degrees
          * point to up, 90 degrees point to left etc. WorldRenderer makes the conversion
          * automatically. */
         batch.setProjectionMatrix(worldController.getWorldCamera().combined);
 
-        // renderMode = RenderMode.GAME_STATE; // TODO For testing purposes only
+        renderMode = RenderMode.GAME_STATE; // TODO For testing purposes only
 
         WorldController worldToBeRendered = worldController;
         if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
-            preparePredictedWorldToBeRendered();
-            worldToBeRendered = worldControllerPredicted; // TODO Goes hardly out of sync.
+            preparePredictedWorldToBeRendered(deltaTime); // TODO Shooting with many players goes out of sync
+            worldToBeRendered = worldControllerPredicted;
         }
 
         renderGround();
         renderUnits(worldToBeRendered);
-        //renderAmmunition(worldToBeRendered);
+        renderAmmunition(worldToBeRendered);
         renderUnitEnergyBars(worldToBeRendered);
         renderHud();
         renderUnitSelectionRectangle();
         renderInfoText();
         renderNetworkText();
         renderChat();
-
-        lastRenderTimestamp = System.currentTimeMillis();
     }
 
-    private void preparePredictedWorldToBeRendered() {
-        if (worldControllerPredicted == null) {
-            worldControllerPredicted = new WorldController(worldController);
-        }
-
+    private void preparePredictedWorldToBeRendered(final float deltaTime) {
         worldControllerPredicted.setPredictedWorld(true);
-        float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
         worldControllerPredicted.updateWorld(deltaTime);
     }
 
@@ -356,9 +350,17 @@ public class WorldRenderer implements Disposable {
     }
 
     /** WorldController uses this method to notify WorldRenderer that the game world has been updated */
-    public void worldUpdated() {
-        /* TODO Cloning the entire game world is a time consuming process.
-         * Would it be possible to just synchronize the two game worlds? */
-        worldControllerPredicted = new WorldController(worldController);
+    public void notifyWorldUpdated() {
+        /* In singleplayer mode the game world is always rendered as it is. However, in multiplayer mode
+         * physics prediction is used. When the actual game world is updated, it is used as a base for the next
+         * predicted game world. */
+
+         /* TODO Cloning the entire game world is a time consuming process.
+          * Would it be possible to just synchronize the two game worlds? */
+
+        if (worldController.getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
+            worldControllerPredicted = new WorldController(worldController);
+            worldControllerPredicted.setPredictedWorld(true);
+        }
     }
 }

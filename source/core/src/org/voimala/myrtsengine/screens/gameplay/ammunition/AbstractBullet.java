@@ -20,7 +20,9 @@ public abstract class AbstractBullet extends AbstractAmmunition {
 
     public AbstractBullet clone() throws CloneNotSupportedException {
         AbstractBullet bulletClone = (AbstractBullet) super.clone();
-        bulletClone.setPosition(new Vector2(startPosition.x, startPosition. y));
+
+        bulletClone.setStartPosition(new Vector2(startPosition.x, startPosition.y));
+
         return bulletClone;
     }
 
@@ -80,5 +82,10 @@ public abstract class AbstractBullet extends AbstractAmmunition {
         }
 
         return false;
+    }
+
+    /** This method should be called only in the cloning process. */
+    public void setStartPosition(final Vector2 startPosition) {
+        this.startPosition = startPosition;
     }
 }

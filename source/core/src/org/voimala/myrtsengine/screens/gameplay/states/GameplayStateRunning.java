@@ -12,7 +12,7 @@ public class GameplayStateRunning extends AbstractGameplayState {
     public void update(float deltaTime) {
         ownerGameplay.handleUserInput(deltaTime);
         ownerGameplay.updateWorld(deltaTime);
-        ownerGameplay.renderWorld();
+        ownerGameplay.renderWorld(deltaTime);
     }
 
 }

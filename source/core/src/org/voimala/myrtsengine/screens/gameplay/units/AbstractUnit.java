@@ -30,10 +30,6 @@ public abstract class AbstractUnit extends AbstractGameObject {
     public AbstractUnit clone() throws CloneNotSupportedException {
         AbstractUnit unitClone = (AbstractUnit) super.clone();
 
-        AbstractMovement movementClone = movement.clone();
-        movementClone.setOwner(unitClone);
-        unitClone.setMovement(movementClone);
-
         // Clone turrets
         ArrayList<AbstractTurret> turretsClone = new ArrayList<AbstractTurret>();
         for (AbstractTurret turret : turrets) {
@@ -42,8 +38,6 @@ public abstract class AbstractUnit extends AbstractGameObject {
             turretsClone.add(turretClone);
         }
         unitClone.setTurrets(turretsClone);
-
-        // Object collisionMaskClone = collisionMask.clone(); TODO CLONE COLLISION MASK
 
         return unitClone;
     }
@@ -106,6 +100,26 @@ public abstract class AbstractUnit extends AbstractGameObject {
 
     public WorldController getWorldController() {
         return worldController;
+    }
+
+    @Override
+    public void setPosition(Vector2 position) {
+        this.position = position;
+
+        for (AbstractTurret turret : turrets) {
+            turret.setPosition(new Vector2(
+                    position.x + turret.getRelativePosition().x,
+                    position.y + turret.getRelativePosition().y));
+        }
+    }
+
+    @Override
+    public void setWorldController(final WorldController worldController) {
+        this.worldController = worldController;
+
+        for (AbstractTurret turret : turrets) {
+            turret.setWorldController(worldController);
+        }
     }
 
     public List<AbstractTurret> getTurrets() {

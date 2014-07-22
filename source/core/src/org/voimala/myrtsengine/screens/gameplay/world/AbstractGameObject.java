@@ -19,10 +19,20 @@ public abstract class AbstractGameObject implements Cloneable {
     protected static long nextFreeId = 0;
     protected Sprite sprite;
 
+    /** By default the cloned object's worldController will point to the same world. */
     public AbstractGameObject clone() throws CloneNotSupportedException {
         AbstractGameObject gameObjectClone = (AbstractGameObject) super.clone();
+
         Vector2 positionClone = new Vector2(position.x, position.y);
         gameObjectClone.setPosition(positionClone);
+
+        if (movement != null) {
+            AbstractMovement movementClone = movement.clone();
+            movementClone.setOwner(gameObjectClone);
+            gameObjectClone.setMovement(movementClone);
+        }
+
+        // TODO Clone collision mask
 
         return gameObjectClone;
     }
@@ -156,4 +166,7 @@ public abstract class AbstractGameObject implements Cloneable {
         return ObjectId;
     }
 
+    public void setWorldController(final WorldController worldController) {
+        this.worldController = worldController;
+    }
 }

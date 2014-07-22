@@ -37,6 +37,7 @@ public abstract class AbstractMovement implements Cloneable {
     /** The owner unit of the movement is the same as the original owner.  */
     public AbstractMovement clone() throws CloneNotSupportedException {
         AbstractMovement movementClone = (AbstractMovement) super.clone();
+
         ArrayList<Vector2> pathPointsClone = clonePathPoints();
         movementClone.setPathPoints(pathPointsClone);
 

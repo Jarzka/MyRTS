@@ -136,16 +136,16 @@ public class GameplayScreen extends AbstractGameScreen {
         }
     }
 
-    public void renderWorld() {
+    public void renderWorld(final float deltaTime) {
         renderTick++;
 
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (gameMode == GameMode.SINGLEPLAYER) {
-            worldRenderer.render(RenderMode.GAME_STATE);
+            worldRenderer.render(RenderMode.GAME_STATE, deltaTime);
         } else if (gameMode == GameMode.MULTIPLAYER) {
-            worldRenderer.render(RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION);
+            worldRenderer.render(RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION, deltaTime);
         }
     }
 
