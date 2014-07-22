@@ -3,10 +3,11 @@ package org.voimala.myrtsengine.screens.gameplay.ammunition;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.movements.BulletMovement;
+import org.voimala.myrtsengine.screens.gameplay.world.AbstractGameObject;
 import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
 import org.voimala.utility.MathHelper;
 
-public abstract class AbstractBullet extends AbstractAmmunition {
+public abstract class AbstractBullet extends AbstractAmmunition implements Cloneable {
 
     protected Vector2 startPosition = null;
     protected long maxTravelDistance = 0;
@@ -15,6 +16,12 @@ public abstract class AbstractBullet extends AbstractAmmunition {
         super(worldController1);
         this.movement.setVelocity(velocity);
         this.maxTravelDistance = maxTravelDistance;
+    }
+
+    public AbstractBullet clone() throws CloneNotSupportedException {
+        AbstractBullet bulletClone = (AbstractBullet) super.clone();
+        bulletClone.setPosition(new Vector2(startPosition.x, startPosition. y));
+        return bulletClone;
     }
 
     @Override
