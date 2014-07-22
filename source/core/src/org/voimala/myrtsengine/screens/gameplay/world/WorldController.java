@@ -38,8 +38,7 @@ public class WorldController {
 
     public final int TILE_SIZE_PIXELS = 256;
 
-    private long currentSimTick = 1; // "Communication turn" in multiplayer game. // TODO Move to NetworkManager?
-    private long SimTickDurationMs = 100;
+    private long SimTickDurationMs = 100; // TODO To be implemented
 
     public WorldController() {
         initialize();

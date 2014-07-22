@@ -32,9 +32,8 @@ public class MultiplayerSynchronizationManager {
      * When a new SimTick is reached, the game executes other player's input information.
      * If such information is not available, wait for it.
      */
-    private long simTick = 0;
+    private long simTick = 0; /** "Communication turn" in multiplayer game. */
     private boolean isWaitingInputForNextSimTick = false;
-    private boolean isNoInputSentForTheNextTurn = false;
 
     private MultiplayerSynchronizationManager() {}
 
@@ -80,7 +79,6 @@ public class MultiplayerSynchronizationManager {
     private void sendNoInput() {
         NetworkManager.getInstance().getClientThread().sendMessage(
                 RTSProtocolManager.getInstance().createNetworkMessageInputNoInput(simTick));
-        isNoInputSentForTheNextTurn = true;
     }
 
     private void sendGameStateHash() {
