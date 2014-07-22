@@ -38,8 +38,6 @@ public class WorldController {
 
     public final int TILE_SIZE_PIXELS = 256;
 
-    private long SimTickDurationMs = 100; // TODO To be implemented
-
     public WorldController() {
         initialize();
     }

@@ -108,7 +108,11 @@ public class GameplayScreen extends AbstractGameScreen {
             }
 
             // Update SimTick between 5 world updates.
-            // TODO Variable turn length?
+            /* TODO Current value is hardcoded.
+             * Implement variable turn length. If players are lagging, either increase simtick rate globally so that simtick is
+             * increased for example every 10 world updates. Another solution is to decide that commands sent in turn x
+             * will be executed for example in turn x + 3 globally. You should find out which method is simpler and more
+             * reliable to implement. */
             if (Float.valueOf(MultiplayerSynchronizationManager.getInstance().getSimTick()) == worldUpdateTick / 5f) {
                 MultiplayerSynchronizationManager.getInstance().handleNewSimTick();
             }
