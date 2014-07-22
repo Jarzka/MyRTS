@@ -1,14 +1,14 @@
 package org.voimala.myrtsengine.audio;
 
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
 
 public class AudioEffect {
 
     private WorldController worldController;
     private AudioEffectType audioEffectType = AudioEffectType.GLOBAL;
-    private float x;
-    private float y;
+    private Vector2 position;
     private Sound sound;
     private long soundStartedPlayingTimestamp = 0;
     private float volume;
@@ -24,12 +24,11 @@ public class AudioEffect {
 
     /** Creates a local audio effect.
      * @param volume Between 0 and 1. */
-    public AudioEffect(final WorldController worldController, Sound sound, final float volume, final float x, final float y) {
+    public AudioEffect(final WorldController worldController, Sound sound, final float volume, final Vector2 position) {
         this.worldController = worldController;
         this.sound = sound;
         audioEffectType = AudioEffectType.LOCAL;
-        this.x = x;
-        this.y = y;
+        this.position = position;
         this.volume = volume;
         play();
     }
@@ -69,19 +68,11 @@ public class AudioEffect {
         this.audioEffectType = audioEffectType;
     }
 
-    public float getX() {
-        return x;
+    public Vector2 getPosition() {
+        return position;
     }
 
-    public void setX(final float x) {
-        this.x = x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public void setY(final float y) {
-        this.y = y;
+    public void setPosition(final Vector2 position) {
+        this.position = position;
     }
 }

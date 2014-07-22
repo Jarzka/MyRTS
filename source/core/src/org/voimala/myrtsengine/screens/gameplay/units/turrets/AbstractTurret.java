@@ -231,8 +231,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
                             owner.getWorldController(),
                             SoundContainer.getInstance().getSound("m4"),
                             0.08f,
-                            position.x,
-                            position.y));
+                            new Vector2(position.x, position.y)));
         }
     }
 

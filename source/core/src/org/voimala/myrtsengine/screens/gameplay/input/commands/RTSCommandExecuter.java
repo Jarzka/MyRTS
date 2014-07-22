@@ -48,8 +48,7 @@ public class RTSCommandExecuter {
                         unit.getWorldController(),
                         SoundContainer.getInstance().getUnitCommandSound("m4-move"), // TODO Hardcoded value!
                         1f,
-                        unit.getX(),
-                        unit.getY()));
+                        new Vector2(unit.getX(), unit.getY())));
             }
 
         }
@@ -79,8 +78,7 @@ public class RTSCommandExecuter {
                         unit.getWorldController(),
                         SoundContainer.getInstance().getUnitCommandSound("m4-select"), // TODO Hardcoded value!
                         1f,
-                        unit.getX(),
-                        unit.getY()));
+                        new Vector2(unit.getX(), unit.getY())));
                 unit.setSelected(true);
             }
 
