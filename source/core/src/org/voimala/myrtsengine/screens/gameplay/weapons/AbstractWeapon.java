@@ -54,7 +54,7 @@ public abstract class AbstractWeapon {
      * @param angle The target angle for the shot
      * @return The shot object (bullet, missile etc.)
      */
-    public abstract AbstractAmmunition shoot(final WorldController worldController, final Vector2 position, final float angle);
+    public abstract AbstractAmmunition tryToShoot(final WorldController worldController, final Vector2 position, final float angle);
 
 
 }

@@ -6,8 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.audio.AudioEffect;
 import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
-import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractBullet;
-import org.voimala.myrtsengine.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.units.UnitContainer;
 import org.voimala.myrtsengine.screens.gameplay.units.infantry.M4Unit;
@@ -143,7 +141,7 @@ public class WorldController {
 
     private void updateAmmunition(final float deltaTime) {
         for (AbstractAmmunition ammunition : ammunitionContainer) {
-            ammunition.updateState(deltaTime);
+            //ammunition.updateState(deltaTime); // TODO Goes out of sync
         }
     }
 

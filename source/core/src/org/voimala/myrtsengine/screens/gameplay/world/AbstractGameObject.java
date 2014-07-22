@@ -12,7 +12,7 @@ public abstract class AbstractGameObject implements Cloneable {
     protected AbstractMovement movement = null;
     protected long ObjectId; // Every object should have an unique id
     protected Vector2 position = new Vector2(0, 0); /* Object's position in 2D space. Origin at center. */
-    protected float angle = 0; // 0 = right, 90 = top, 180 = left, 270 = down. Always between 0 and 360 (inclusive)
+    protected float angleDeg = 0; // 0 = right, 90 = top, 180 = left, 270 = down. Always between 0 and 360 (inclusive)
     protected float width = 0;
     protected float height = 0;
     protected Object collisionMask;
@@ -97,30 +97,30 @@ public abstract class AbstractGameObject implements Cloneable {
     }
 
     public float getAngle() {
-        return angle;
+        return angleDeg;
     }
 
-    public void setAngle(final float angle) {
-        this.angle = angle;
+    public void setAngle(final float angleDeg) {
+        this.angleDeg = angleDeg;
         keepAngleValueInRange();
     }
 
     public void rotate(final float angle) {
-        this.angle += angle;
+        this.angleDeg += angle;
         keepAngleValueInRange();
     }
 
     public double getAngleInRadians() {
-        return Math.toRadians(angle);
+        return Math.toRadians(angleDeg);
     }
 
     private void keepAngleValueInRange() {
-        if (angle < 0) {
-            this.angle = 360 - Math.abs(angle);
+        if (angleDeg < 0) {
+            this.angleDeg = 360 - Math.abs(angleDeg);
         }
 
-        if (angle > 360) {
-            this.angle = 0 + angle - 360;
+        if (angleDeg > 360) {
+            this.angleDeg = 0 + angleDeg - 360;
         }
     }
 

@@ -8,7 +8,6 @@ import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.weapons.AbstractWeapon;
 import org.voimala.myrtsengine.screens.gameplay.world.AbstractGameObject;
 import org.voimala.utility.MathHelper;
-import org.voimala.utility.RandomNumberGenerator;
 import org.voimala.utility.RotationDirection;
 
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
         super(owner.getWorldController());
         this.owner = owner;
         this.position = new Vector2(owner.getX(), owner.getY());
-        this.angle = owner.getAngle();
+        this.angleDeg = owner.getAngle();
         this.weapon = weapon;
     }
 
@@ -174,7 +173,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
 
     private void rotateTowardsOwnerUnit() {
         // If turret is not looking at the same direction as the owner, set the correct rotation direction
-        if (MathHelper.round(angle, 1)
+        if (MathHelper.round(angleDeg, 1)
                 != MathHelper.round(owner.getAngle(), 1)) {
             RotationDirection targetRotationDirection = MathHelper.getFasterTurningDirection(getAngleInRadians(),
                     owner.getAngleInRadians());
@@ -209,7 +208,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
     private void checkTarget() {
         if (hasTarget()) {
             if (isTargetInRange() && isTargetInSight()) {
-                //tryToShoot(); // TODO Goes out of sync
+                tryToShoot(); // TODO Goes out of sync
             } else {
                 target = null; // Give up
             }
@@ -219,12 +218,14 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
     }
 
     private void tryToShoot() {
-        AbstractAmmunition ammunition = weapon.shoot(owner.getWorldController(), new Vector2(
-                position.x,
-                position.y),
-                angle /* + RandomNumberGenerator.random(0, accuracy) - RandomNumberGenerator.random(0, accuracy)*/);
-                // TODO Can not use random numbers in multiplayer game?
+        AbstractAmmunition ammunition = weapon.tryToShoot(owner.getWorldController(), new Vector2(
+                        position.x,
+                        position.y),
+                angleDeg /* + RandomNumberGenerator.random(0, accuracy) - RandomNumberGenerator.random(0, accuracy)*/
+        );
+                // TODO Can not use random numbers in multiplayer game? Use SimTick as hash?
         if (ammunition != null) {
+            owner.getWorldController().getAmmunitionContainer().add(ammunition);
             owner.getWorldController().getAudioEffectContainer().add(
                     new AudioEffect(
                             owner.getWorldController(),
@@ -232,7 +233,6 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
                             0.08f,
                             position.x,
                             position.y));
-            owner.getWorldController().getAmmunitionContainer().add(ammunition);
         }
     }
 

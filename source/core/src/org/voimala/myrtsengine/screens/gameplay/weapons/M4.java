@@ -18,7 +18,7 @@ public class M4 extends AbstractWeapon {
 
     @Override
     /** Shoots if the weapon is not currently being fired or reloading. */
-    public AbstractAmmunition shoot(final WorldController worldController, final Vector2 position, final float angle) {
+    public AbstractAmmunition tryToShoot(final WorldController worldController, final Vector2 position, final float angle) {
         if (weaponState == WeaponState.IDLE) {
             lastShotTimestamp = System.currentTimeMillis();
             shotsFired++;

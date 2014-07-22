@@ -3,12 +3,9 @@ package org.voimala.myrtsengine.screens.gameplay.units.infantry;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
-import org.voimala.myrtsengine.graphics.SpriteContainer;
 import org.voimala.myrtsengine.movements.CarMovement;
-import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
 import org.voimala.myrtsengine.screens.gameplay.units.turrets.AbstractTurret;
 import org.voimala.myrtsengine.screens.gameplay.units.turrets.M4Turret;
-import org.voimala.myrtsengine.screens.gameplay.weapons.M4;
 import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
 
 public class M4Unit extends AbstractInfantry {
@@ -20,7 +17,7 @@ public class M4Unit extends AbstractInfantry {
     @Override
     protected void initializeTurrets() {
         AbstractTurret turret = new M4Turret(this);
-        turret.setAngle(angle);
+        turret.setAngle(angleDeg);
         turrets.add(turret);
     }
 
