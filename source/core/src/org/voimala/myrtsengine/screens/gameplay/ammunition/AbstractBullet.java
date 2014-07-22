@@ -54,7 +54,6 @@ public abstract class AbstractBullet extends AbstractAmmunition implements Clone
     }
 
     private void checkDistanceLeft() {
-        double asd = MathHelper.getDistanceBetweenPoints(position.x, position.y, startPosition.x, startPosition.y);
         if (MathHelper.getDistanceBetweenPoints(position.x, position.y, startPosition.x, startPosition.y) >= maxTravelDistance) {
             die();
         }
