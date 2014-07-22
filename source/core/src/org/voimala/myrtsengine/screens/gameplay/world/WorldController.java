@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.audio.AudioEffect;
+import org.voimala.myrtsengine.movements.CarMovement;
 import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
@@ -69,6 +70,25 @@ public class WorldController {
     }
 
     private void createTestUnit() {
+        /* For simple testing
+        M4Unit unit = new M4Unit(this);
+        unit.setPosition(new Vector2(500 + TILE_SIZE_PIXELS, 500 + TILE_SIZE_PIXELS));
+        unit.setTeam(1);
+        unit.setPlayerNumber(1);
+        unit.setAngle(0);
+        unit.getMovement().addPathPoint(new Vector2(3600, 3600));
+        storeUnitInContainer(unit);
+
+        M4Unit unit2 = new M4Unit(this);
+        unit2.setPosition(new Vector2(4000 + TILE_SIZE_PIXELS, 4000 + TILE_SIZE_PIXELS));
+        unit2.setPlayerNumber(2);
+        unit2.setTeam(2);
+        unit2.setAngle(180);
+        unit2.getTurrets().get(0).setAngle(unit2.getAngle());
+        storeUnitInContainer(unit2);
+        */
+
+        /* For harder testing */
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 6; j++) {
                 M4Unit unit = new M4Unit(this);
@@ -138,7 +158,7 @@ public class WorldController {
 
     private void updateAmmunition(final float deltaTime) {
         for (AbstractAmmunition ammunition : ammunitionContainer) {
-            //ammunition.updateState(deltaTime); // TODO Goes out of sync
+            ammunition.updateState(deltaTime);
         }
     }
 
@@ -213,8 +233,8 @@ public class WorldController {
             hash += hashBuilder.toString();
         }
 
-        return hash; // Used for testing purposes only
-        //return md5(hash);
+        // return hash; // Used for testing purposes only
+        return md5(hash);
     }
 
     // TODO http://javarevisited.blogspot.fi/2013/03/generate-md5-hash-in-java-string-byte-array-example-tutorial.html

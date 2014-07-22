@@ -6,16 +6,17 @@ import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
 
 public abstract class AbstractWeapon {
 
-    protected long reloadTimeMs; // How much time does it take to reload the weapon in milliseconds
-    protected long shootTimeMs; // How much time does it take to shoot once.
-    protected int shootTimes; // How many times the weapon is allowed to be fired before it has to be reloaded
+    protected float reloadState;
+    protected float reloadTimeSeconds;
+
+    protected float shootState;
+    protected float shootTimeSeconds; /// How much time does it take to fire the weapon once
+
+    protected int shootTimes; /// How many times the weapon is allowed to fire before it has to be reloaded
+    protected int shotsFired; /// Is used to calculate number of shots before reload.
 
     protected long bulletVelocity;
-    protected long maxTravelDistance; // The ammunition will be destroyed if it travels more than this far.
-
-    protected long reloadStartedTimestamp;
-    protected long lastShotTimestamp;
-    protected int shotsFired;
+    protected long maxTravelDistance; /// The ammunition will be destroyed if it travels more than this far.
 
     protected WeaponState weaponState = WeaponState.IDLE;
 
@@ -23,23 +24,34 @@ public abstract class AbstractWeapon {
         initialize();
     }
 
-    public void updateState() {
+    public void updateState(final float deltaTime) {
         if (weaponState == WeaponState.FIRING) {
-            // Shot ends
-            if (System.currentTimeMillis() >= lastShotTimestamp + shootTimeMs) {
-                if (shotsFired >= shootTimes) {
-                    weaponState = WeaponState.RELOADING;
-                    reloadStartedTimestamp = System.currentTimeMillis();
-                } else {
-                    weaponState = WeaponState.IDLE;
-                }
-            }
+            shootState += deltaTime;
+            checkIfShotHasEnded();
         } else if (weaponState == WeaponState.RELOADING) {
-            // Reload finished
-            if (System.currentTimeMillis() >= reloadStartedTimestamp + reloadTimeMs) {
+            reloadState += deltaTime;
+            checkIfReloadIsFinished();
+        }
+    }
+
+    private void checkIfShotHasEnded() {
+        if (shootState >= shootTimeSeconds) {
+            shootState = 0;
+
+            // Time to reload the weapon?
+            if (shotsFired >= shootTimes) {
                 shotsFired = 0;
+                weaponState = WeaponState.RELOADING;
+            } else {
                 weaponState = WeaponState.IDLE;
             }
+        }
+    }
+
+    private void checkIfReloadIsFinished() {
+        if (reloadState >= reloadTimeSeconds) {
+            reloadState = 0;
+            weaponState = WeaponState.IDLE;
         }
     }
 

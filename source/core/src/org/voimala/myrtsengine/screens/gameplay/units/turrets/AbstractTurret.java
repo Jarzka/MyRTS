@@ -49,9 +49,9 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
     }
 
     public void updateState(final float deltaTime) {
-        // TODO Goes out of sync!
+        super.updateState(deltaTime);
         updateTurretState(deltaTime);
-        updateWeaponState();
+        updateWeaponState(deltaTime);
     }
 
     private void updateTurretState(final float deltaTime) {
@@ -65,9 +65,9 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
         position.y = owner.getY() + relativePosition.y;
     }
 
-    private void updateWeaponState() {
+    private void updateWeaponState(final float deltaTime) {
         if (weapon != null) {
-            weapon.updateState();
+            weapon.updateState(deltaTime);
         }
     }
 
@@ -208,7 +208,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
     private void checkTarget() {
         if (hasTarget()) {
             if (isTargetInRange() && isTargetInSight()) {
-                tryToShoot(); // TODO Goes out of sync
+                tryToShoot();
             } else {
                 target = null; // Give up
             }
@@ -222,8 +222,8 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
                         position.x,
                         position.y),
                 angleDeg /* + RandomNumberGenerator.random(0, accuracy) - RandomNumberGenerator.random(0, accuracy)*/
-        );
-                // TODO Can not use random numbers in multiplayer game? Use SimTick as hash?
+        ); // TODO Can not use random numbers in multiplayer game? Use SimTick as hash?
+
         if (ammunition != null) {
             owner.getWorldController().getAmmunitionContainer().add(ammunition);
             owner.getWorldController().getAudioEffectContainer().add(

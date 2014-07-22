@@ -9,8 +9,8 @@ public class M4 extends AbstractWeapon {
 
     @Override
     protected void initialize() {
-        reloadTimeMs = 3500;
-        shootTimeMs = 70;
+        reloadTimeSeconds = 3;
+        shootTimeSeconds = 0.08f;
         shootTimes = 30;
         maxTravelDistance = 2000;
         bulletVelocity = 2000;
@@ -20,9 +20,8 @@ public class M4 extends AbstractWeapon {
     /** Shoots if the weapon is not currently being fired or reloading. */
     public AbstractAmmunition tryToShoot(final WorldController worldController, final Vector2 position, final float angle) {
         if (weaponState == WeaponState.IDLE) {
-            lastShotTimestamp = System.currentTimeMillis();
-            shotsFired++;
             weaponState = WeaponState.FIRING;
+            shotsFired++;
 
             M4Bullet m4Bullet = new M4Bullet(worldController, bulletVelocity, maxTravelDistance);
             m4Bullet.setPosition(position);

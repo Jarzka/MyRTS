@@ -127,12 +127,14 @@ public class WorldRenderer implements Disposable {
         hudBatch = new SpriteBatch();
     }
 
-    public void render(final RenderMode renderMode) {
+    public void render(RenderMode renderMode) {
         /* This game uses the standard mathematic circle where 0 degrees point to right,
          * 90 degrees point to up etc. Libgdx seems to use a circle where 0 degrees
          * point to up, 90 degrees point to left etc. WorldRenderer makes the conversion
          * automatically. */
         batch.setProjectionMatrix(worldController.getWorldCamera().combined);
+
+        // renderMode = RenderMode.GAME_STATE; // For testing purposes only
 
         renderGround();
         renderUnits(renderMode);
