@@ -134,7 +134,7 @@ public class WorldRenderer implements Disposable {
          * automatically. */
         batch.setProjectionMatrix(worldController.getWorldCamera().combined);
 
-        // renderMode = RenderMode.GAME_STATE; // For testing purposes only
+        renderMode = RenderMode.GAME_STATE; // TODO For testing purposes only
 
         renderGround();
         renderUnits(renderMode);

@@ -233,7 +233,7 @@ public class WorldController {
             hash += hashBuilder.toString();
         }
 
-        // return hash; // Used for testing purposes only
+        //return hash; // Used for testing purposes only
         return md5(hash);
     }
 
