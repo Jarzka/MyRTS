@@ -16,7 +16,6 @@ public abstract class AbstractGameObject implements Cloneable {
     protected float width = 0;
     protected float height = 0;
     protected Object collisionMask;
-    protected static long nextFreeId = 0;
     protected Sprite sprite;
 
     /** By default the cloned object's worldController will point to the same world. */
@@ -50,7 +49,7 @@ public abstract class AbstractGameObject implements Cloneable {
     }
 
     private void initializeId() {
-        this.ObjectId = getNextFreeId();
+        this.ObjectId = worldController.getNextFreeId();
     }
 
     protected abstract void initializeDimensions();
@@ -82,13 +81,7 @@ public abstract class AbstractGameObject implements Cloneable {
     /** Updates the current position / size of the collision mask. Called on every world update. */
     protected abstract void updateCollisionMask();
 
-    private static long getNextFreeId() {
-        return nextFreeId++;
-    }
 
-    public static void resetNextFreeId() {
-        nextFreeId = 0;
-    }
 
     public float getX() {
         return position.x;

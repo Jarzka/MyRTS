@@ -228,7 +228,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
     }
 
     private void tryToShoot() {
-        AbstractAmmunition ammunition = weapon.tryToShoot(owner.getWorldController(), new Vector2(
+        AbstractAmmunition ammunition = weapon.tryToShoot(worldController, new Vector2(
                         position.x,
                         position.y),
                 angleDeg /* + RandomNumberGenerator.random(0, accuracy) - RandomNumberGenerator.random(0, accuracy)*/

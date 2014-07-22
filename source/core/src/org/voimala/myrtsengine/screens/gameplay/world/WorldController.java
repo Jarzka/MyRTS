@@ -30,6 +30,7 @@ public class WorldController {
     private ArrayList<AbstractAmmunition> ammunitionToBeRemoved = new ArrayList<AbstractAmmunition>();
     private ArrayList<AudioEffect> audioEffectContainer = new ArrayList<AudioEffect>();
     private ArrayList<AudioEffect> audioEffectsToBeRemoved = new ArrayList<AudioEffect>();
+    private long nextFreeId = 0;
 
     /** If true, this is a predicted world that is used in rendering process. This world should be updated only
      * "visually" */
@@ -180,7 +181,7 @@ public class WorldController {
         audioEffectsToBeRemoved.clear();
 
         for (AbstractAmmunition ammunition : ammunitionToBeRemoved) {
-            //ammunitionContainer.remove(ammunition);
+            ammunitionContainer.remove(ammunition);
         }
         ammunitionToBeRemoved.clear();
     }
@@ -272,8 +273,8 @@ public class WorldController {
             hash += hashBuilder.toString();
         }
 
-        //return hash; // Used for testing purposes only
-        return md5(hash);
+        return hash; // Used for testing purposes only
+        //return md5(hash);
     }
 
     // TODO http://javarevisited.blogspot.fi/2013/03/generate-md5-hash-in-java-string-byte-array-example-tutorial.html
@@ -307,4 +308,9 @@ public class WorldController {
     public void setPredictedWorld(final boolean isPredictedWorld) {
         this.isPredictedWorld = isPredictedWorld;
     }
+
+    public long getNextFreeId() {
+        return nextFreeId++;
+    }
+
 }
