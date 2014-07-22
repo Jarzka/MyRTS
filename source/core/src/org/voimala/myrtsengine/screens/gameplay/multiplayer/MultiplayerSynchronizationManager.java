@@ -84,7 +84,7 @@ public class MultiplayerSynchronizationManager {
     }
 
     private void sendGameStateHash() {
-        String hash = gameplayScreen.getGameStateHash();
+        String hash = gameplayScreen.getWorldController().getGameStateHash();
 
         NetworkManager.getInstance().getClientThread().sendMessage(
                 RTSProtocolManager.getInstance().createNetworkMessageGameStateHash(

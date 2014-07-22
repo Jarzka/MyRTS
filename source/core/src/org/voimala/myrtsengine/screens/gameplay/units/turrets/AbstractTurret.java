@@ -198,7 +198,7 @@ public abstract class AbstractTurret extends AbstractGameObject {
     private void checkTarget() {
         if (hasTarget()) {
             if (isTargetInRange() && isTargetInSight()) {
-                tryToShoot();
+                tryToShoot(); // TODO Goes out of sync
             } else {
                 target = null; // Give up
             }

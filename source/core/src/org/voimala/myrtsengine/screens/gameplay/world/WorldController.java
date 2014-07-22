@@ -7,10 +7,15 @@ import org.voimala.myrtsengine.audio.AudioEffect;
 import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractBullet;
+import org.voimala.myrtsengine.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.units.UnitContainer;
 import org.voimala.myrtsengine.screens.gameplay.units.infantry.M4Unit;
+import org.voimala.myrtsengine.screens.gameplay.units.turrets.AbstractTurret;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -179,5 +184,64 @@ public class WorldController {
 
     public void tagAmmunitionToBeRemovedInNextWorldUpdate(AbstractAmmunition ammunitionToBeRemoved) {
         this.ammunitionToBeRemoved.add(ammunitionToBeRemoved);
+    }
+
+    public String getGameStateHash() {
+        // TODO Make sure that every client has a same container (units are in the same order etc.)
+        String hash = "";
+
+        // Final hash for production version
+        for (AbstractUnit unit : getAllUnits()) {
+            StringBuilder hashBuilder = new StringBuilder();
+            hashBuilder.append("unit:" + unit.getObjectId() + " ");
+            hashBuilder.append("x:" + unit.getObjectId() + unit.getX() + " ");
+            hashBuilder.append("y:" + unit.getY() + " ");
+            hashBuilder.append("angle:" + unit.getAngleInRadians() + " ");
+            for (AbstractTurret turret : unit.getTurrets()) {
+                hashBuilder.append("turret:" + turret.getObjectId() + " ");
+                hashBuilder.append("x:" + turret.getX() + " ");
+                hashBuilder.append("y:" + turret.getY() + " ");
+                hashBuilder.append("angle:" + turret.getAngleInRadians() + " ");
+            }
+            hash += "\n";
+            hash += hashBuilder.toString();
+        }
+
+        for (AbstractAmmunition ammunition : ammunitionContainer) {
+            StringBuilder hashBuilder = new StringBuilder();
+            hashBuilder.append("ammunition:" + ammunition.getObjectId() + " ");
+            hashBuilder.append("x:" + ammunition.getX() + " ");
+            hashBuilder.append("y:" + ammunition.getY() + " ");
+            hashBuilder.append("angle:" + ammunition.getAngleInRadians() + " ");
+            hash += "\n";
+            hash += hashBuilder.toString();
+        }
+
+        return hash; // Used for testing purposes only
+        //return md5(hash);
+    }
+
+    // TODO http://javarevisited.blogspot.fi/2013/03/generate-md5-hash-in-java-string-byte-array-example-tutorial.html
+    public static String md5(String message){
+        String digest = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] hash = md.digest(message.getBytes("UTF-8"));
+
+            //converting byte array to Hexadecimal String
+            StringBuilder sb = new StringBuilder(2*hash.length);
+            for(byte b : hash){
+                sb.append(String.format("%02x", b&0xff));
+            }
+
+            digest = sb.toString();
+
+        } catch (UnsupportedEncodingException e) {
+            Gdx.app.debug(TAG, e.getMessage());
+        } catch (NoSuchAlgorithmException e) {
+            Gdx.app.debug(TAG, e.getMessage());
+        }
+
+        return digest;
     }
 }
