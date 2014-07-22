@@ -7,7 +7,7 @@ import org.voimala.myrtsengine.screens.gameplay.world.AbstractGameObject;
 import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
 import org.voimala.utility.MathHelper;
 
-public abstract class AbstractBullet extends AbstractAmmunition implements Cloneable {
+public abstract class AbstractBullet extends AbstractAmmunition {
 
     protected Vector2 startPosition = null;
     protected long maxTravelDistance = 0;

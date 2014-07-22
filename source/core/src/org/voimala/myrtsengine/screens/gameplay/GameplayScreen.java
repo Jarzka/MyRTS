@@ -220,4 +220,7 @@ public class GameplayScreen extends AbstractGameScreen {
         return rtsCommandExecuter;
     }
 
+    public WorldRenderer getWorldRenderer() {
+        return worldRenderer;
+    }
 }

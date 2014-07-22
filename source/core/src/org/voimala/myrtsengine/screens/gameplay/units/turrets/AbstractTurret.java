@@ -226,12 +226,15 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
 
         if (ammunition != null) {
             owner.getWorldController().getAmmunitionContainer().add(ammunition);
-            owner.getWorldController().getAudioEffectContainer().add(
-                    new AudioEffect(
-                            owner.getWorldController(),
-                            SoundContainer.getInstance().getSound("m4"),
-                            0.08f,
-                            new Vector2(position.x, position.y)));
+
+            if (!owner.getWorldController().isPredictedWorld()) {
+                owner.getWorldController().getAudioEffectContainer().add(
+                        new AudioEffect(
+                                owner.getWorldController(),
+                                SoundContainer.getInstance().getSound("m4"),
+                                0.08f,
+                                new Vector2(position.x, position.y)));
+            }
         }
     }
 

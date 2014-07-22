@@ -28,6 +28,7 @@ public class WorldRenderer implements Disposable {
     private SpriteBatch batch;
     private SpriteBatch hudBatch;
     private WorldController worldController;
+    private WorldController worldControllerPredicted;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
     private long lastRenderTimestamp = 0;
 
@@ -134,12 +135,18 @@ public class WorldRenderer implements Disposable {
          * automatically. */
         batch.setProjectionMatrix(worldController.getWorldCamera().combined);
 
-        //renderMode = RenderMode.GAME_STATE; // TODO For testing purposes only
+        // renderMode = RenderMode.GAME_STATE; // TODO For testing purposes only
+
+        WorldController worldToBeRendered = worldController;
+        if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
+            preparePredictedWorldToBeRendered();
+            worldToBeRendered = worldControllerPredicted; // TODO Goes hardly out of sync.
+        }
 
         renderGround();
-        //renderUnits(renderMode); // TODO Our of sync if we use physics prediction (Units should not add cloned bullets to the official container?)
-        renderAmmunition(renderMode); // TODO Our of sync if we use physics prediction
-        //renderUnitEnergyBars(renderMode); // TODO Our of sync if we use physics prediction
+        renderUnits(worldToBeRendered);
+        //renderAmmunition(worldToBeRendered);
+        renderUnitEnergyBars(worldToBeRendered);
         renderHud();
         renderUnitSelectionRectangle();
         renderInfoText();
@@ -147,6 +154,16 @@ public class WorldRenderer implements Disposable {
         renderChat();
 
         lastRenderTimestamp = System.currentTimeMillis();
+    }
+
+    private void preparePredictedWorldToBeRendered() {
+        if (worldControllerPredicted == null) {
+            worldControllerPredicted = new WorldController(worldController);
+        }
+
+        worldControllerPredicted.setPredictedWorld(true);
+        float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
+        worldControllerPredicted.updateWorld(deltaTime);
     }
 
     private void renderGround() {
@@ -161,110 +178,69 @@ public class WorldRenderer implements Disposable {
         }
     }
 
-    private void renderUnits(final RenderMode renderMode) {
-        for (AbstractUnit unit : worldController.getAllUnits()) {
-            try {
-                AbstractUnit unitToRender = unit;
+    private void renderUnits(final WorldController worldToBeRendered) {
+        for (AbstractUnit unit : worldToBeRendered.getAllUnits()) {
 
-                if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
-                    AbstractUnit unitClone = unit.clone();
-                    float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
-                    unitClone.updateState(deltaTime);
-                    unitToRender = unitClone;
-                }
-
-                // Draw unit
-                Sprite unitSprite = unitToRender.getSprite();
-                if (unitSprite != null) {
-                    batch.begin();
-                    unitSprite.setOrigin(unitSprite.getWidth() / 2, unitSprite.getHeight() / 2 - 70);
-                    unitSprite.setPosition(unitToRender.getX() - unitSprite.getWidth() / 2, unitToRender.getY() - unitSprite.getWidth() / 2 + 70);
-                    unitSprite.setRotation(unitToRender.getAngle() - 90);
-                    unitSprite.draw(batch);
-                    batch.end();
-                }
-
-                // Draw turrets
-                for (AbstractTurret turret : unitToRender.getTurrets()) {
-                    Sprite turretSprite = turret.getSprite();
-                    if (turretSprite != null) {
-                        batch.begin();
-                        turretSprite.setOrigin(turretSprite.getWidth() / 2, turretSprite.getHeight() / 2 - 70);
-                        turretSprite.setPosition(turret.getX() - turretSprite.getWidth() / 2, turret.getY() - turretSprite.getWidth() / 2 + 70);
-                        turretSprite.setRotation(turret.getAngle() - 90);
-                        turretSprite.draw(batch);
-                        batch.end();
-                    }
-                }
-
-            } catch (CloneNotSupportedException e) {
-                Gdx.app.debug(TAG, "ERROR: " + e.getMessage());
-        }
-        }
-    }
-
-    private void renderAmmunition(final RenderMode renderMode) {
-        for (AbstractAmmunition ammunition : worldController.getAmmunitionContainer()) {
-
-            try {
-
-                AbstractAmmunition ammunitionToRender = ammunition;
-
-                if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
-                    AbstractAmmunition ammunitionClone = ammunition.clone();
-                    float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
-                    ammunitionClone.updateState(deltaTime);
-                    ammunitionToRender = ammunitionClone;
-                }
-
-                Sprite sprite = ammunitionToRender.getSprite();
-
-                // Draw unit
+            // Draw unit
+            Sprite unitSprite = unit.getSprite();
+            if (unitSprite != null) {
                 batch.begin();
-                sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
-                sprite.setPosition(ammunitionToRender.getX() - sprite.getWidth() / 2, ammunitionToRender.getY() - sprite.getWidth() / 2);
-                sprite.setRotation(ammunitionToRender.getAngle() - 90);
-                sprite.draw(batch);
+                unitSprite.setOrigin(unitSprite.getWidth() / 2, unitSprite.getHeight() / 2 - 70);
+                unitSprite.setPosition(unit.getX() - unitSprite.getWidth() / 2, unit.getY() - unitSprite.getWidth() / 2 + 70);
+                unitSprite.setRotation(unit.getAngle() - 90);
+                unitSprite.draw(batch);
                 batch.end();
-
-            } catch (CloneNotSupportedException e) {
-                Gdx.app.debug(TAG, "ERROR: " + e.getMessage());
             }
 
+            // Draw turrets
+            for (AbstractTurret turret : unit.getTurrets()) {
+                Sprite turretSprite = turret.getSprite();
+                if (turretSprite != null) {
+                    batch.begin();
+                    turretSprite.setOrigin(turretSprite.getWidth() / 2, turretSprite.getHeight() / 2 - 70);
+                    turretSprite.setPosition(turret.getX() - turretSprite.getWidth() / 2, turret.getY() - turretSprite.getWidth() / 2 + 70);
+                    turretSprite.setRotation(turret.getAngle() - 90);
+                    turretSprite.draw(batch);
+                    batch.end();
+                }
+            }
         }
     }
 
-    private void renderUnitEnergyBars(final RenderMode renderMode) {
-        for (AbstractUnit unit : worldController.getAllUnits()) {
+    private void renderAmmunition(final WorldController worldToBeRendered) {
+        for (AbstractAmmunition ammunition : worldToBeRendered.getAmmunitionContainer()) {
+
+            Sprite sprite = ammunition.getSprite();
+
+            // Draw unit
+            batch.begin();
+            sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
+            sprite.setPosition(ammunition.getX() - sprite.getWidth() / 2, ammunition.getY() - sprite.getWidth() / 2);
+            sprite.setRotation(ammunition.getAngle() - 90);
+            sprite.draw(batch);
+            batch.end();
+
+        }
+    }
+
+    private void renderUnitEnergyBars(final WorldController worldToBeRendered) {
+        for (AbstractUnit unit : worldToBeRendered.getAllUnits()) {
             if (unit.isSelected()) {
-                try {
-                    AbstractUnit unitToRender = unit;
+                shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+                shapeRenderer.setColor(Color.WHITE);
+                Vector3 unitTopLeftWorldCoordinates = new Vector3(unit.getX() - unit.getWidth() / 2,
+                        unit.getY() + unit.getHeight() / 2, 0);
+                Vector3 unitTopRightWorldCoordinates = new Vector3(unit.getX() + unit.getWidth() / 2,
+                        unit.getY() + unit.getHeight() / 2, 0);
 
-                    if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
-                        AbstractUnit unitClone = unit.clone();
-                        float deltaTime = calculateDeltaTimeBetweenLastWorldUpdateAndCurrentTime();
-                        unitClone.updateState(deltaTime);
-                        unitToRender = unitClone;
-                    }
+                Vector3 unitTopLeftScreenCoordinates = worldController.getWorldCamera().project(unitTopLeftWorldCoordinates);
+                Vector3 unitTopRightScreenCoordinates = worldController.getWorldCamera().project(unitTopRightWorldCoordinates);
 
-                    shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-                    shapeRenderer.setColor(Color.WHITE);
-                    Vector3 unitTopLeftWorldCoordinates = new Vector3(unitToRender.getX() - unitToRender.getWidth() / 2,
-                            unitToRender.getY() + unitToRender.getHeight() / 2, 0);
-                    Vector3 unitTopRightWorldCoordinates = new Vector3(unitToRender.getX() + unitToRender.getWidth() / 2,
-                            unitToRender.getY() + unitToRender.getHeight() / 2, 0);
-
-                    Vector3 unitTopLeftScreenCoordinates = worldController.getWorldCamera().project(unitTopLeftWorldCoordinates);
-                    Vector3 unitTopRightScreenCoordinates = worldController.getWorldCamera().project(unitTopRightWorldCoordinates);
-
-                    shapeRenderer.rect(unitTopLeftScreenCoordinates.x,
-                            unitTopLeftScreenCoordinates.y,
-                            unitTopRightScreenCoordinates.x - unitTopLeftScreenCoordinates.x,
-                            10);
-                    shapeRenderer.end();
-                } catch (CloneNotSupportedException e) {
-                    Gdx.app.debug(TAG, "ERROR: " + e.getMessage());
-                }
+                shapeRenderer.rect(unitTopLeftScreenCoordinates.x,
+                        unitTopLeftScreenCoordinates.y,
+                        unitTopRightScreenCoordinates.x - unitTopLeftScreenCoordinates.x,
+                        10);
+                shapeRenderer.end();
             }
         }
     }
@@ -379,4 +355,10 @@ public class WorldRenderer implements Disposable {
         this.worldController = worldController;
     }
 
+    /** WorldController uses this method to notify WorldRenderer that the game world has been updated */
+    public void worldUpdated() {
+        /* TODO Cloning the entire game world is a time consuming process.
+         * Would it be possible to just synchronize the two game worlds? */
+        worldControllerPredicted = new WorldController(worldController);
+    }
 }

@@ -32,12 +32,40 @@ public class WorldController {
     private ArrayList<AudioEffect> audioEffectContainer = new ArrayList<AudioEffect>();
     private ArrayList<AudioEffect> audioEffectsToBeRemoved = new ArrayList<AudioEffect>();
 
+    /** If true, this is a predicted world that is used in rendering process. This world should be updated only
+     * "visually" */
+    private boolean isPredictedWorld = false;
+
     private GameplayScreen gameplayScreen;
     private OrthographicCamera worldCamera;
 
     private double hudSize = 1; // TODO Hud needs to be implemented
 
     public final int TILE_SIZE_PIXELS = 256;
+
+    /** Copy constructor. */
+    public WorldController (final WorldController source) {
+        initialize(); // TODO Is it necessary to initialize everything?
+
+        // Clone containers
+        for (AbstractUnit unit : source.getAllUnits()){
+            try {
+                storeUnitInContainer(unit.clone());
+            } catch (CloneNotSupportedException e) {
+                // This should never happen. Continue without cloning this object.
+            }
+        }
+
+        for (AbstractAmmunition abstractAmmunition : source.getAmmunitionContainer()) {
+            try {
+                ammunitionContainer.add(abstractAmmunition.clone());
+            } catch (CloneNotSupportedException e) {
+                // This should never happen. Continue without cloning this object.
+            }
+        }
+
+        // TODO Is it necessary to clone audio container?
+    }
 
     public WorldController() {
         initialize();
@@ -70,7 +98,7 @@ public class WorldController {
     }
 
     private void createTestUnit() {
-        /* For simple testing */
+        /* For simple testing
         M4Unit unit = new M4Unit(this);
         unit.setPosition(new Vector2(500 + TILE_SIZE_PIXELS, 500 + TILE_SIZE_PIXELS));
         unit.setTeam(1);
@@ -86,8 +114,8 @@ public class WorldController {
         unit2.setAngle(180);
         unit2.getTurrets().get(0).setAngle(unit2.getAngle());
         storeUnitInContainer(unit2);
-
-        /* For harder testing
+        */
+        /* For harder testing */
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 6; j++) {
                 M4Unit unit = new M4Unit(this);
@@ -108,7 +136,7 @@ public class WorldController {
                 unit.setAngle(180);
                 storeUnitInContainer(unit);
             }
-        }*/
+        }
     }
 
     public void storeUnitInContainer(AbstractUnit unit) {
@@ -132,6 +160,10 @@ public class WorldController {
         updateUnits(deltaTime);
         updateAmmunition(deltaTime);
         updateAudioEffects();
+
+        if (!isPredictedWorld) {
+            finishWorldUpdating();
+        }
     }
 
     /** If objects were removed during world update, it would cause problems since the WorldController would be
@@ -165,6 +197,10 @@ public class WorldController {
         for (AudioEffect audioEffect : audioEffectContainer) {
             audioEffect.updateState();
         }
+    }
+
+    private void finishWorldUpdating() {
+        getGameplayScreen().getWorldRenderer().worldUpdated();
     }
 
     public OrthographicCamera getWorldCamera() {
@@ -258,5 +294,13 @@ public class WorldController {
         }
 
         return digest;
+    }
+
+    public boolean isPredictedWorld() {
+        return isPredictedWorld;
+    }
+
+    public void setPredictedWorld(final boolean isPredictedWorld) {
+        this.isPredictedWorld = isPredictedWorld;
     }
 }
