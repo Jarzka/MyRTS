@@ -70,7 +70,7 @@ public class WorldController {
     }
 
     private void createTestUnit() {
-        /* For simple testing
+        /* For simple testing */
         M4Unit unit = new M4Unit(this);
         unit.setPosition(new Vector2(500 + TILE_SIZE_PIXELS, 500 + TILE_SIZE_PIXELS));
         unit.setTeam(1);
@@ -86,9 +86,8 @@ public class WorldController {
         unit2.setAngle(180);
         unit2.getTurrets().get(0).setAngle(unit2.getAngle());
         storeUnitInContainer(unit2);
-        */
 
-        /* For harder testing */
+        /* For harder testing
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 6; j++) {
                 M4Unit unit = new M4Unit(this);
@@ -109,7 +108,7 @@ public class WorldController {
                 unit.setAngle(180);
                 storeUnitInContainer(unit);
             }
-        }
+        }*/
     }
 
     public void storeUnitInContainer(AbstractUnit unit) {

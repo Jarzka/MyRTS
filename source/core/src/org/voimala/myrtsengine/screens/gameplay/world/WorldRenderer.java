@@ -134,12 +134,12 @@ public class WorldRenderer implements Disposable {
          * automatically. */
         batch.setProjectionMatrix(worldController.getWorldCamera().combined);
 
-        renderMode = RenderMode.GAME_STATE; // TODO For testing purposes only
+        //renderMode = RenderMode.GAME_STATE; // TODO For testing purposes only
 
         renderGround();
-        renderUnits(renderMode);
-        renderAmmunition(renderMode);
-        renderUnitEnergyBars(renderMode);
+        //renderUnits(renderMode); // TODO Our of sync if we use physics prediction (Units should not add cloned bullets to the official container?)
+        renderAmmunition(renderMode); // TODO Our of sync if we use physics prediction
+        //renderUnitEnergyBars(renderMode); // TODO Our of sync if we use physics prediction
         renderHud();
         renderUnitSelectionRectangle();
         renderInfoText();
@@ -205,6 +205,7 @@ public class WorldRenderer implements Disposable {
 
     private void renderAmmunition(final RenderMode renderMode) {
         for (AbstractAmmunition ammunition : worldController.getAmmunitionContainer()) {
+
             try {
 
                 AbstractAmmunition ammunitionToRender = ammunition;
@@ -216,7 +217,7 @@ public class WorldRenderer implements Disposable {
                     ammunitionToRender = ammunitionClone;
                 }
 
-                Sprite sprite = ammunition.getSprite();
+                Sprite sprite = ammunitionToRender.getSprite();
 
                 // Draw unit
                 batch.begin();
@@ -229,6 +230,7 @@ public class WorldRenderer implements Disposable {
             } catch (CloneNotSupportedException e) {
                 Gdx.app.debug(TAG, "ERROR: " + e.getMessage());
             }
+
         }
     }
 
