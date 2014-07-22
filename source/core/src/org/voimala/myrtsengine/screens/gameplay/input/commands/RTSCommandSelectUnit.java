@@ -2,12 +2,12 @@ package org.voimala.myrtsengine.screens.gameplay.input.commands;
 
 public class RTSCommandSelectUnit extends AbstractRTSUnitCommand {
 
-    public RTSCommandSelectUnit(final long id) {
-        super(id);
+    public RTSCommandSelectUnit(final int playerWhoMadeCommand, final long id) {
+        super(playerWhoMadeCommand, id);
     }
 
     @Override
-    public RTSCommand getCommandName() {
-        return RTSCommand.SELECT_UNIT;
+    public RTSCommandType getCommandName() {
+        return RTSCommandType.SELECT_UNIT;
     }
 }

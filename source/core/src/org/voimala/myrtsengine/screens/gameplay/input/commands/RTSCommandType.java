@@ -1,6 +1,6 @@
 package org.voimala.myrtsengine.screens.gameplay.input.commands;
 
-public enum RTSCommand {
+public enum RTSCommandType {
     MOVE_UNIT,
     SELECT_UNIT,
 }

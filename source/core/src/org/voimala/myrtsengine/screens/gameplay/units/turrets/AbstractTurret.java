@@ -209,7 +209,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
     private void checkTarget() {
         if (hasTarget()) {
             if (isTargetInRange() && isTargetInSight()) {
-                tryToShoot(); // TODO Goes out of sync
+                //tryToShoot(); // TODO Goes out of sync
             } else {
                 target = null; // Give up
             }

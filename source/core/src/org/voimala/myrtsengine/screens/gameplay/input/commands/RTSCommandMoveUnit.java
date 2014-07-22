@@ -5,8 +5,11 @@ public class RTSCommandMoveUnit extends AbstractRTSUnitCommand {
     private float targetX;
     private float targetY;
 
-    public RTSCommandMoveUnit(final long id, final float targetX, final float targetY) {
-        super(id);
+    public RTSCommandMoveUnit(final int playerWhoMadeCommand,
+                              final long unitId,
+                              final float targetX,
+                              final float targetY) {
+        super(playerWhoMadeCommand, unitId);
 
         this.targetX = targetX;
         this.targetY = targetY;
@@ -21,7 +24,7 @@ public class RTSCommandMoveUnit extends AbstractRTSUnitCommand {
     }
 
     @Override
-    public RTSCommand getCommandName() {
-        return RTSCommand.MOVE_UNIT;
+    public RTSCommandType getCommandName() {
+        return RTSCommandType.MOVE_UNIT;
     }
 }

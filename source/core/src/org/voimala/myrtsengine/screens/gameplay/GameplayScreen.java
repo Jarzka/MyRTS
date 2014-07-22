@@ -8,22 +8,17 @@ import org.voimala.myrtsengine.networking.ConnectionState;
 import org.voimala.myrtsengine.networking.NetworkManager;
 import org.voimala.myrtsengine.networking.RTSProtocolManager;
 import org.voimala.myrtsengine.screens.AbstractGameScreen;
-import org.voimala.myrtsengine.screens.gameplay.input.GameplayInputManager;
-import org.voimala.myrtsengine.screens.gameplay.input.GameplayInputProcessor;
+import org.voimala.myrtsengine.screens.gameplay.input.LocalGameplayInputManager;
+import org.voimala.myrtsengine.screens.gameplay.input.LocalGameplayInputProcessor;
 import org.voimala.myrtsengine.screens.gameplay.input.commands.RTSCommandExecuter;
 import org.voimala.myrtsengine.screens.gameplay.multiplayer.GameplayChatInputManager;
 import org.voimala.myrtsengine.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrtsengine.screens.gameplay.states.AbstractGameplayState;
 import org.voimala.myrtsengine.screens.gameplay.states.GameplayStateRunning;
-import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.world.GameMode;
 import org.voimala.myrtsengine.screens.gameplay.world.RenderMode;
 import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
 import org.voimala.myrtsengine.screens.gameplay.world.WorldRenderer;
-
-import java.io.UnsupportedEncodingException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 public class GameplayScreen extends AbstractGameScreen {
 
@@ -34,8 +29,8 @@ public class GameplayScreen extends AbstractGameScreen {
 
     private AbstractGameplayState currentState = new GameplayStateRunning(this);
 
-    private GameplayInputManager gameplayInputManager;
-    private GameplayInputProcessor gameplayInputProcessor;
+    private LocalGameplayInputManager localGameplayInputManager;
+    private LocalGameplayInputProcessor localGameplayInputProcessor;
     private GameplayChatInputManager gameplayChatInputManager;
     private RTSCommandExecuter rtsCommandExecuter;
 
@@ -71,13 +66,13 @@ public class GameplayScreen extends AbstractGameScreen {
     }
 
     private void initializeInputManagers() {
-        gameplayInputManager = new GameplayInputManager(this);
-        gameplayInputProcessor = new GameplayInputProcessor(this);
+        localGameplayInputManager = new LocalGameplayInputManager(this);
+        localGameplayInputProcessor = new LocalGameplayInputProcessor(this);
         MultiplayerSynchronizationManager.getInstance().setGameplayScreen(this);
         gameplayChatInputManager = new GameplayChatInputManager(this);
-        Gdx.input.setInputProcessor(gameplayInputProcessor);
+        Gdx.input.setInputProcessor(localGameplayInputProcessor);
 
-        rtsCommandExecuter = new RTSCommandExecuter(this);
+        rtsCommandExecuter = new RTSCommandExecuter(worldController);
     }
 
     public void setGameMode(GameMode gameMode) {
@@ -99,7 +94,7 @@ public class GameplayScreen extends AbstractGameScreen {
 
     public void handleUserInput(float deltaTime) {
         // TODO What to do when the game is waiting input from the network?
-        gameplayInputManager.update();
+        localGameplayInputManager.update();
         gameplayChatInputManager.update();
     }
 
@@ -209,8 +204,8 @@ public class GameplayScreen extends AbstractGameScreen {
         return worldController;
     }
 
-    public GameplayInputManager getGameplayInputManager() {
-        return gameplayInputManager;
+    public LocalGameplayInputManager getLocalGameplayInputManager() {
+        return localGameplayInputManager;
     }
 
     public GameplayChatInputManager getGameplayChatInputManager() {

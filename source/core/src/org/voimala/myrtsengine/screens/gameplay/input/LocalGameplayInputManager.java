@@ -16,9 +16,9 @@ import org.voimala.myrtsengine.screens.gameplay.world.GameMode;
 /** This class is used for handling local player input.
  * NOTE: Chat input is handled in GameplayChatInput class. */
 
-public class GameplayInputManager {
+public class LocalGameplayInputManager {
 
-    private static final String TAG = GameplayInputManager.class.getName();
+    private static final String TAG = LocalGameplayInputManager.class.getName();
 
     private GameplayScreen gameplayScreen;
 
@@ -32,7 +32,7 @@ public class GameplayInputManager {
     private float rectangleStartXScreen = -1;
     private float rectangleStartYScreen = -1;
 
-    public GameplayInputManager(final GameplayScreen gameplayScreen) {
+    public LocalGameplayInputManager(final GameplayScreen gameplayScreen) {
         this.gameplayScreen = gameplayScreen;
         cameraManager = new CameraManager(gameplayScreen.getWorldController().getWorldCamera());
     }
@@ -79,7 +79,7 @@ public class GameplayInputManager {
                 if (unit.onCollision(new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y))
                         && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
                     gameplayScreen.getRTSCommandExecuter().executeCommand(ExecuteCommandMethod.EXECUTE_LOCALLY,
-                            new RTSCommandSelectUnit(unit.getObjectId()));
+                            new RTSCommandSelectUnit(GameMain.getInstance().getPlayer().getNumber(), unit.getObjectId()));
                     break;
                 }
             }
@@ -121,7 +121,7 @@ public class GameplayInputManager {
                     if (rectangleWorld.contains(unit.getX(), unit.getY())
                             && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
                        gameplayScreen.getRTSCommandExecuter().executeCommand(ExecuteCommandMethod.EXECUTE_LOCALLY,
-                               new RTSCommandSelectUnit(unit.getObjectId()));
+                               new RTSCommandSelectUnit(GameMain.getInstance().getPlayer().getNumber(), unit.getObjectId()));
                         unit.setSelected(true);
                     }
                 }
@@ -216,6 +216,7 @@ public class GameplayInputManager {
         gameplayScreen.getRTSCommandExecuter().executeCommand(
                 method,
                 new RTSCommandMoveUnit(
+                        GameMain.getInstance().getPlayer().getNumber(),
                         unit.getObjectId(),
                         mouseLocationInWorld.x,
                         mouseLocationInWorld.y));

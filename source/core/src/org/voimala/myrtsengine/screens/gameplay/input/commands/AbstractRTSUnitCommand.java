@@ -4,7 +4,8 @@ public abstract class AbstractRTSUnitCommand extends AbstractRTSCommand {
 
     private long unitId;
 
-    protected AbstractRTSUnitCommand(final long unitId) {
+    protected AbstractRTSUnitCommand(final int playerWhoMadeCommand, final long unitId) {
+        super(playerWhoMadeCommand);
         this.unitId = unitId;
     }
 

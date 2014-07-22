@@ -6,11 +6,11 @@ import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
 
 /* This class is used for handling desktop zoom with mouse wheel. */
 
-public class GameplayInputProcessor implements InputProcessor{
+public class LocalGameplayInputProcessor implements InputProcessor{
 
     private GameplayScreen gameplayScreen = null;
 
-    public GameplayInputProcessor(final GameplayScreen gameplayScreen) {
+    public LocalGameplayInputProcessor(final GameplayScreen gameplayScreen) {
         this.gameplayScreen = gameplayScreen;
     }
 

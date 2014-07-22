@@ -2,6 +2,7 @@ package org.voimala.myrtsengine.screens.gameplay.input.commands;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import org.voimala.myrtsengine.app.GameMain;
 import org.voimala.myrtsengine.audio.AudioEffect;
 import org.voimala.myrtsengine.audio.SoundContainer;
 import org.voimala.myrtsengine.networking.ListenSocketThread;
@@ -10,51 +11,55 @@ import org.voimala.myrtsengine.networking.RTSProtocolManager;
 import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
 import org.voimala.myrtsengine.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
+import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
 
 /** This class is used to perform RTS commands. */
 public class RTSCommandExecuter {
 
     private static final String TAG = RTSCommandExecuter.class.getName();
 
-    private GameplayScreen gameplayScreen;
+    private WorldController worldController;
 
-    public RTSCommandExecuter(GameplayScreen gameplayScreen) {
-        this.gameplayScreen = gameplayScreen;
+    public RTSCommandExecuter(final WorldController worldController) {
+        this.worldController = worldController;
     }
 
     public void executeCommand(final ExecuteCommandMethod method, final AbstractRTSCommand command) {
         if (command != null) {
-            if (command.getCommandName() == RTSCommand.MOVE_UNIT) {
+            if (command.getCommandName() == RTSCommandType.MOVE_UNIT) {
                 RTSCommandMoveUnit moveCommand = (RTSCommandMoveUnit) command;
-                handleCommandMoveUnit(method, gameplayScreen.getWorldController().getUnitContainerAllUnits().findUnitById(
-                                moveCommand.getObjectId()), moveCommand.getTargetX(), moveCommand.getTargetY()
-                );
-            } else if (command.getCommandName() == RTSCommand.SELECT_UNIT) {
+                handleCommandMoveUnit(method, moveCommand);
+            } else if (command.getCommandName() == RTSCommandType.SELECT_UNIT) {
                 RTSCommandSelectUnit selectCommand = (RTSCommandSelectUnit) command;
-                handleCommandSelectUnit(method, gameplayScreen.getWorldController().getUnitContainerAllUnits().findUnitById(
-                                selectCommand.getObjectId())
-                );
+                handleCommandSelectUnit(method, selectCommand);
             }
         }
 
     }
 
-    private void handleCommandMoveUnit(final ExecuteCommandMethod method, AbstractUnit unit, final float targetX, final float targetY) {
+    private void handleCommandMoveUnit(final ExecuteCommandMethod method, final RTSCommandMoveUnit rtsCommandMoveUnit) {
         if (method == ExecuteCommandMethod.EXECUTE_LOCALLY) {
-            unit.getWorldController().getAudioEffectContainer().add(new AudioEffect(
-                    unit.getWorldController(),
-                    SoundContainer.getInstance().getUnitCommandSound("m4-move"), // TODO Hardcoded value!
-                    1f,
-                    unit.getX(),
-                    unit.getY()));
-            unit.getMovement().setSinglePathPoint(new Vector2(targetX, targetY));
+            AbstractUnit unit = worldController.getUnitContainerAllUnits().findUnitById(rtsCommandMoveUnit.getObjectId());
+            unit.getMovement().setSinglePathPoint(new Vector2(rtsCommandMoveUnit.getTargetX(), rtsCommandMoveUnit.getTargetY()));
+
+            // Play sound effect if local player made the command
+            if (rtsCommandMoveUnit.getPlayerWhoMadeCommand() == GameMain.getInstance().getPlayer().getNumber()) {
+                worldController.getAudioEffectContainer().add(new AudioEffect(
+                        unit.getWorldController(),
+                        SoundContainer.getInstance().getUnitCommandSound("m4-move"), // TODO Hardcoded value!
+                        1f,
+                        unit.getX(),
+                        unit.getY()));
+            }
+
         }
 
         if (method == ExecuteCommandMethod.SEND_TO_NETWORK) {
+            AbstractUnit unit = worldController.getUnitContainerAllUnits().findUnitById(rtsCommandMoveUnit.getObjectId());
             String message = RTSProtocolManager.getInstance().createNetworkMessageInputMoveUnit(
                     unit.getObjectId(),
                     MultiplayerSynchronizationManager.getInstance().getSimTick(),
-                    new Vector2(targetX, targetY));
+                    new Vector2(rtsCommandMoveUnit.getTargetX(), rtsCommandMoveUnit.getTargetY()));
             ListenSocketThread listenSocketThread = NetworkManager.getInstance().getClientThread();
             if (listenSocketThread != null) {
                 listenSocketThread.sendMessage(message);
@@ -64,15 +69,21 @@ public class RTSCommandExecuter {
         }
     }
 
-    private void handleCommandSelectUnit(final ExecuteCommandMethod method, AbstractUnit unit) {
+    private void handleCommandSelectUnit(final ExecuteCommandMethod method, final RTSCommandSelectUnit rtsCommandSelectUnit) {
         if (method == ExecuteCommandMethod.EXECUTE_LOCALLY) {
-            unit.getWorldController().getAudioEffectContainer().add(new AudioEffect(
-                    unit.getWorldController(),
-                    SoundContainer.getInstance().getUnitCommandSound("m4-select"), // TODO Hardcoded value!
-                    1f,
-                    unit.getX(),
-                    unit.getY()));
-            unit.setSelected(true);
+            AbstractUnit unit = worldController.getUnitContainerAllUnits().findUnitById(rtsCommandSelectUnit.getObjectId());
+
+            // Play sound effect if local player made the command
+            if (rtsCommandSelectUnit.getPlayerWhoMadeCommand() == GameMain.getInstance().getPlayer().getNumber()) {
+                unit.getWorldController().getAudioEffectContainer().add(new AudioEffect(
+                        unit.getWorldController(),
+                        SoundContainer.getInstance().getUnitCommandSound("m4-select"), // TODO Hardcoded value!
+                        1f,
+                        unit.getX(),
+                        unit.getY()));
+                unit.setSelected(true);
+            }
+
         }
 
         if (method == ExecuteCommandMethod.SEND_TO_NETWORK) {
@@ -106,7 +117,8 @@ public class RTSCommandExecuter {
         return new PlayerInput(
                 Integer.valueOf(messageSplitted[2]),
                 Integer.valueOf(messageSplitted[3]),
-                new RTSCommandMoveUnit(Long.valueOf(messageSplitted[4]),
+                new RTSCommandMoveUnit(Integer.valueOf(messageSplitted[2]),
+                        Long.valueOf(messageSplitted[4]),
                         Float.valueOf(messageSplitted[5]),
                         Float.valueOf(messageSplitted[6]))
                 );
