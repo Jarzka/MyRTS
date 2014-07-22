@@ -104,12 +104,21 @@ public abstract class AbstractUnit extends AbstractGameObject {
 
     @Override
     public void setPosition(Vector2 position) {
-        this.position = position;
+        super.setPosition(position);
 
         for (AbstractTurret turret : turrets) {
             turret.setPosition(new Vector2(
                     position.x + turret.getRelativePosition().x,
                     position.y + turret.getRelativePosition().y));
+        }
+    }
+
+    @Override
+    public void setAngle(final float angleDeg) {
+        super.setAngle(angleDeg);
+
+        for (AbstractTurret turret : turrets) {
+            turret.setAngle(angleDeg);
         }
     }
 

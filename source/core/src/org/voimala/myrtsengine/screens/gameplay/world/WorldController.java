@@ -171,7 +171,7 @@ public class WorldController {
     }
 
     /** If objects were removed during world update, it would cause problems since the WorldController would be
-     * still looping trough all objects. That's way objects that need to me removed will be added to a special
+     * still looping trough all objects. That's why objects that need to me removed will be added to a special
      * container. Objects in that container will be deleted before the next world update. */
     private void removeTaggedObjects() {
         for (AudioEffect audioEffect : audioEffectsToBeRemoved) {
@@ -180,7 +180,7 @@ public class WorldController {
         audioEffectsToBeRemoved.clear();
 
         for (AbstractAmmunition ammunition : ammunitionToBeRemoved) {
-            ammunitionContainer.remove(ammunition);
+            //ammunitionContainer.remove(ammunition);
         }
         ammunitionToBeRemoved.clear();
     }

@@ -136,11 +136,11 @@ public class WorldRenderer implements Disposable {
          * automatically. */
         batch.setProjectionMatrix(worldController.getWorldCamera().combined);
 
-        renderMode = RenderMode.GAME_STATE; // TODO For testing purposes only
+        //renderMode = RenderMode.GAME_STATE; // TODO For testing purposes only
 
         WorldController worldToBeRendered = worldController;
         if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
-            preparePredictedWorldToBeRendered(deltaTime); // TODO Shooting with many players goes out of sync
+            preparePredictedWorldToBeRendered(deltaTime);
             worldToBeRendered = worldControllerPredicted;
         }
 
@@ -157,7 +157,7 @@ public class WorldRenderer implements Disposable {
 
     private void preparePredictedWorldToBeRendered(final float deltaTime) {
         worldControllerPredicted.setPredictedWorld(true);
-        worldControllerPredicted.updateWorld(deltaTime);
+        worldControllerPredicted.updateWorld(deltaTime); // TODO Shooting with many players goes out of sync
     }
 
     private void renderGround() {
