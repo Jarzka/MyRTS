@@ -129,8 +129,8 @@ public class CarMovement extends AbstractMovement {
                 point.y);
 
         // If unit is not looking at the point, set the correct rotation direction
-        if (MathHelper.round(owner.getAngle(), 1)
-                != MathHelper.round(Math.toDegrees(angleBetweenUnitAndPointInRadians), 1)) {
+        if (MathHelper.round(owner.getAngle(), 0)
+                != MathHelper.round(Math.toDegrees(angleBetweenUnitAndPointInRadians), 0)) {
             RotationDirection targetRotationDirection = MathHelper.getFasterTurningDirection(owner.getAngleInRadians(),
                     angleBetweenUnitAndPointInRadians);
 

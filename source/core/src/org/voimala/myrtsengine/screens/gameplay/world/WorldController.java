@@ -118,7 +118,8 @@ public class WorldController {
         unit2.setAngle(180);
         unit2.getTurrets().get(0).setAngle(unit2.getAngle());
         storeUnitInContainer(unit2);
-*/
+        */
+
         /* For harder testing */
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 6; j++) {

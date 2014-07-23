@@ -150,9 +150,9 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
                 target.getPosition().x,
                 target.getPosition().y);
 
-        // If Turret is not looking at the point, set the correct rotation direction
-        if (MathHelper.round(getAngle(), 1)
-                != MathHelper.round(Math.toDegrees(angleBetweenTurretAndTargetInRadians), 1)) {
+        // If the turret is not looking at the point, set the correct rotation direction
+        if (MathHelper.round(getAngle(), 0)
+                != MathHelper.round(Math.toDegrees(angleBetweenTurretAndTargetInRadians), 0)) {
             RotationDirection targetRotationDirection = MathHelper.getFasterTurningDirection(getAngleInRadians(),
                     angleBetweenTurretAndTargetInRadians);
 
@@ -184,9 +184,9 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
     }
 
     private void rotateTowardsOwnerUnit() {
-        // If turret is not looking at the same direction as the owner, set the correct rotation direction
-        if (MathHelper.round(angleDeg, 1)
-                != MathHelper.round(owner.getAngle(), 1)) {
+        // If the turret is not looking at the same direction as the owner, set the correct rotation direction
+        if (MathHelper.round(angleDeg, 0)
+                != MathHelper.round(owner.getAngle(), 0)) {
             RotationDirection targetRotationDirection = MathHelper.getFasterTurningDirection(getAngleInRadians(),
                     owner.getAngleInRadians());
 
@@ -218,10 +218,18 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
     }
 
     private void checkTarget() {
+        checkTargetIsStillInRange();
+
         if (hasTarget()) {
-            if (isTargetInRange() && isTargetInSight()) {
+            if (isTargetInSight()) {
                 tryToShoot();
-            } else {
+            } // If not, the logical rotation should rotate the turret towards the target
+        }
+    }
+
+    private void checkTargetIsStillInRange() {
+        if (hasTarget()) {
+            if (!isTargetInRange()) {
                 target = null; // Give up
             }
         }
@@ -261,7 +269,6 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
                 continue;
             }
 
-            double asd = MathHelper.getDistanceBetweenPoints(position.x, position.y, unit.getX(), unit.getY());
             if (MathHelper.getDistanceBetweenPoints(position.x, position.y, unit.getX(), unit.getY()) <= range) {
                 targetsInRange.add(unit);
             }
