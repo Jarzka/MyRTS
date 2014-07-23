@@ -153,7 +153,9 @@ public class TurretStateHasTarget extends AbstractTurretState {
 
             // Check if there is a collision between the dot and some obstacle.
             for (AbstractUnit unit : ownerTurret.getWorldController().getUnitContainerAllUnits().getUnits()) {
-                if (unit == ownerTurret.getOwnerUnit() || unit == ownerTurret.getTarget()) {
+                if (unit == ownerTurret.getOwnerUnit()
+                    || unit == ownerTurret.getTarget()
+                    || unit.getTeam() != ownerTurret.getOwnerUnit().getTeam() ) {
                     continue;
                 }
 
