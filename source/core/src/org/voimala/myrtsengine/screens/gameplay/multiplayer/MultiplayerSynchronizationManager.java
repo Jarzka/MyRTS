@@ -76,7 +76,6 @@ public class MultiplayerSynchronizationManager {
 
         NetworkManager.getInstance().getClientThread().sendMessage(
                 RTSProtocolManager.getInstance().createNetworkMessageGameStateHash(
-                        GameMain.getInstance().getPlayer().getNumber(),
                         simTick,
                         hash));
     }

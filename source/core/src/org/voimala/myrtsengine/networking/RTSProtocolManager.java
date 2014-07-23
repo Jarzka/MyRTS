@@ -239,9 +239,9 @@ public class RTSProtocolManager {
                 ServerThread serverThread = NetworkManager.getInstance().getServerThread();
                 if (serverThread != null) {
                     serverThread.addAndCheckGameStateHashes(
-                            Integer.valueOf(messageSplitted[1]),
-                            Long.valueOf(messageSplitted[2]),
-                            messageSplitted[3]);
+                            client.getPlayerInfo().getNumber(),
+                            Long.valueOf(messageSplitted[1]),
+                            messageSplitted[2]);
                 }
             }
 
@@ -358,9 +358,8 @@ public class RTSProtocolManager {
         return "<COMMAND_AND_CONQUER>";
     }
 
-    // TODO Does the client need to sendInputsToOtherPlayers his player number because server knows it? If not, update protocol document too.
-    public String createNetworkMessageGameStateHash(final int playerNumber, final long simTick, final String hash) {
-        return "<HASH|" + playerNumber + "|" + simTick + "|" + hash + ">";
+    public String createNetworkMessageGameStateHash(final long simTick, final String hash) {
+        return "<HASH|" + simTick + "|" + hash + ">";
     }
 
     public String createNetworkMessageSlotContent(final int slotNumber, final String content) {
