@@ -94,6 +94,7 @@ public abstract class AbstractGameObject implements Cloneable {
 
     public void setPosition(Vector2 position) {
         this.position = position;
+        // Gdx.app.debug(TAG, "Object " + getObjectId() + " new position. x: " + position.x + ". y: " + position.y);
     }
 
     public Vector2 getPosition() {
@@ -108,6 +109,7 @@ public abstract class AbstractGameObject implements Cloneable {
     public void setAngle(final float angleDeg) {
         this.angleDeg = angleDeg;
         keepAngleValueInRange();
+        //Gdx.app.debug(TAG, "Object " + getObjectId() + " new angle: " + this.angleDeg);
     }
 
     public void rotate(final float angle) {

@@ -29,7 +29,8 @@ public abstract class AbstractEffect extends AbstractGameObject {
         super.initializeId();
 
         if (!worldController.isPredictedWorld()) {
-            Gdx.app.debug(TAG, "New effect created. id: " + getObjectId()
+            Gdx.app.debug(TAG, "New effect created at world update " + worldController.getGameplayScreen().getWorldUpdateTick()
+                    + " id: " + getObjectId()
                     + ". x: " + getX()
                     + ". y: " + getY()
                     + ". angle: " + getAngle());

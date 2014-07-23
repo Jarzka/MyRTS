@@ -221,6 +221,7 @@ public class WorldController {
         audioEffectsToBeRemoved.clear();
 
         for (AbstractAmmunition ammunition : ammunitionToBeRemoved) {
+            Gdx.app.debug(TAG, "About to remove ammunition. id: " + ammunition.getObjectId());
             ammunitionContainer.remove(ammunition);
         }
         ammunitionToBeRemoved.clear();
@@ -231,6 +232,7 @@ public class WorldController {
         effectsToBeRemoved.clear();
 
         for (AbstractUnit unit : unitsToBeRemoved) {
+            Gdx.app.debug(TAG, "About to remove unit . id: " + unit.getObjectId());
             removeUnitFromWorld(unit);
         }
         unitsToBeRemoved.clear();
