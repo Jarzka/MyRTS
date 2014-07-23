@@ -30,9 +30,31 @@ public class CarMovement extends AbstractMovement {
     }
 
     private void handlePhysicalVelocity(float deltaTime) {
-        owner.setPosition(new Vector2(
+        Vector2 nextPosition = new Vector2(
                 (float) (owner.getX() + Math.cos(owner.getAngleInRadians()) * currentVelocity * deltaTime),
-                (float) (owner.getY() + Math.sin(owner.getAngleInRadians()) * currentVelocity * deltaTime)));
+                (float) (owner.getY() + Math.sin(owner.getAngleInRadians()) * currentVelocity * deltaTime));
+
+        // Make sure that the next position is not inside obstacle
+
+        boolean isCollisionDetected = false;
+        /* TODO Currently buggy
+        for (AbstractUnit unit : owner.getWorldController().getUnitContainerAllUnits().getUnits()) {
+            if (unit == owner) {
+                continue;
+            }
+
+            if (unit.onCollision(nextPosition)) {
+                isCollisionDetected = true;
+                break;
+            }
+        }
+        */
+
+        // TODO Count buildings, trees, rocks etc. too
+
+        if (!isCollisionDetected) {
+            owner.setPosition(nextPosition);
+        }
     }
 
     private void handlePhysicalAcceleration(final float deltaTime) {
