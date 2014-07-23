@@ -242,7 +242,7 @@ public class WorldRenderer implements Disposable {
             sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2 - 40);
             sprite.setPosition(effect.getX() - sprite.getWidth() / 2, effect.getY() - sprite.getWidth() / 2 + 40);
             sprite.setRotation(effect.getAngle() - 90);
-            sprite.setAlpha(0.7f);
+            sprite.setAlpha(1 - effect.getLivedLifeAsPercent());
             sprite.draw(batch);
             batch.end();
 

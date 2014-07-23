@@ -6,6 +6,9 @@ import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
 
 public abstract class AbstractEffect extends AbstractGameObject {
 
+    protected long lifeTimeMs = 50;
+    protected long livedLife = 0;
+
     public AbstractEffect(final WorldController worldController, final Vector2 position, final float angleDeg) {
         super(worldController);
 
@@ -16,6 +19,10 @@ public abstract class AbstractEffect extends AbstractGameObject {
     public AbstractEffect clone() throws CloneNotSupportedException {
         AbstractEffect effectClone = (AbstractEffect) super.clone();
         return effectClone;
+    }
+
+    public float getLivedLifeAsPercent() {
+        return (float) livedLife / (float) lifeTimeMs;
     }
 
 }
