@@ -1,5 +1,6 @@
 package org.voimala.myrtsengine.screens.gameplay.units;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.exceptions.GameLogicException;
 import org.voimala.myrtsengine.screens.gameplay.units.turrets.AbstractTurret;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractUnit extends AbstractGameObject {
+
+    private static final String TAG = AbstractUnit.class.getName();
 
     protected int player = 0;
     protected int team = 0;
@@ -144,6 +147,13 @@ public abstract class AbstractUnit extends AbstractGameObject {
 
     public List<AbstractTurret> getTurrets() {
         return turrets;
+    }
+
+    @Override
+    public void initializeId() {
+        super.initializeId();
+        Gdx.app.debug(TAG, "New unit created with id " + getObjectId());
+        Gdx.app.debug(TAG, "World is predicted: " + worldController.isPredictedWorld());
     }
 
     public void setEnergy(final int energy) {

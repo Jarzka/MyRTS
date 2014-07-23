@@ -1,5 +1,6 @@
 package org.voimala.myrtsengine.screens.gameplay.world;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.movements.AbstractMovement;
@@ -7,6 +8,8 @@ import org.voimala.myrtsengine.movements.AbstractMovement;
 ;
 
 public abstract class AbstractGameObject implements Cloneable {
+
+    private static final String TAG = AbstractGameObject.class.getName();
 
     protected WorldController worldController;
     protected AbstractMovement movement = null;
@@ -17,6 +20,11 @@ public abstract class AbstractGameObject implements Cloneable {
     protected float height = 0;
     protected Object collisionMask;
     protected Sprite sprite;
+
+    public AbstractGameObject(final WorldController worldController) {
+        this.worldController = worldController;
+        initialize();
+    }
 
     /** By default the cloned object's worldController will point to the same world. */
     public AbstractGameObject clone() throws CloneNotSupportedException {
@@ -36,11 +44,6 @@ public abstract class AbstractGameObject implements Cloneable {
         return gameObjectClone;
     }
 
-    public AbstractGameObject(final WorldController worldController) {
-        this.worldController = worldController;
-        initialize();
-    }
-
     private void initialize() {
         initializeId();
         initializeDimensions();
@@ -48,7 +51,7 @@ public abstract class AbstractGameObject implements Cloneable {
         initializeMovement();
     }
 
-    private void initializeId() {
+    protected void initializeId() {
         this.ObjectId = worldController.getNextFreeId();
     }
 
