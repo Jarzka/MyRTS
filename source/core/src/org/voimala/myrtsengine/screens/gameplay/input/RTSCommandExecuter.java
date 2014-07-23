@@ -1,5 +1,6 @@
 package org.voimala.myrtsengine.screens.gameplay.input;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.app.GameMain;
 import org.voimala.myrtsengine.audio.AudioEffect;
@@ -31,40 +32,43 @@ public class RTSCommandExecuter {
                 handleCommandSelectUnit(method, selectCommand);
             }
         }
-
     }
 
     private void handleCommandMoveUnit(final ExecuteCommandMethod method, final RTSCommandMoveUnit rtsCommandMoveUnit) {
         AbstractUnit unit = worldController.getUnitContainerAllUnits().findUnitById(rtsCommandMoveUnit.getObjectId());
 
-        if (method == ExecuteCommandMethod.EXECUTE_LOCALLY) {
-            unit.getMovement().setSinglePathPoint(new Vector2(rtsCommandMoveUnit.getTargetPosition().x, rtsCommandMoveUnit.getTargetPosition().y));
+        if (unit != null) {
+            if (method == ExecuteCommandMethod.EXECUTE_LOCALLY) {
+                unit.getMovement().setSinglePathPoint(new Vector2(rtsCommandMoveUnit.getTargetPosition().x, rtsCommandMoveUnit.getTargetPosition().y));
 
-            // Play sound effect if local player made the command in singleplayer game
-            if (worldController.getGameplayScreen().getGameMode() == GameMode.SINGLEPLAYER
-                    && rtsCommandMoveUnit.getPlayerWhoMadeCommand() == GameMain.getInstance().getPlayer().getNumber()) {
-                worldController.getAudioEffectContainer().add(new AudioEffect(
-                        unit.getWorldController(),
-                        SoundContainer.getInstance().getRandomUnitCommandSound("m4-move"), // TODO Hardcoded value!
-                        1f,
-                        new Vector2(unit.getX(), unit.getY())));
+                // Play sound effect if local player made the command in singleplayer game
+                if (worldController.getGameplayScreen().getGameMode() == GameMode.SINGLEPLAYER
+                        && rtsCommandMoveUnit.getPlayerWhoMadeCommand() == GameMain.getInstance().getPlayer().getNumber()) {
+                    worldController.getAudioEffectContainer().add(new AudioEffect(
+                            unit.getWorldController(),
+                            SoundContainer.getInstance().getRandomUnitCommandSound("m4-move"), // TODO Hardcoded value!
+                            1f,
+                            new Vector2(unit.getX(), unit.getY())));
+                }
             }
-        }
 
-        if (method == ExecuteCommandMethod.ADD_TO_LOCAL_INPUT_QUEUE) {
-            LocalInputQueue.getInstance().addInput(new PlayerInput(
-                    GameMain.getInstance().getPlayer().getNumber(),
-                    MultiplayerSynchronizationManager.getInstance().getSimTick(),
-                    rtsCommandMoveUnit));
+            if (method == ExecuteCommandMethod.ADD_TO_LOCAL_INPUT_QUEUE) {
+                LocalInputQueue.getInstance().addInput(new PlayerInput(
+                        GameMain.getInstance().getPlayer().getNumber(),
+                        MultiplayerSynchronizationManager.getInstance().getSimTick(),
+                        rtsCommandMoveUnit));
 
-            // Play sound effect if local player made the command
-            if (rtsCommandMoveUnit.getPlayerWhoMadeCommand() == GameMain.getInstance().getPlayer().getNumber()) {
-                worldController.getAudioEffectContainer().add(new AudioEffect(
-                        unit.getWorldController(),
-                        SoundContainer.getInstance().getRandomUnitCommandSound("m4-move"), // TODO Hardcoded value!
-                        1f,
-                        new Vector2(unit.getX(), unit.getY())));
+                // Play sound effect if local player made the command
+                if (rtsCommandMoveUnit.getPlayerWhoMadeCommand() == GameMain.getInstance().getPlayer().getNumber()) {
+                    worldController.getAudioEffectContainer().add(new AudioEffect(
+                            unit.getWorldController(),
+                            SoundContainer.getInstance().getRandomUnitCommandSound("m4-move"), // TODO Hardcoded value!
+                            1f,
+                            new Vector2(unit.getX(), unit.getY())));
+                }
             }
+        } else {
+            Gdx.app.debug(TAG, "Unit " + rtsCommandMoveUnit.getObjectId() + " not found.");
         }
 
     }

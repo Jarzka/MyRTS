@@ -52,6 +52,8 @@ public class WorldController {
     public WorldController(final WorldController source) {
         initializeContainers();
 
+        this.gameplayScreen = source.getGameplayScreen();
+
         String sourceWorldHash = source.getGameStateHash();
 
         // Clone containers
