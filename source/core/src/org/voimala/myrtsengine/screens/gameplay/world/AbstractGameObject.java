@@ -81,8 +81,6 @@ public abstract class AbstractGameObject implements Cloneable {
     /** Updates the current position / size of the collision mask. Called on every world update. */
     protected abstract void updateCollisionMask();
 
-
-
     public float getX() {
         return position.x;
     }

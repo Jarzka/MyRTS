@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.audio.AudioEffect;
+import org.voimala.myrtsengine.screens.effects.AbstractEffect;
 import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
@@ -28,6 +29,8 @@ public class WorldController {
     private HashMap<Integer, UnitContainer> unitContainersForSpecificPlayers = new HashMap<Integer, UnitContainer>();
     private ArrayList<AbstractAmmunition> ammunitionContainer = new ArrayList<AbstractAmmunition>();
     private ArrayList<AbstractAmmunition> ammunitionToBeRemoved = new ArrayList<AbstractAmmunition>();
+    private ArrayList<AbstractEffect> effectsContainer = new ArrayList<AbstractEffect>();
+    private ArrayList<AbstractEffect> effectsToBeRemoved = new ArrayList<AbstractEffect>();
     private ArrayList<AudioEffect> audioEffectContainer = new ArrayList<AudioEffect>();
     private ArrayList<AudioEffect> audioEffectsToBeRemoved = new ArrayList<AudioEffect>();
     private long nextFreeId = 0;
@@ -43,12 +46,14 @@ public class WorldController {
 
     public final int TILE_SIZE_PIXELS = 256;
 
-    /** Copy constructor. */
+    /**
+     * Copy constructor.
+     */
     public WorldController(final WorldController source) {
         initializeContainers();
 
         // Clone containers
-        for (AbstractUnit unit : source.getAllUnits()){
+        for (AbstractUnit unit : source.getAllUnits()) {
             try {
                 AbstractUnit unitClone = unit.clone();
                 unitClone.setWorldController(this);
@@ -58,11 +63,21 @@ public class WorldController {
             }
         }
 
-        for (AbstractAmmunition abstractAmmunition : source.getAmmunitionContainer()) {
+        for (AbstractAmmunition ammunition : source.getAmmunitionContainer()) {
             try {
-                AbstractAmmunition ammunitionClone = abstractAmmunition.clone();
+                AbstractAmmunition ammunitionClone = ammunition.clone();
                 ammunitionClone.setWorldController(this);
                 ammunitionContainer.add(ammunitionClone);
+            } catch (CloneNotSupportedException e) {
+                // This should never happen. Continue without cloning this object.
+            }
+        }
+
+        for (AbstractEffect effect : source.getEffectsContainer()) {
+            try {
+                AbstractEffect effectClone = effect.clone();
+                effectClone.setWorldController(this);
+                effectsContainer.add(effectClone);
             } catch (CloneNotSupportedException e) {
                 // This should never happen. Continue without cloning this object.
             }
@@ -165,6 +180,7 @@ public class WorldController {
         updateUnits(deltaTime);
         updateAmmunition(deltaTime);
         updateAudioEffects();
+        updateEffects(deltaTime);
 
         if (!isPredictedWorld) {
             finishWorldUpdating();
@@ -184,6 +200,11 @@ public class WorldController {
             ammunitionContainer.remove(ammunition);
         }
         ammunitionToBeRemoved.clear();
+
+        for (AbstractEffect effect : effectsToBeRemoved) {
+            effectsContainer.remove(effect);
+        }
+        effectsToBeRemoved.clear();
     }
 
     private void updateUnits(final float deltaTime) {
@@ -201,6 +222,12 @@ public class WorldController {
     private void updateAudioEffects() {
         for (AudioEffect audioEffect : audioEffectContainer) {
             audioEffect.updateState();
+        }
+    }
+
+    private void updateEffects(final float deltaTime) {
+        for (AbstractEffect effect : effectsContainer) {
+            effect.updateState(deltaTime);
         }
     }
 
@@ -232,12 +259,21 @@ public class WorldController {
         return audioEffectContainer;
     }
 
+
+    public List<AbstractEffect> getEffectsContainer() {
+        return effectsContainer;
+    }
+
     public void tagAudioToBeRemovedInNextWorldUpdate(final AudioEffect audioEffectToBeRemoved) {
         audioEffectsToBeRemoved.add(audioEffectToBeRemoved);
     }
 
     public void tagAmmunitionToBeRemovedInNextWorldUpdate(AbstractAmmunition ammunitionToBeRemoved) {
         this.ammunitionToBeRemoved.add(ammunitionToBeRemoved);
+    }
+
+    public void tagEffectToBeRemoved(final AbstractEffect effect) {
+        this.effectsToBeRemoved.add(effect);
     }
 
     public String getGameStateHash() {
@@ -312,5 +348,4 @@ public class WorldController {
     public long getNextFreeId() {
         return nextFreeId++;
     }
-
 }

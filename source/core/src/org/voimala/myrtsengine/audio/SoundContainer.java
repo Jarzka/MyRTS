@@ -33,34 +33,44 @@ public class SoundContainer {
         return null;
     }
 
-    /** @param id The id should be in the following format: UNITNAME-COMMAND For example: m4-move */
-    public Sound getUnitCommandSound(final String id) {
+    /** @param id Given a sound id the method will randomly pick some version of the sound by adding a random
+     *  number at the end of the id (as long as the corresponding file is found)
+     *  The id should be in the following format: UNITNAME-COMMAND
+     *  Possible commands: select, move, attack
+     *  For example id is m4-move, the method can return m4-move1, m4-move2 or m4-move3
+     *  @return The asked Sound file. null is returned if the file is not found or last call was made less than 200ms ago. */
+    public Sound getRandomUnitCommandSound(final String id) {
         // Do not allow the game to play too many unit command sounds at the same time.
         if (System.currentTimeMillis() < unitCommandSoundLastGetTimestamp + 200) {
             return null;
         }
 
-        // TODO Use RegEx here?
         if (id.contains("-move") || id.contains("-select") || id.contains("-attack")) {
-            // Check the number of available audio files and choose one randomly
-            int maxIndex = 1;
-            while(true) {
-                if (sounds.get(id + maxIndex) != null) {
-                    maxIndex++;
-                    continue;
-                }
-
-                maxIndex--;
-                break;
-            }
-
-            unitCommandSoundLastGetTimestamp = System.currentTimeMillis();
-            Sound sound = sounds.get(id + RandomNumberGenerator.random(1, maxIndex));
-            return sound;
+            return getRandomSound(id);
         }
 
         Gdx.app.debug(TAG, "WARNING: Audio file not found: " + id);
         return null;
+    }
+
+    /** @param id Given a sound id the method will randomly pick some version of the sound by adding a random
+     *  number at the end of the id (as long as the corresponding file is found).*/
+    public Sound getRandomSound(final String id) {
+        // Check all available audio files and choose one randomly
+        int maxIndex = 1;
+        while(true) {
+            if (sounds.get(id + maxIndex) != null) {
+                maxIndex++;
+                continue;
+            }
+
+            maxIndex--;
+            break;
+        }
+
+        unitCommandSoundLastGetTimestamp = System.currentTimeMillis();
+        Sound sound = sounds.get(id + RandomNumberGenerator.random(1, maxIndex));
+        return sound;
     }
 
     public void addSound(final String id, final Sound sound) {

@@ -45,7 +45,7 @@ public class RTSCommandExecuter {
                     && rtsCommandMoveUnit.getPlayerWhoMadeCommand() == GameMain.getInstance().getPlayer().getNumber()) {
                 worldController.getAudioEffectContainer().add(new AudioEffect(
                         unit.getWorldController(),
-                        SoundContainer.getInstance().getUnitCommandSound("m4-move"), // TODO Hardcoded value!
+                        SoundContainer.getInstance().getRandomUnitCommandSound("m4-move"), // TODO Hardcoded value!
                         1f,
                         new Vector2(unit.getX(), unit.getY())));
             }
@@ -61,7 +61,7 @@ public class RTSCommandExecuter {
             if (rtsCommandMoveUnit.getPlayerWhoMadeCommand() == GameMain.getInstance().getPlayer().getNumber()) {
                 worldController.getAudioEffectContainer().add(new AudioEffect(
                         unit.getWorldController(),
-                        SoundContainer.getInstance().getUnitCommandSound("m4-move"), // TODO Hardcoded value!
+                        SoundContainer.getInstance().getRandomUnitCommandSound("m4-move"), // TODO Hardcoded value!
                         1f,
                         new Vector2(unit.getX(), unit.getY())));
             }
@@ -79,7 +79,7 @@ public class RTSCommandExecuter {
             if (rtsCommandSelectUnit.getPlayerWhoMadeCommand() == GameMain.getInstance().getPlayer().getNumber()) {
                 unit.getWorldController().getAudioEffectContainer().add(new AudioEffect(
                         unit.getWorldController(),
-                        SoundContainer.getInstance().getUnitCommandSound("m4-select"), // TODO Hardcoded value!
+                        SoundContainer.getInstance().getRandomUnitCommandSound("m4-select"), // TODO Hardcoded value!
                         1f,
                         new Vector2(unit.getX(), unit.getY())));
                 unit.setSelected(true);

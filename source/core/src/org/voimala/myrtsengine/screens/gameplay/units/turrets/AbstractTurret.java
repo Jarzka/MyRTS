@@ -3,6 +3,7 @@ package org.voimala.myrtsengine.screens.gameplay.units.turrets;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.audio.AudioEffect;
 import org.voimala.myrtsengine.audio.SoundContainer;
+import org.voimala.myrtsengine.screens.effects.GeneralMuzzleFire;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.weapons.AbstractWeapon;
@@ -222,7 +223,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
 
         if (hasTarget()) {
             if (isTargetInSight()) {
-                tryToShoot(); // TODO Uncomment
+                tryToShoot();
             } // If not, the logical rotation should rotate the turret towards the target
         }
     }
@@ -236,30 +237,33 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
     }
 
     private void tryToShoot() {
-        double asd = Math.cos(angleDeg);
-        double usd = Math.sin(angleDeg);
-        float angleBetweenOriginAndShootPosition = (float) MathHelper.getAngleBetweenPointsInRadians(
-                position.x,
-                position.y,
-                position.x + relativeShootPosition.x,
-                position.y + relativeShootPosition.y);
         float distanceBetweenOriginAndShootPosition = (float) MathHelper.getDistanceBetweenPoints(
                 position.x,
                 position.y,
                 position.x + relativeShootPosition.x,
                 position.y + relativeShootPosition.y);
-        AbstractAmmunition ammunition = weapon.tryToShoot(worldController, new Vector2(
-                        (float) (position.x + Math.cos(getAngleInRadians()
-                                + angleBetweenOriginAndShootPosition) * distanceBetweenOriginAndShootPosition),
-                        (float) (position.y + Math.sin(getAngleInRadians()
-                                + angleBetweenOriginAndShootPosition) * distanceBetweenOriginAndShootPosition)),
-                angleDeg /* + RandomNumberGenerator.random(0, accuracy) - RandomNumberGenerator.random(0, accuracy)*/
-        ); // TODO Can not use random numbers in multiplayer game? Use SimTick as hash?
+        float angleBetweenOriginAndShootPosition = (float) MathHelper.getAngleBetweenPointsInRadians(
+                position.x,
+                position.y,
+                position.x + relativeShootPosition.x,
+                position.y + relativeShootPosition.y);
 
-        if (ammunition != null) {
+        Vector2 spawnPoint = new Vector2( // TODO Close, but not right
+                (float) (position.x + Math.cos(getAngleInRadians()
+                        + angleBetweenOriginAndShootPosition) * distanceBetweenOriginAndShootPosition),
+                (float) (position.y + Math.sin(getAngleInRadians()
+                        + angleBetweenOriginAndShootPosition) * distanceBetweenOriginAndShootPosition));
+        AbstractAmmunition ammunition = weapon.tryToShoot(worldController, spawnPoint, angleDeg);
+        
+        // TODO Decrease accuracy? Use SimTick as hash?
+
+        if (ammunition != null) { // Weapon was fired
             worldController.getAmmunitionContainer().add(ammunition);
 
-            if (!worldController.isPredictedWorld()) {
+            GeneralMuzzleFire muzzleFire = new GeneralMuzzleFire(worldController, spawnPoint, angleDeg);
+            worldController.getEffectsContainer().add(muzzleFire);
+
+            if (!worldController.isPredictedWorld()) { // Play sound in real world
                 worldController.getAudioEffectContainer().add(
                         new AudioEffect(
                                 owner.getWorldController(),

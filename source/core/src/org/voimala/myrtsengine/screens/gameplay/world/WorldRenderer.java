@@ -17,6 +17,7 @@ import org.voimala.myrtsengine.app.GameMain;
 import org.voimala.myrtsengine.audio.SoundContainer;
 import org.voimala.myrtsengine.graphics.SpriteContainer;
 import org.voimala.myrtsengine.networking.ChatContainer;
+import org.voimala.myrtsengine.screens.effects.AbstractEffect;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrtsengine.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
@@ -54,6 +55,7 @@ public class WorldRenderer implements Disposable {
         initializeGroundSprites();
         initializeUnitSprites();
         initializeAmmunitionSprites();
+        initializeEffectSprites();
     }
 
     private void initializeGroundSprites() {
@@ -76,6 +78,20 @@ public class WorldRenderer implements Disposable {
         Texture texture = new Texture("graphics/weapons/m4-bullet.png");
         Sprite sprite = new Sprite(texture);
         SpriteContainer.getInstance().addSprite("m4-bullet", sprite);
+    }
+
+    private void initializeEffectSprites() {
+        Texture texture1 = new Texture("graphics/effects/muzzle-fires/general-muzzle-fire1.png");
+        Sprite sprite1 = new Sprite(texture1);
+        SpriteContainer.getInstance().addSprite("general-muzzle-fire1", sprite1);
+
+        Texture texture2 = new Texture("graphics/effects/muzzle-fires/general-muzzle-fire2.png");
+        Sprite sprite2 = new Sprite(texture2);
+        SpriteContainer.getInstance().addSprite("general-muzzle-fire2", sprite2);
+
+        Texture texture3 = new Texture("graphics/effects/muzzle-fires/general-muzzle-fire3.png");
+        Sprite sprite3 = new Sprite(texture3);
+        SpriteContainer.getInstance().addSprite("general-muzzle-fire3", sprite3);
     }
 
     private void initializeAudioEffects() {
@@ -146,6 +162,7 @@ public class WorldRenderer implements Disposable {
         renderGround();
         renderUnits(worldToBeRendered);
         renderAmmunition(worldToBeRendered);
+        renderEffects(worldToBeRendered);
         renderUnitEnergyBars(worldToBeRendered);
         renderHud();
         renderUnitSelectionRectangle();
@@ -210,6 +227,23 @@ public class WorldRenderer implements Disposable {
             sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
             sprite.setPosition(ammunition.getX() - sprite.getWidth() / 2, ammunition.getY() - sprite.getWidth() / 2);
             sprite.setRotation(ammunition.getAngle() - 90);
+            sprite.draw(batch);
+            batch.end();
+
+        }
+    }
+
+    private void renderEffects(final WorldController worldToBeRendered) {
+        for (AbstractEffect effect : worldToBeRendered.getEffectsContainer()) {
+
+            Sprite sprite = effect.getSprite();
+
+            // Draw unit
+            batch.begin();
+            sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2 - 40);
+            sprite.setPosition(effect.getX() - sprite.getWidth() / 2, effect.getY() - sprite.getWidth() / 2 + 40);
+            sprite.setRotation(effect.getAngle() - 90);
+            sprite.setAlpha(0.7f);
             sprite.draw(batch);
             batch.end();
 
