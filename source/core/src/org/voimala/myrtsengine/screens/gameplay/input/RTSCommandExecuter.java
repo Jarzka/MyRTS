@@ -7,6 +7,7 @@ import org.voimala.myrtsengine.audio.SoundContainer;
 import org.voimala.myrtsengine.screens.gameplay.input.commands.*;
 import org.voimala.myrtsengine.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
+import org.voimala.myrtsengine.screens.gameplay.world.GameMode;
 import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
 
 /** This class is used to perform RTS commands. */
@@ -39,8 +40,9 @@ public class RTSCommandExecuter {
         if (method == ExecuteCommandMethod.EXECUTE_LOCALLY) {
             unit.getMovement().setSinglePathPoint(new Vector2(rtsCommandMoveUnit.getTargetPosition().x, rtsCommandMoveUnit.getTargetPosition().y));
 
-            // Play sound effect if local player made the command
-            if (rtsCommandMoveUnit.getPlayerWhoMadeCommand() == GameMain.getInstance().getPlayer().getNumber()) {
+            // Play sound effect if local player made the command in singleplayer game
+            if (worldController.getGameplayScreen().getGameMode() == GameMode.SINGLEPLAYER
+                    && rtsCommandMoveUnit.getPlayerWhoMadeCommand() == GameMain.getInstance().getPlayer().getNumber()) {
                 worldController.getAudioEffectContainer().add(new AudioEffect(
                         unit.getWorldController(),
                         SoundContainer.getInstance().getUnitCommandSound("m4-move"), // TODO Hardcoded value!
@@ -49,11 +51,20 @@ public class RTSCommandExecuter {
             }
         }
 
-        if (method == ExecuteCommandMethod.SEND_TO_NETWORK_AT_THE_END_OF_SIMTICK) {
+        if (method == ExecuteCommandMethod.ADD_TO_LOCAL_INPUT_QUEUE) {
             LocalInputQueue.getInstance().addInput(new PlayerInput(
                     GameMain.getInstance().getPlayer().getNumber(),
                     MultiplayerSynchronizationManager.getInstance().getSimTick(),
                     rtsCommandMoveUnit));
+
+            // Play sound effect if local player made the command
+            if (rtsCommandMoveUnit.getPlayerWhoMadeCommand() == GameMain.getInstance().getPlayer().getNumber()) {
+                worldController.getAudioEffectContainer().add(new AudioEffect(
+                        unit.getWorldController(),
+                        SoundContainer.getInstance().getUnitCommandSound("m4-move"), // TODO Hardcoded value!
+                        1f,
+                        new Vector2(unit.getX(), unit.getY())));
+            }
         }
 
     }

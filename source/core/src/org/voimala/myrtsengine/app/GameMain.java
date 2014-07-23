@@ -7,6 +7,7 @@ import org.voimala.myrtsengine.graphics.SpriteContainer;
 import org.voimala.myrtsengine.networking.NetworkManager;
 import org.voimala.myrtsengine.screens.ScreenName;
 import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
+import org.voimala.myrtsengine.screens.gameplay.world.GameMode;
 import org.voimala.myrtsengine.screens.gameplay.world.Player;
 import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
 import org.voimala.myrtsengine.screens.loadgameplay.LoadGameScreen;
@@ -115,6 +116,5 @@ public class GameMain extends Game {
     public Player getPlayer() {
         return player;
     }
-
 
 }

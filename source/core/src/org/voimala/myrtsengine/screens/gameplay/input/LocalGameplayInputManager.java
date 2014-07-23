@@ -210,7 +210,7 @@ public class LocalGameplayInputManager {
         if (gameplayScreen.getWorldController().getGameplayScreen().getGameMode() == GameMode.SINGLEPLAYER) {
             method = ExecuteCommandMethod.EXECUTE_LOCALLY;
         } else if (gameplayScreen.getWorldController().getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
-            method = ExecuteCommandMethod.SEND_TO_NETWORK_AT_THE_END_OF_SIMTICK;
+            method = ExecuteCommandMethod.ADD_TO_LOCAL_INPUT_QUEUE;
         }
 
         gameplayScreen.getRTSCommandExecuter().executeCommand(
