@@ -199,20 +199,21 @@ public class WorldController {
     }
 
     public void updateWorld(final float deltaTime) {
-        removeTaggedObjects();
         updateUnits(deltaTime);
         updateAmmunition(deltaTime);
         updateAudioEffects();
         updateEffects(deltaTime);
+
+        removeTaggedObjects();
 
         if (!isPredictedWorld) {
             finishWorldUpdating();
         }
     }
 
-    /** If objects were removed during world update, it would cause problems since the WorldController would be
-     * still looping trough all objects. That's why objects that need to me removed will be added to a special
-     * container. Objects in that container will be deleted before the next world update. */
+    /** If objects were removed directly during world update, it would cause problems since the WorldController would be
+     * still looping trough all objects. That's why objects that need to me removed are be added to a special
+     * container and removed after world has been updated. */
     private void removeTaggedObjects() {
         for (AudioEffect audioEffect : audioEffectsToBeRemoved) {
             audioEffectContainer.remove(audioEffect);
