@@ -308,7 +308,7 @@ public class RTSProtocolManager {
     }
 
     /**
-     * @param playerInputs Player inputs, for example: [UNIT_MOVE-5-300-200][UNIT_ATTACK-6-80]
+     * @param playerInputs Player inputs, for example: [UNIT_MOVE?5?300?200][UNIT_ATTACK?6?80]
      * @return
      */
     public String createNetworkMessagePlayerInputsToBeSentForOtherPlayers(final long simTick,
@@ -319,7 +319,7 @@ public class RTSProtocolManager {
 
     public String createNetworkMessageInputMoveUnit(final long unitId,
                                                     final Vector2 targetPosition) {
-        return "[UNIT_MOVE-" + unitId + "-" + targetPosition.x + "-" + targetPosition.y + "]";
+        return "[UNIT_MOVE?" + unitId + "?" + targetPosition.x + "?" + targetPosition.y + "]";
     }
 
     public String createNetworkMessageInputNoInput() {
@@ -394,7 +394,7 @@ public class RTSProtocolManager {
     }
 
     /**
-     * @param networkMessageInputs Inputs that the player sent, for example: [UNIT_MOVE-5-300-200][UNIT_ATTACK-6-80]
+     * @param networkMessageInputs Inputs that the player sent, for example: [UNIT_MOVE?5?300?200][UNIT_ATTACK?6?80]
      */
     private List<AbstractRTSCommand> createRTSCommandsFromNetworkInputMessage(final int playerNumber, final String networkMessageInputs) {
         ArrayList<AbstractRTSCommand> commands = new ArrayList<AbstractRTSCommand>();
@@ -423,7 +423,7 @@ public class RTSProtocolManager {
     }
 
     /**
-     * @param individualNetworkInput Individual network input, for example: [UNIT_MOVE-5-300-200]
+     * @param individualNetworkInput Individual network input, for example: [UNIT_MOVE?5?300?200]
      */
     private AbstractRTSCommand createRTSCommandFromIndividualNetworkInputMessage(final int playerNumber, final String individualNetworkInput) {
         String[] networkMessageInputsSplitted = splitNetworkMessageInput(individualNetworkInput);
@@ -438,15 +438,15 @@ public class RTSProtocolManager {
     }
 
     /** Returns a string array which contains individual inputs in the of the message.
-     * Individual parts are separated by "-". "[" and "]" characters are removed.
+     * Individual parts are separated by "?". "[" and "]" characters are removed.
      * For example the following message:
-     * [THIS-IS-MESSAGE]
+     * [THIS?IS?MESSAGE]
      * will be splitted:
      * 0 THIS
      * 1 IS
      * 2 MESSAGE */
     public String[] splitNetworkMessageInput(final String message) {
-        String[] messageSplitted = message.split("\\-");
+        String[] messageSplitted = message.split("\\?");
         // Remove [ from the fist index
         messageSplitted[0] = messageSplitted[0].substring(1, messageSplitted[0].length());
         // Remove ] from the last index
