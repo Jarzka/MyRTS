@@ -52,6 +52,8 @@ public class WorldController {
     public WorldController(final WorldController source) {
         initializeContainers();
 
+        String sourceWorldHash = source.getGameStateHash();
+
         // Clone containers
         for (AbstractUnit unit : source.getAllUnits()) {
             try {
@@ -107,7 +109,10 @@ public class WorldController {
             }
         }
 
-        // TODO Is it necessary to clone audio container?
+        // Makes sure the original world was not modified
+        if (!sourceWorldHash.equals(source.getGameStateHash())) {
+            Gdx.app.debug(TAG, "ERROR: Original world was modifed during clone()!");
+        }
     }
 
     public WorldController() {

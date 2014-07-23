@@ -11,6 +11,9 @@ public class WorldControllerTest extends TestCase {
     @Test
     public void testClone() {
         WorldController worldControllerSource = new WorldController();
+
+        worldControllerSource.getUnitContainerAllUnits().getUnits().get(0).getTurrets().get(0).setTarget(
+                worldControllerSource.getUnitContainerAllUnits().getUnits().get(5));
         String originalWorldHash = worldControllerSource.getGameStateHash();
 
         WorldController worldControllerClone = new WorldController(worldControllerSource);
