@@ -16,8 +16,6 @@ import org.voimala.myrtsengine.app.GameMain;
 import org.voimala.myrtsengine.audio.SoundContainer;
 import org.voimala.myrtsengine.graphics.SpriteContainer;
 import org.voimala.myrtsengine.networking.ChatContainer;
-import org.voimala.myrtsengine.networking.ConnectionState;
-import org.voimala.myrtsengine.networking.NetworkManager;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrtsengine.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
@@ -284,8 +282,8 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderNetworkText() {
-        // TODO Render only if the waiting has lasted over 2 seconds
-        if (MultiplayerSynchronizationManager.getInstance().isWaitingInputForNextSimTick()) {
+        if (MultiplayerSynchronizationManager.getInstance().isWaitingInputForNextSimTick()
+                && MultiplayerSynchronizationManager.getInstance().getTimeStamptWaitingInputFromNetworkMs() > 2000) {
             hudBatch.begin();
             defaultFont.draw(hudBatch,
                     "Waiting for player...",

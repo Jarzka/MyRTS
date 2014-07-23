@@ -25,6 +25,7 @@ public class MultiplayerSynchronizationManager {
      */
     private long simTick = 0; /** "Communication turn" in multiplayer game. */
     private boolean isWaitingInputForNextSimTick = false;
+    private long startedWaitingInputTimestamp = 0;
 
     private MultiplayerSynchronizationManager() {}
 
@@ -48,6 +49,9 @@ public class MultiplayerSynchronizationManager {
         }
 
         isWaitingInputForNextSimTick = true;
+        if (startedWaitingInputTimestamp == 0) {
+            startedWaitingInputTimestamp = System.currentTimeMillis();
+        }
         /* Check that we have input information for the next SimTick so that we can
         * continue executing the simulation. If the input is not available for all players,
         * isWaitingInputForNextSimTick remains true.
@@ -58,6 +62,7 @@ public class MultiplayerSynchronizationManager {
             sendGameStateHash();
             isWaitingInputForNextSimTick = false;
             simTick++;
+            startedWaitingInputTimestamp = 0;
             Gdx.app.debug(TAG, "Player " + GameMain.getInstance().getPlayer().getNumber() + " world tick is "
                             + gameplayScreen.getWorldUpdateTick() + " and simtick is " + simTick);
             return true;
@@ -87,6 +92,14 @@ public class MultiplayerSynchronizationManager {
 
     public boolean isWaitingInputForNextSimTick() {
         return isWaitingInputForNextSimTick;
+    }
+
+    public long getTimeStamptWaitingInputFromNetworkMs() {
+        if (startedWaitingInputTimestamp == 0) {
+            return 0;
+        }
+
+        return System.currentTimeMillis() - startedWaitingInputTimestamp;
     }
 
 }

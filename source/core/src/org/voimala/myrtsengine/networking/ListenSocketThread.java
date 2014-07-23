@@ -58,7 +58,12 @@ public class ListenSocketThread extends Thread {
             connectionState = ConnectionState.CONNECTED;
         }
 
-        listenNetworkMessagesUntilDisconnected();
+        if (socket != null) {
+            if (socket.isConnected()) {
+                listenNetworkMessagesUntilDisconnected();
+            }
+        }
+
         handleDisconnection();
     }
 
@@ -119,33 +124,40 @@ public class ListenSocketThread extends Thread {
                     player.getName() + " " + "disconnected.")); // TODO Does not work?
         }
 
-        this.socket.dispose();
+        if (socket != null) {
+            this.socket.dispose();
+        }
+
         Gdx.app.debug(TAG, "Socket disconnected.");
     }
 
     private void connectToTheServer() {
         this.connectionState = ConnectionState.CONNECTING_TO_THE_SERVER;
 
-        try {
-            Gdx.app.debug(TAG, "Connecting to the server...");
-            socket = Gdx.net.newClientSocket(Net.Protocol.TCP, ip, port, socketHints);
-            connectionState = ConnectionState.CONNECTED;
-            Gdx.app.debug(TAG, "Connected to the server.");
-            sendMessage(RTSProtocolManager.getInstance().createNetworkMessageNewConnectionInfo(
-                    GameMain.getInstance().getPlayer().getName(),
-                    GameMain.getInstance().getPlayer().getNetworkId()));
-            Gdx.app.debug(TAG, "Sending player information.");
-        } catch (Exception e) {
-            connectionState = ConnectionState.NOT_CONNECTED;
-            Gdx.app.debug(TAG, "Could not connect to the server: " + e.getMessage());
-            Gdx.app.debug(TAG, "Trying again in a few seconds...");
-
+        while(running) {
             try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e1) {
-                // Continue
+                Gdx.app.debug(TAG, "Connecting to the server...");
+                socket = Gdx.net.newClientSocket(Net.Protocol.TCP, ip, port, socketHints);
+                connectionState = ConnectionState.CONNECTED;
+                Gdx.app.debug(TAG, "Connected to the server.");
+                sendMessage(RTSProtocolManager.getInstance().createNetworkMessageNewConnectionInfo(
+                        GameMain.getInstance().getPlayer().getName(),
+                        GameMain.getInstance().getPlayer().getNetworkId()));
+                Gdx.app.debug(TAG, "Sending player information.");
+                break;
+            } catch (Exception e) {
+                connectionState = ConnectionState.NOT_CONNECTED;
+                Gdx.app.debug(TAG, "Could not connect to the server: " + e.getMessage());
+                Gdx.app.debug(TAG, "Trying again in a few seconds...");
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e1) {
+                    // Continue
+                }
             }
         }
+
     }
 
     public void sendMessage(final String message) {
@@ -170,7 +182,11 @@ public class ListenSocketThread extends Thread {
 
     public void die() {
         running = false;
-        socket.dispose();
+
+        if (socket != null) {
+            socket.dispose();
+        }
+
     }
 
     public Socket getSocket() {

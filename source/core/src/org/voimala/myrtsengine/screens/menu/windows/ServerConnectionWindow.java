@@ -8,6 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
+import org.voimala.myrtsengine.networking.NetworkManager;
+import org.voimala.myrtsengine.screens.gameplay.input.NetworkInputQueue;
 import org.voimala.myrtsengine.screens.menu.MenuScreen;
 
 public class ServerConnectionWindow extends AbstractMenuWindow {
@@ -71,6 +73,7 @@ public class ServerConnectionWindow extends AbstractMenuWindow {
     }
 
     private void onCancelClicked() {
+        NetworkManager.getInstance().disconnectClientThread();
         menuScreen.hideWindow(getWindowName());
         menuScreen.showWindow(WindowName.MAIN_MENU);
     }

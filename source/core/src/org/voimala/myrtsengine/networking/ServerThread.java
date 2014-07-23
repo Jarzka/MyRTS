@@ -163,7 +163,9 @@ public class ServerThread extends Thread {
 
         serverRunning = false;
         gameRunning = false;
-        serverSocket.dispose();
+        if (serverSocket != null) {
+            serverSocket .dispose();
+        }
     }
 
     public void removeClient(final ListenSocketThread listenSocketThread) {
