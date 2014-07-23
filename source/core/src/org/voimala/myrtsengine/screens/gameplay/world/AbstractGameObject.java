@@ -99,6 +99,7 @@ public abstract class AbstractGameObject implements Cloneable {
         return position;
     }
 
+    /** Returns the angle in degrees. */
     public float getAngle() {
         return angleDeg;
     }
