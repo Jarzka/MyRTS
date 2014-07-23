@@ -1,6 +1,7 @@
 package org.voimala.myrtsengine.screens.gameplay.units.turrets;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.graphics.SpriteContainer;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.weapons.AbstractWeapon;
@@ -10,6 +11,9 @@ public class M4Turret extends AbstractTurret {
 
     public M4Turret(AbstractUnit owner) {
         super(owner, new M4());
+
+        relativePosition = new Vector2(0, 0);
+        relativeShootPosition = new Vector2(180, -13);
 
         maxRotationVelocity = 800;
         rotationAcceleration = 800;

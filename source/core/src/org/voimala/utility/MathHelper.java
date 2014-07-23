@@ -48,6 +48,39 @@ public class MathHelper {
             distance = angleSourceRadians - angleTargetRadians;
         }
 
+        if (angleSourceRadians > angleTargetRadians && rotationDirection == RotationDirection.COUNTERCLOCKWISE) {
+            distance = (Math.PI * 2) - angleSourceRadians + angleTargetRadians;
+        }
+
+        if (angleSourceRadians < angleTargetRadians && rotationDirection == RotationDirection.CLOCKWISE) {
+            distance = (Math.PI * 2) - angleTargetRadians + angleSourceRadians;
+        }
+
+        if (angleSourceRadians < angleTargetRadians && rotationDirection == RotationDirection.COUNTERCLOCKWISE) {
+            distance = angleTargetRadians - angleSourceRadians;
+        }
+
+        return distance;
+    }
+
+    public static double getShorterDistanceFromAngle1ToAngle2(double angleSourceRadians,
+                                                       double angleTargetRadians) {
+        RotationDirection rotationDirection = getFasterTurningDirection(angleSourceRadians, angleTargetRadians);
+
+        if (angleSourceRadians < 0 || angleSourceRadians > Math.PI * 2) {
+            throw new IllegalArgumentException("Angle 1 must be between 0 and PI * 2 (inclusive)");
+        }
+
+        if (angleTargetRadians < 0 || angleTargetRadians > Math.PI * 2) {
+            throw new IllegalArgumentException("Angle 2 must be between 0 and PI * 2 (inclusive)");
+        }
+
+        double distance = 0;
+
+        if (angleSourceRadians > angleTargetRadians && rotationDirection == RotationDirection.CLOCKWISE) {
+            distance = angleSourceRadians - angleTargetRadians;
+        }
+
         if (angleSourceRadians>angleTargetRadians && rotationDirection == RotationDirection.COUNTERCLOCKWISE) {
             distance = (Math.PI * 2) - angleSourceRadians + angleTargetRadians;
         }
@@ -62,28 +95,6 @@ public class MathHelper {
 
         return distance;
     }
-
-    /* This method is not needed and it has not been tested.
-    public static double getShortestDistanceBetweenAngles(double angle1Radians,
-                                                          double angle2Radians) {
-        double result1 = 0;
-        double result2 = 0;
-
-        if (angle1Radians > angle2Radians) {
-            result1 = angle1Radians - angle2Radians;
-            result2 = (Math.PI * 2) - angle1Radians + angle2Radians;
-        } else if (angle1Radians < angle2Radians) {
-            result1 = angle2Radians - angle1Radians;
-            result2 = (Math.PI * 2) - angle2Radians + angle1Radians;
-        }
-
-        if (result1 < result2) {
-            return result1;
-        }
-
-        return result2;
-    }
-    */
 
     /** @return Returns positive radians between two points. */
     public static double getAngleBetweenPointsInRadians(final double x1,

@@ -222,7 +222,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
 
         if (hasTarget()) {
             if (isTargetInSight()) {
-                tryToShoot();
+                tryToShoot(); // TODO Uncomment
             } // If not, the logical rotation should rotate the turret towards the target
         }
     }
@@ -236,9 +236,23 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
     }
 
     private void tryToShoot() {
+        double asd = Math.cos(angleDeg);
+        double usd = Math.sin(angleDeg);
+        float angleBetweenOriginAndShootPosition = (float) MathHelper.getAngleBetweenPointsInRadians(
+                position.x,
+                position.y,
+                position.x + relativeShootPosition.x,
+                position.y + relativeShootPosition.y);
+        float distanceBetweenOriginAndShootPosition = (float) MathHelper.getDistanceBetweenPoints(
+                position.x,
+                position.y,
+                position.x + relativeShootPosition.x,
+                position.y + relativeShootPosition.y);
         AbstractAmmunition ammunition = weapon.tryToShoot(worldController, new Vector2(
-                        position.x,
-                        position.y),
+                        (float) (position.x + Math.cos(getAngleInRadians()
+                                + angleBetweenOriginAndShootPosition) * distanceBetweenOriginAndShootPosition),
+                        (float) (position.y + Math.sin(getAngleInRadians()
+                                + angleBetweenOriginAndShootPosition) * distanceBetweenOriginAndShootPosition)),
                 angleDeg /* + RandomNumberGenerator.random(0, accuracy) - RandomNumberGenerator.random(0, accuracy)*/
         ); // TODO Can not use random numbers in multiplayer game? Use SimTick as hash?
 
