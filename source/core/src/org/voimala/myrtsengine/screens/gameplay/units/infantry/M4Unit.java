@@ -30,7 +30,7 @@ public class M4Unit extends AbstractInfantry {
     }
 
     protected void initializeCollisionMask() {
-        collisionMask = new Circle(position.x, position.y, width / 2);
+        collisionMask = new Circle(position.x, position.y, 70);
     }
 
     protected void initializeMovement() {
