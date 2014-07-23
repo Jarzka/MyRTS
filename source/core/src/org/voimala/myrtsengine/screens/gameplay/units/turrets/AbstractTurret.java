@@ -222,7 +222,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
         checkTargetIsStillInRange();
 
         if (hasTarget()) {
-            if (isTargetInSight()) {
+            if (turretIsRotatedTowardsTarget() && isTargetInSight(25)) {
                 tryToShoot();
             } // If not, the logical rotation should rotate the turret towards the target
         }
@@ -354,7 +354,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
         return false;
     }
 
-    public boolean isTargetInSight() {
+    public boolean turretIsRotatedTowardsTarget() {
         double angleBetweenTurretAndTargetInRadians = MathHelper.getAngleBetweenPointsInRadians(
                 position.x,
                 position.y,
@@ -362,6 +362,58 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
                 target.getPosition().y);
 
         return MathHelper.round(getAngle(), 0) == MathHelper.round(Math.toDegrees(angleBetweenTurretAndTargetInRadians), 0);
+    }
+
+    /** Return true if there are now obstacles between the turret and the target.
+     * @param accuracy How many pixels the dot will be moved per loop.
+     * Zero means very accurate and consumes lots of time. Max value is 200.
+     * */
+
+    public boolean isTargetInSight(int accuracy) {
+        if (accuracy > 200) {
+            accuracy = 200;
+        }
+
+        /* TODO This is used mainly for humans. Tanks' turret is higher than humans so humans are not
+         * in the line of sight. This method needs to improved when tanks and other units are added in to the game. */
+
+        // Create a dot
+        Vector2 checkSight = new Vector2(position);
+        double angleBetweenDotAndTargetRad = MathHelper.getAngleBetweenPointsInRadians(
+                checkSight.x,
+                checkSight.y,
+                target.getX(),
+                target.getY());
+
+        boolean isCollisionDetected;
+        checkSightLoop:
+        while (true) {
+            // Move the dot towards the target.
+            checkSight.x = (float) (checkSight.x + Math.cos(angleBetweenDotAndTargetRad) * accuracy);
+            checkSight.y = (float) (checkSight.y + Math.sin(angleBetweenDotAndTargetRad) * accuracy);
+
+            // Check if there is a collision between the dot and some obstacle.
+            for (AbstractUnit unit : worldController.getUnitContainerAllUnits().getUnits()) {
+                if (unit == owner || unit == target) {
+                    continue;
+                }
+
+                if (unit.onCollision(checkSight)) {
+                    isCollisionDetected = true;
+                    break checkSightLoop;
+                }
+            }
+
+            // TODO Check also other obstacles like buildings, trees, rocks etc.
+
+            // Target position reached
+            if (MathHelper.getDistanceBetweenPoints(checkSight.x, checkSight.y, target.getX(), target.getY()) <= accuracy) {
+                isCollisionDetected = false;
+                break;
+            }
+        }
+
+        return !isCollisionDetected;
     }
 
     public Vector2 getRelativePosition() {
