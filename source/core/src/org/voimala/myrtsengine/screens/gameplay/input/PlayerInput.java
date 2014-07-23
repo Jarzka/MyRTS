@@ -1,4 +1,6 @@
-package org.voimala.myrtsengine.screens.gameplay.input.commands;
+package org.voimala.myrtsengine.screens.gameplay.input;
+
+import org.voimala.myrtsengine.screens.gameplay.input.commands.AbstractRTSCommand;
 
 /** This class represents an command that a player has made during gameplay. */
 public class PlayerInput {

@@ -10,7 +10,9 @@ import org.voimala.myrtsengine.networking.RTSProtocolManager;
 import org.voimala.myrtsengine.screens.AbstractGameScreen;
 import org.voimala.myrtsengine.screens.gameplay.input.LocalGameplayInputManager;
 import org.voimala.myrtsengine.screens.gameplay.input.LocalGameplayInputProcessor;
-import org.voimala.myrtsengine.screens.gameplay.input.commands.RTSCommandExecuter;
+import org.voimala.myrtsengine.screens.gameplay.input.LocalInputQueue;
+import org.voimala.myrtsengine.screens.gameplay.input.NetworkInputQueue;
+import org.voimala.myrtsengine.screens.gameplay.input.RTSCommandExecuter;
 import org.voimala.myrtsengine.screens.gameplay.multiplayer.GameplayChatInputManager;
 import org.voimala.myrtsengine.screens.gameplay.multiplayer.MultiplayerSynchronizationManager;
 import org.voimala.myrtsengine.screens.gameplay.states.AbstractGameplayState;
@@ -29,10 +31,10 @@ public class GameplayScreen extends AbstractGameScreen {
 
     private AbstractGameplayState currentState = new GameplayStateRunning(this);
 
-    private LocalGameplayInputManager localGameplayInputManager;
-    private LocalGameplayInputProcessor localGameplayInputProcessor;
-    private GameplayChatInputManager gameplayChatInputManager;
-    private RTSCommandExecuter rtsCommandExecuter;
+    private LocalGameplayInputManager localGameplayInputManager; // TODO Convert to singleton?
+    private LocalGameplayInputProcessor localGameplayInputProcessor; // TODO Convert to singleton?
+    private GameplayChatInputManager gameplayChatInputManager; // TODO Convert to singleton?
+    private RTSCommandExecuter rtsCommandExecuter; // TODO Convert to singleton?
 
     private GameMode gameMode = GameMode.SINGLEPLAYER;
     private long lastWorldUpdateTimestamp = 0;
@@ -71,6 +73,9 @@ public class GameplayScreen extends AbstractGameScreen {
         MultiplayerSynchronizationManager.getInstance().setGameplayScreen(this);
         gameplayChatInputManager = new GameplayChatInputManager(this);
         Gdx.input.setInputProcessor(localGameplayInputProcessor);
+
+        LocalInputQueue.getInstance().setGameplayScreen(this);
+        NetworkInputQueue.getInstance().setGameplayScreen(this);
 
         rtsCommandExecuter = new RTSCommandExecuter(worldController);
     }
@@ -223,4 +228,5 @@ public class GameplayScreen extends AbstractGameScreen {
     public WorldRenderer getWorldRenderer() {
         return worldRenderer;
     }
+
 }

@@ -210,7 +210,7 @@ public class LocalGameplayInputManager {
         if (gameplayScreen.getWorldController().getGameplayScreen().getGameMode() == GameMode.SINGLEPLAYER) {
             method = ExecuteCommandMethod.EXECUTE_LOCALLY;
         } else if (gameplayScreen.getWorldController().getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
-            method = ExecuteCommandMethod.SEND_TO_NETWORK;
+            method = ExecuteCommandMethod.SEND_TO_NETWORK_AT_THE_END_OF_SIMTICK;
         }
 
         gameplayScreen.getRTSCommandExecuter().executeCommand(
@@ -218,8 +218,7 @@ public class LocalGameplayInputManager {
                 new RTSCommandMoveUnit(
                         GameMain.getInstance().getPlayer().getNumber(),
                         unit.getObjectId(),
-                        mouseLocationInWorld.x,
-                        mouseLocationInWorld.y));
+                        new Vector2(mouseLocationInWorld.x, mouseLocationInWorld.y)));
     }
 
     private void unselectAllUnits() {
