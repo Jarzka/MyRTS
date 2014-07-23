@@ -367,7 +367,10 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
     /** Return true if there are now obstacles between the turret and the target.
      * @param accuracy How many pixels the dot will be moved per loop.
      * Zero means very accurate and consumes lots of time. Max value is 200.
-     * */
+     */
+     // TODO There is a faster way to implement this:
+     // http://code.tutsplus.com/tutorials/quick-tip-collision-detection-between-a-circle-and-a-line-segment--active-10632
+     // https://www.google.fi/?gws_rd=ssl#q=%22line+rectangle+collision+detection
 
     public boolean isTargetInSight(int accuracy) {
         if (accuracy > 200) {
