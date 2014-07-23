@@ -52,7 +52,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
         turretClone.setRelativePosition(new Vector2(relativePosition.x, relativePosition.y));
         turretClone.setRelativeShootPosition(new Vector2(relativeShootPosition.x, relativeShootPosition.y));
 
-        turretClone.setTarget(null); // TODO This was originally target = null; Why did the WorldController test notice it?
+        turretClone.setTarget(null); // TODO This was originally target = null; Why didn't the WorldController test notice it?
 
         return turretClone;
     }
