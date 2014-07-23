@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.graphics.SpriteContainer;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
-import org.voimala.myrtsengine.screens.gameplay.weapons.AbstractWeapon;
 import org.voimala.myrtsengine.screens.gameplay.weapons.M4;
 
 public class M4Turret extends AbstractTurret {
@@ -25,7 +24,7 @@ public class M4Turret extends AbstractTurret {
     @Override
     public Sprite getSprite() {
         // TODO "enemytemp" sprite is temporary solution until colors can be set in runtime.
-        if (owner.getPlayerNumber() == 1) {
+        if (ownerUnit.getPlayerNumber() == 1) {
             return SpriteContainer.getInstance().getSprite("m4-stopped-0");
         } else {
             return SpriteContainer.getInstance().getSprite("m4-stopped-0_enemytemp");

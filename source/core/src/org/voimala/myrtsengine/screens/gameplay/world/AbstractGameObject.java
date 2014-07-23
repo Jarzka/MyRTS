@@ -161,4 +161,8 @@ public abstract class AbstractGameObject implements Cloneable {
     public void setWorldController(final WorldController worldController) {
         this.worldController = worldController;
     }
+
+    public WorldController getWorldController() {
+        return worldController;
+    }
 }

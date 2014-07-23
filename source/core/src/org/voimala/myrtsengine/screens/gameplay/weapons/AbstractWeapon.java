@@ -15,8 +15,9 @@ public abstract class AbstractWeapon implements Cloneable {
     protected int shootTimes; /// How many times the weapon is allowed to fire before it has to be reloaded
     protected int shotsFired; /// Is used to calculate number of shots before reload.
 
-    protected long bulletVelocity;
-    protected long maxTravelDistance; /// The ammunition will be destroyed if it travels more than this far.
+
+
+    protected WeaponOptions weaponOptions = new WeaponOptions();
 
     protected WeaponState weaponState = WeaponState.IDLE;
 
@@ -70,7 +71,14 @@ public abstract class AbstractWeapon implements Cloneable {
      * @param angle The target angle for the shot
      * @return The shot object (bullet, missile etc.)
      */
-    public abstract AbstractAmmunition tryToShoot(final WorldController worldController, final Vector2 position, final float angle);
+    public abstract AbstractAmmunition tryToShoot(
+            final WorldController worldController,
+            final Vector2 position,
+            final float angle,
+            WeaponOptions weaponOptions);
 
 
+    public WeaponOptions getWeaponOptions() {
+        return weaponOptions;
+    }
 }

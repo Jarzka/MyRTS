@@ -27,6 +27,7 @@ public class WorldController {
     private UnitContainer unitContainerAllUnits = new UnitContainer();
     /** Contains all units used by a specific player for fast access. Integer = Player number */
     private HashMap<Integer, UnitContainer> unitContainersForSpecificPlayers = new HashMap<Integer, UnitContainer>();
+    private ArrayList<AbstractUnit> unitsToBeRemoved = new ArrayList<AbstractUnit>();
     private ArrayList<AbstractAmmunition> ammunitionContainer = new ArrayList<AbstractAmmunition>();
     private ArrayList<AbstractAmmunition> ammunitionToBeRemoved = new ArrayList<AbstractAmmunition>();
     private ArrayList<AbstractEffect> effectsContainer = new ArrayList<AbstractEffect>();
@@ -205,6 +206,16 @@ public class WorldController {
             effectsContainer.remove(effect);
         }
         effectsToBeRemoved.clear();
+
+        for (AbstractUnit unit : unitsToBeRemoved) {
+            removeUnitFromWorld(unit);
+        }
+        unitsToBeRemoved.clear();
+    }
+
+    private void removeUnitFromWorld(final AbstractUnit unit) {
+        unitContainersForSpecificPlayers.get(unit.getPlayerNumber()).removeUnit(unit);
+        unitContainerAllUnits.removeUnit(unit);
     }
 
     private void updateUnits(final float deltaTime) {
@@ -259,7 +270,6 @@ public class WorldController {
         return audioEffectContainer;
     }
 
-
     public List<AbstractEffect> getEffectsContainer() {
         return effectsContainer;
     }
@@ -276,8 +286,11 @@ public class WorldController {
         this.effectsToBeRemoved.add(effect);
     }
 
+    public void tagUnitToBeRemoved(final AbstractUnit unit) {
+        this.unitsToBeRemoved.add(unit);
+    }
+
     public String getGameStateHash() {
-        // TODO Make sure that every client has a same container (units are in the same order etc.)
         String hash = "";
 
         // Final hash for production version
@@ -313,7 +326,6 @@ public class WorldController {
         //return md5(hash);
     }
 
-    // TODO http://javarevisited.blogspot.fi/2013/03/generate-md5-hash-in-java-string-byte-array-example-tutorial.html
     public static String md5(String message){
         String digest = null;
         try {

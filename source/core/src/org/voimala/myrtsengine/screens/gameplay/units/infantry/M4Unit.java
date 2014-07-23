@@ -12,6 +12,9 @@ public class M4Unit extends AbstractInfantry {
 
     public M4Unit(WorldController worldController) {
         super(worldController);
+
+        this.maxEnergy = 100;
+        this.energy = 100;
     }
 
     @Override

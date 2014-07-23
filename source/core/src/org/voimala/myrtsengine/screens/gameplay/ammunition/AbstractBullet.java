@@ -3,6 +3,8 @@ package org.voimala.myrtsengine.screens.gameplay.ammunition;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.movements.BulletMovement;
+import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
+import org.voimala.myrtsengine.screens.gameplay.weapons.WeaponOptions;
 import org.voimala.myrtsengine.screens.gameplay.world.AbstractGameObject;
 import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
 import org.voimala.utility.MathHelper;
@@ -10,12 +12,12 @@ import org.voimala.utility.MathHelper;
 public abstract class AbstractBullet extends AbstractAmmunition {
 
     protected Vector2 startPosition = null;
-    protected long maxTravelDistance = 0;
+    protected WeaponOptions weaponOptions;
 
-    public AbstractBullet(final WorldController worldController1, final double velocity, final long maxTravelDistance) {
+    public AbstractBullet(final WorldController worldController1, WeaponOptions weaponOptions) {
         super(worldController1);
-        this.movement.setVelocity(velocity);
-        this.maxTravelDistance = maxTravelDistance;
+        this.weaponOptions = weaponOptions;
+        this.movement.setVelocity(weaponOptions.getBulletVelocity());
     }
 
     public AbstractBullet clone() throws CloneNotSupportedException {
@@ -52,11 +54,24 @@ public abstract class AbstractBullet extends AbstractAmmunition {
     @Override
     public void updateState(final float deltaTime) {
         super.updateState(deltaTime);
+        checkCollision();
         checkDistanceLeft();
     }
 
+    private void checkCollision() {
+        for (AbstractUnit unit : worldController.getUnitContainerAllUnits().getUnits()) {
+            if (unit.onCollision(position)) {
+                unit.decreaseEnergy(weaponOptions.getHitPowerAgainstUnit(unit));
+                die();
+            }
+        }
+
+        // TODO Check also other obstacles like buildings, rocks, trees etc.
+    }
+
     private void checkDistanceLeft() {
-        if (MathHelper.getDistanceBetweenPoints(position.x, position.y, startPosition.x, startPosition.y) >= maxTravelDistance) {
+        if (MathHelper.getDistanceBetweenPoints(position.x, position.y, startPosition.x, startPosition.y)
+                >= weaponOptions.getMaxDistance()) {
             die();
         }
     }

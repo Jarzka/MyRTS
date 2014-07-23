@@ -2,8 +2,6 @@ package org.voimala.myrtsengine.screens.gameplay.units;
 
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.exceptions.GameLogicException;
-import org.voimala.myrtsengine.movements.AbstractMovement;
-import org.voimala.myrtsengine.screens.gameplay.GameplayScreen;
 import org.voimala.myrtsengine.screens.gameplay.units.turrets.AbstractTurret;
 import org.voimala.myrtsengine.screens.gameplay.world.AbstractGameObject;
 import org.voimala.myrtsengine.screens.gameplay.world.WorldController;
@@ -15,6 +13,8 @@ public abstract class AbstractUnit extends AbstractGameObject {
 
     protected int player = 0;
     protected int team = 0;
+    protected long energy = 0;
+    protected long maxEnergy = 100;
     protected UnitType type;
     protected boolean isSelected = false;
     protected ArrayList<AbstractTurret> turrets = new ArrayList<AbstractTurret>();
@@ -34,7 +34,7 @@ public abstract class AbstractUnit extends AbstractGameObject {
         ArrayList<AbstractTurret> turretsClone = new ArrayList<AbstractTurret>();
         for (AbstractTurret turret : turrets) {
             AbstractTurret turretClone = turret.clone();
-            turretClone.setOwner(unitClone);
+            turretClone.setOwnerUnit(unitClone);
             turretsClone.add(turretClone);
         }
         unitClone.setTurrets(turretsClone);
@@ -49,7 +49,18 @@ public abstract class AbstractUnit extends AbstractGameObject {
     @Override
     public void updateState(final float deltaTime) {
         super.updateState(deltaTime);
+        checkEnergy();
         updateTurretState(deltaTime);
+    }
+
+    protected void checkEnergy() {
+        if (energy <= 0) {
+            die();
+        }
+    }
+
+    public void die() {
+        worldController.tagUnitToBeRemoved(this);
     }
 
     private void updateTurretState(final float deltaTime) {
@@ -133,5 +144,21 @@ public abstract class AbstractUnit extends AbstractGameObject {
 
     public List<AbstractTurret> getTurrets() {
         return turrets;
+    }
+
+    public void setEnergy(final int energy) {
+        this.energy = energy;
+    }
+
+    public void increaseEnergy(final int energy) {
+        this.energy += energy;
+    }
+
+    public void decreaseEnergy(final int energy) {
+        this.energy -= energy;
+    }
+
+    public boolean isDead() {
+        return energy <= 0;
     }
 }
