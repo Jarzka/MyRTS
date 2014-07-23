@@ -21,7 +21,13 @@ public abstract class AbstractAmmunition extends AbstractGameObject {
     @Override
     public void initializeId() {
         super.initializeId();
-        Gdx.app.debug(TAG, "New ammunition created with id " + getObjectId());
-        Gdx.app.debug(TAG, "World is predicted: " + worldController.isPredictedWorld());
+
+        if (!worldController.isPredictedWorld()) {
+            Gdx.app.debug(TAG, "New ammunition created. id: " + getObjectId()
+                    + ". x: " + getX()
+                    + ". y: " + getY()
+                    + ". angle: " + getAngle());
+            Gdx.app.debug(TAG, "World is predicted: " + worldController.isPredictedWorld());
+        }
     }
 }

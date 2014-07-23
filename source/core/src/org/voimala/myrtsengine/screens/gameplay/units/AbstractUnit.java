@@ -152,8 +152,14 @@ public abstract class AbstractUnit extends AbstractGameObject {
     @Override
     public void initializeId() {
         super.initializeId();
-        Gdx.app.debug(TAG, "New unit created with id " + getObjectId());
-        Gdx.app.debug(TAG, "World is predicted: " + worldController.isPredictedWorld());
+
+        if (!worldController.isPredictedWorld()) {
+            Gdx.app.debug(TAG, "New unit created. id: " + getObjectId()
+                    + ". x: " + getX()
+                    + ". y: " + getY()
+                    + ". angle: " + getAngle());
+            Gdx.app.debug(TAG, "World is predicted: " + worldController.isPredictedWorld());
+        }
     }
 
     public void setEnergy(final int energy) {

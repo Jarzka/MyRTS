@@ -224,7 +224,7 @@ public class ServerThread extends Thread {
 
                 String otherHash = playerGameStateHashes.get(simTick + "_" + j);
                 if (!playerHash.equals(otherHash)) {
-                    Gdx.app.debug(TAG, "WARNING! player " + i + " hash:\n" + playerHash + "\nis not the same as player " + j
+                    Gdx.app.debug(TAG, "WARNING! at simtick " + simTick + " player " + i + " hash:\n" + playerHash + "\nis not the same as player " + j
                             + " hash:\n" + otherHash);
                     sendMessageToAllClients(RTSProtocolManager.getInstance().createNetworkMessageChatMessage(serverChatName,
                             "WARNING! GAME IS OUT OF SYNC AT SIMTICK " + simTick + "!"));
