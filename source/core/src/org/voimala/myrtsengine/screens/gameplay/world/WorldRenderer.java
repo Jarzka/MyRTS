@@ -1,6 +1,7 @@
 package org.voimala.myrtsengine.screens.gameplay.world;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -166,7 +167,7 @@ public class WorldRenderer implements Disposable {
         renderHud();
         renderUnitSelectionRectangle();
         renderInfoText();
-        //renderDebugHelpers(worldToBeRendered);
+        renderDebugHelpers(worldToBeRendered);
         renderNetworkText();
         renderChat();
     }
@@ -317,20 +318,23 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderDebugHelpers(WorldController worldToBeRendered) {
-        for (AbstractUnit unit : worldToBeRendered.getAllUnits()) {
-            for (AbstractTurret turret : unit.getTurrets()) {
-                if (turret.hasTarget()) {
-                    shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-                    shapeRenderer.setColor(0, 255, 0, (float) 0.5);
-                    shapeRenderer.line(worldToBeRendered.getGameplayScreen().getWorldCamera().project(
-                                    new Vector3(turret.getX(), turret.getY(), 0)),
-                            worldToBeRendered.getGameplayScreen().getWorldCamera().project(
-                                    new Vector3(turret.getTarget().getX(), turret.getTarget().getY(), 0))
-                    );
-                    shapeRenderer.end();
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            for (AbstractUnit unit : worldToBeRendered.getAllUnits()) {
+                for (AbstractTurret turret : unit.getTurrets()) {
+                    if (turret.hasTarget()) {
+                        shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+                        shapeRenderer.setColor(0, 255, 0, (float) 0.5);
+                        shapeRenderer.line(worldToBeRendered.getGameplayScreen().getWorldCamera().project(
+                                        new Vector3(turret.getX(), turret.getY(), 0)),
+                                worldToBeRendered.getGameplayScreen().getWorldCamera().project(
+                                        new Vector3(turret.getTarget().getX(), turret.getTarget().getY(), 0))
+                        );
+                        shapeRenderer.end();
+                    }
                 }
             }
         }
+
     }
 
     private void renderNetworkText() {
