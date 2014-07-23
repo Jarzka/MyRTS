@@ -3,7 +3,7 @@ package org.voimala.myrtsengine.screens.gameplay.units.turrets;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.audio.AudioEffect;
 import org.voimala.myrtsengine.audio.SoundContainer;
-import org.voimala.myrtsengine.screens.effects.GeneralMuzzleFire;
+import org.voimala.myrtsengine.screens.gameplay.effects.GeneralMuzzleFire;
 import org.voimala.myrtsengine.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrtsengine.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrtsengine.screens.gameplay.weapons.AbstractWeapon;
