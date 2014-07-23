@@ -4,6 +4,8 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import org.voimala.myrtsengine.app.GameMain;
 
+import javax.swing.*;
+
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
@@ -19,6 +21,20 @@ public class DesktopLauncher {
         config.foregroundFPS = 120;
         config.vSyncEnabled = true; // Warning: affects game world update rate
 
-		new LwjglApplication(GameMain.getInstance(), config);
+        try {
+            new LwjglApplication(GameMain.getInstance(), config);
+        } catch (Exception e) {
+            String errorMessage = "Serious error occurred and the execution can not continue." + "\n\n";
+            errorMessage += "Error information" + ": " + "\n";
+            errorMessage += e.toString() + "\n";
+            errorMessage += "Call stack" + ": " + "\n";
+            for (StackTraceElement element : e.getStackTrace()) {
+                errorMessage += element.toString() + "\n";
+            }
+
+            JOptionPane.showMessageDialog(null, errorMessage);
+            System.exit(0);
+        }
+
 	}
 }
