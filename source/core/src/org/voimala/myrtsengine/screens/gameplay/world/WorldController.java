@@ -41,7 +41,6 @@ public class WorldController {
     private boolean isPredictedWorld = false;
 
     private GameplayScreen gameplayScreen;
-    private OrthographicCamera worldCamera;
 
     private double hudSize = 1; // TODO Hud needs to be implemented
 
@@ -58,11 +57,35 @@ public class WorldController {
             try {
                 AbstractUnit unitClone = unit.clone();
                 unitClone.setWorldController(this);
+
+
                 storeUnitInContainer(unitClone);
             } catch (CloneNotSupportedException e) {
                 // This should never happen. Continue without cloning this object.
             }
         }
+
+        // Set turret targets to match corresponding units in the cloned world.
+        for (AbstractUnit clonedUnit : getAllUnits()) {
+            // Find source unit for this cloned unit
+            AbstractUnit unitSource = source.getUnitContainerAllUnits().findUnitById(clonedUnit.getObjectId());
+
+            for (AbstractTurret clonedTurret : clonedUnit.getTurrets()) {
+                // Find source turret for this turret
+                AbstractTurret turretSource = null;
+                for (AbstractTurret turret : unitSource.getTurrets()) {
+                    if (turret.getObjectId() == clonedTurret.getObjectId()) {
+                        turretSource = turret;
+                        break;
+                    }
+                }
+
+                if (turretSource.hasTarget()) {
+                    clonedTurret.setTarget(unitContainerAllUnits.findUnitById(turretSource.getTarget().getObjectId()));
+                }
+            }
+        }
+
 
         for (AbstractAmmunition ammunition : source.getAmmunitionContainer()) {
             try {
@@ -93,7 +116,6 @@ public class WorldController {
 
     private void initialize() {
         initializeContainers();
-        initializeCamera();
         initializeMap();
     }
 
@@ -103,13 +125,6 @@ public class WorldController {
         }
     }
 
-    private void initializeCamera() {
-        worldCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        worldCamera.lookAt(0, 0, 0);
-        worldCamera.translate(800, 800);
-        worldCamera.zoom = 4;
-        worldCamera.update();
-    }
 
     private void initializeMap() {
         // TODO For now we just create a simple test map.
@@ -246,10 +261,6 @@ public class WorldController {
         getGameplayScreen().getWorldRenderer().notifyWorldUpdated();
     }
 
-    public OrthographicCamera getWorldCamera() {
-        return worldCamera;
-    }
-
     public GameplayScreen getGameplayScreen() {
         return gameplayScreen;
     }
@@ -293,7 +304,6 @@ public class WorldController {
     public String getGameStateHash() {
         String hash = "";
 
-        // Final hash for production version
         for (AbstractUnit unit : getAllUnits()) {
             StringBuilder hashBuilder = new StringBuilder();
             hashBuilder.append("unit:" + unit.getObjectId() + " ");
@@ -307,6 +317,11 @@ public class WorldController {
                 hashBuilder.append("x:" + turret.getX() + " ");
                 hashBuilder.append("y:" + turret.getY() + " ");
                 hashBuilder.append("angle:" + turret.getAngleInRadians() + " ");
+                if (turret.hasTarget()) {
+                    hashBuilder.append("target:" + turret.getTarget().getObjectId());
+                } else {
+                    hashBuilder.append("target:null");
+                }
             }
             hash += "\n";
             hash += hashBuilder.toString();
@@ -323,7 +338,7 @@ public class WorldController {
         }
 
         return hash; // Used for testing purposes only
-        //return md5(hash);
+        //return md5(hash); // For production
     }
 
     public static String md5(String message){

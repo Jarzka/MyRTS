@@ -161,4 +161,16 @@ public abstract class AbstractUnit extends AbstractGameObject {
     public boolean isDead() {
         return energy <= 0;
     }
+
+    public long getEnergy() {
+        return energy;
+    }
+
+    public long getMaxEnergy() {
+        return maxEnergy;
+    }
+
+    public void removeTurrets() {
+        turrets.clear();
+    }
 }

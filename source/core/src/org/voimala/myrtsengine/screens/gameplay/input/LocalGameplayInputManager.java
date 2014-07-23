@@ -34,7 +34,7 @@ public class LocalGameplayInputManager {
 
     public LocalGameplayInputManager(final GameplayScreen gameplayScreen) {
         this.gameplayScreen = gameplayScreen;
-        cameraManager = new CameraManager(gameplayScreen.getWorldController().getWorldCamera());
+        cameraManager = new CameraManager(gameplayScreen.getWorldCamera());
     }
 
     /** Returns null if there is no active selection rectangle. */
@@ -72,7 +72,7 @@ public class LocalGameplayInputManager {
             unselectAllUnits();
             for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainerForSpecificPlayer(
                     GameMain.getInstance().getPlayer().getNumber()).getUnits()) {
-                Vector3 mouseLocationInWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(new Vector3(
+                Vector3 mouseLocationInWorld = gameplayScreen.getWorldCamera().unproject(new Vector3(
                         Gdx.input.getX(),
                         Gdx.input.getY(),
                         0));
@@ -90,22 +90,22 @@ public class LocalGameplayInputManager {
     private void handleSelectUnitsWithinRectangle() {
         if (unitSelectionRectangle != null) {
             if (mouseButtonLeftPressedLastFrame && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
-                Vector3 rectangleTopLeftWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
+                Vector3 rectangleTopLeftWorld = gameplayScreen.getWorldCamera().unproject(
                         new Vector3(unitSelectionRectangle.x,
                                 Gdx.graphics.getHeight() - unitSelectionRectangle.y - unitSelectionRectangle.height,
                                 0)
                 );
-                Vector3 rectangleTopRightWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
+                Vector3 rectangleTopRightWorld = gameplayScreen.getWorldCamera().unproject(
                         new Vector3(unitSelectionRectangle.x + unitSelectionRectangle.width,
                                 Gdx.graphics.getHeight() - unitSelectionRectangle.y - unitSelectionRectangle.height,
                                 0)
                 );
-                Vector3 rectangleBottomLeftWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
+                Vector3 rectangleBottomLeftWorld = gameplayScreen.getWorldCamera().unproject(
                         new Vector3(unitSelectionRectangle.x,
                                 Gdx.graphics.getHeight() - unitSelectionRectangle.y,
                                 0)
                 );
-                Vector3 rectangleBottomRightWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
+                Vector3 rectangleBottomRightWorld = gameplayScreen.getWorldCamera().unproject(
                         new Vector3(unitSelectionRectangle.x + unitSelectionRectangle.width,
                                 Gdx.graphics.getHeight() - unitSelectionRectangle.y,
                                 0)
@@ -201,7 +201,7 @@ public class LocalGameplayInputManager {
     }
 
     private void handleCommandMoveUnit(AbstractUnit unit) {
-        Vector3 mouseLocationInWorld = gameplayScreen.getWorldController().getWorldCamera().unproject(
+        Vector3 mouseLocationInWorld = gameplayScreen.getWorldCamera().unproject(
                 new Vector3(Gdx.input.getX(),
                         Gdx.input.getY(),
                         0));

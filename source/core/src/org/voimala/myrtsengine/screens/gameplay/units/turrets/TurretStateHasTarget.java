@@ -95,6 +95,7 @@ public class TurretStateHasTarget extends AbstractTurretState {
     }
 
     public boolean checkIfTargetIsInRange() {
+
         if (ownerTurret.hasTarget()) {
             if (MathHelper.getDistanceBetweenPoints(
                     ownerTurret.getPosition().x,

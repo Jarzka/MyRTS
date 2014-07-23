@@ -58,7 +58,7 @@ public class LocalGameplayInputProcessor implements InputProcessor{
     }
 
     private void handleInputZoom(int amount) {
-        OrthographicCamera camera = gameplayScreen.getWorldController().getWorldCamera();
+        OrthographicCamera camera = gameplayScreen.getWorldCamera();
 
         if (amount < 0) {
             if (camera.zoom > 1) {

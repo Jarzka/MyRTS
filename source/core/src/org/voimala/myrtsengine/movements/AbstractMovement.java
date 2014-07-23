@@ -182,4 +182,10 @@ public abstract class AbstractMovement implements Cloneable {
     public void setVelocity(final double velocity) {
         this.currentVelocity = velocity;
     }
+
+    public String getStateHash() {
+        String hash = "";
+        hash += owner.getPosition().x + owner.getPosition().y + owner.getAngle();
+        return hash;
+    }
 }

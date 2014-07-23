@@ -2,6 +2,7 @@ package org.voimala.myrtsengine.screens.gameplay;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import org.voimala.myrtsengine.app.GameMain;
 import org.voimala.myrtsengine.graphics.SpriteContainer;
 import org.voimala.myrtsengine.networking.ConnectionState;
@@ -36,6 +37,8 @@ public class GameplayScreen extends AbstractGameScreen {
     private GameplayChatInputManager gameplayChatInputManager; // TODO Convert to singleton?
     private RTSCommandExecuter rtsCommandExecuter; // TODO Convert to singleton?
 
+    private OrthographicCamera worldCamera;
+
     private GameMode gameMode = GameMode.SINGLEPLAYER;
     private long lastWorldUpdateTimestamp = 0;
     private long worldUpdateTick = 0;
@@ -47,6 +50,7 @@ public class GameplayScreen extends AbstractGameScreen {
         this.worldController = worldController;
         RTSProtocolManager.getInstance().setWorldController(worldController);
         initializeWorldRenderer();
+        initializeCamera();
         initializeInputManagers();
         initializeGameMode();
     }
@@ -65,6 +69,15 @@ public class GameplayScreen extends AbstractGameScreen {
             GameMain.getInstance().getPlayer().setTeam(1);
             setGameMode(GameMode.SINGLEPLAYER);
         }
+    }
+
+
+    private void initializeCamera() {
+        worldCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        worldCamera.lookAt(0, 0, 0);
+        worldCamera.translate(800, 800);
+        worldCamera.zoom = 4;
+        worldCamera.update();
     }
 
     private void initializeInputManagers() {
@@ -227,6 +240,10 @@ public class GameplayScreen extends AbstractGameScreen {
 
     public WorldRenderer getWorldRenderer() {
         return worldRenderer;
+    }
+
+    public OrthographicCamera getWorldCamera() {
+        return worldCamera;
     }
 
 }

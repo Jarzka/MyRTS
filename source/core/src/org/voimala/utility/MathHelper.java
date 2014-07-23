@@ -1,20 +1,25 @@
 package org.voimala.utility;
 
+import com.badlogic.gdx.Gdx;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 public class MathHelper {
+
+    private static final String TAG = MathHelper.class.getName();
+
     /** Is it faster to turn clockwise or counter-clockwise from angle1 to reach angle2. */
     public static RotationDirection getFasterTurningDirection(double angle1Radians,
                                                  double angle2Radians) {
         if (angle1Radians < 0 || angle1Radians > Math.PI * 2) {
-            throw new IllegalArgumentException("Angle 1 must be between 0 and PI * 2 (inclusive), "
+            Gdx.app.debug(TAG , "WARNING: Angle 1 should be between 0 and PI * 2 (inclusive), "
                     + angle1Radians + " " + "given.");
         }
 
         if (angle2Radians < 0 || angle2Radians > Math.PI * 2) {
-            throw new IllegalArgumentException("Angle 2 must be between 0 and PI * 2 (inclusive), "
-                    + angle2Radians + " " + "given.");
+            Gdx.app.debug(TAG , "WARNING: Angle 2 should be between 0 and PI * 2 (inclusive), "
+                    + angle1Radians + " " + "given.");
         }
 
         double distanceClockwise = getDistanceFromAngle1ToAngle2(angle1Radians,
@@ -35,11 +40,13 @@ public class MathHelper {
                                                        double angleTargetRadians,
                                                        RotationDirection rotationDirection) {
         if (angleSourceRadians < 0 || angleSourceRadians > Math.PI * 2) {
-            throw new IllegalArgumentException("Angle 1 must be between 0 and PI * 2 (inclusive)");
+            Gdx.app.debug(TAG , "WARNING: Angle 1 should be between 0 and PI * 2 (inclusive), "
+                    + angleSourceRadians + " " + "given.");
         }
 
         if (angleTargetRadians < 0 || angleTargetRadians > Math.PI * 2) {
-            throw new IllegalArgumentException("Angle 2 must be between 0 and PI * 2 (inclusive)");
+            Gdx.app.debug(TAG , "WARNING: Angle 2 should be between 0 and PI * 2 (inclusive), "
+                    + angleTargetRadians + " " + "given.");
         }
 
         double distance = 0;

@@ -37,6 +37,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
 
     /**
      * By default the clone will have the same owner as the original object. Target will be set to null.
+     * If the entire world is cloned, it should be possible to find the corresponding target in the cloned world.
      */
     public AbstractTurret clone() throws CloneNotSupportedException {
         AbstractTurret turretClone = (AbstractTurret) super.clone();
@@ -51,7 +52,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
         turretClone.setRelativePosition(new Vector2(relativePosition.x, relativePosition.y));
         turretClone.setRelativeShootPosition(new Vector2(relativeShootPosition.x, relativeShootPosition.y));
 
-        target = null;
+        turretClone.setTarget(null); // TODO This was originally target = null; Why did the WorldController test notice it?
 
         return turretClone;
     }

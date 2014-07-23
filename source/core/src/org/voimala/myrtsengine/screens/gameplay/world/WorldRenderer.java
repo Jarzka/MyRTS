@@ -148,7 +148,7 @@ public class WorldRenderer implements Disposable {
          * 90 degrees point to up etc. Libgdx seems to use a circle where 0 degrees
          * point to up, 90 degrees point to left etc. WorldRenderer makes the conversion
          * automatically. */
-        batch.setProjectionMatrix(worldController.getWorldCamera().combined);
+        batch.setProjectionMatrix(worldController.getGameplayScreen().getWorldCamera().combined);
 
         //renderMode = RenderMode.GAME_STATE; // TODO For testing purposes only
 
@@ -259,12 +259,12 @@ public class WorldRenderer implements Disposable {
                 Vector3 unitTopRightWorldCoordinates = new Vector3(unit.getX() + unit.getWidth() / 2,
                         unit.getY() + unit.getHeight() / 2, 0);
 
-                Vector3 unitTopLeftScreenCoordinates = worldController.getWorldCamera().project(unitTopLeftWorldCoordinates);
-                Vector3 unitTopRightScreenCoordinates = worldController.getWorldCamera().project(unitTopRightWorldCoordinates);
+                Vector3 unitTopLeftScreenCoordinates = worldController.getGameplayScreen().getWorldCamera().project(unitTopLeftWorldCoordinates);
+                Vector3 unitTopRightScreenCoordinates = worldController.getGameplayScreen().getWorldCamera().project(unitTopRightWorldCoordinates);
 
                 shapeRenderer.rect(unitTopLeftScreenCoordinates.x,
                         unitTopLeftScreenCoordinates.y,
-                        unitTopRightScreenCoordinates.x - unitTopLeftScreenCoordinates.x,
+                        ((float) unit.getEnergy() / (float) unit.getMaxEnergy()) * (unitTopRightScreenCoordinates.x - unitTopLeftScreenCoordinates.x),
                         10);
                 shapeRenderer.end();
             }
@@ -363,9 +363,9 @@ public class WorldRenderer implements Disposable {
     }
 
     public void resize(int width, int height) {
-        worldController.getWorldCamera().viewportWidth = width;
-        worldController.getWorldCamera().viewportHeight = height;
-        worldController.getWorldCamera().update();
+        worldController.getGameplayScreen().getWorldCamera().viewportWidth = width;
+        worldController.getGameplayScreen().getWorldCamera().viewportHeight = height;
+        worldController.getGameplayScreen().getWorldCamera().update();
 
         // Resize hud
         hudBatch = new SpriteBatch();
