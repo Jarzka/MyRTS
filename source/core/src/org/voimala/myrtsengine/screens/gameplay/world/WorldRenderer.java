@@ -166,7 +166,7 @@ public class WorldRenderer implements Disposable {
         renderHud();
         renderUnitSelectionRectangle();
         renderInfoText();
-        renderDebugHelpers(worldToBeRendered);
+        //renderDebugHelpers(worldToBeRendered);
         renderNetworkText();
         renderChat();
     }
