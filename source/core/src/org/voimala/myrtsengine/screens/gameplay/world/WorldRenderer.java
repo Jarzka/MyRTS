@@ -150,7 +150,7 @@ public class WorldRenderer implements Disposable {
          * automatically. */
         batch.setProjectionMatrix(worldController.getGameplayScreen().getWorldCamera().combined);
 
-        renderMode = RenderMode.GAME_STATE; // TODO For testing purposes only
+        //renderMode = RenderMode.GAME_STATE; // TODO For testing purposes only
 
         WorldController worldToBeRendered = worldController;
         if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
@@ -409,8 +409,8 @@ public class WorldRenderer implements Disposable {
           * Would it be possible to just synchronize the two game worlds? */
 
         if (worldController.getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
-            //worldControllerPredicted = new WorldController(worldController);
-            //worldControllerPredicted.setPredictedWorld(true);
+            worldControllerPredicted = new WorldController(worldController);
+            worldControllerPredicted.setPredictedWorld(true);
         }
     }
 }
