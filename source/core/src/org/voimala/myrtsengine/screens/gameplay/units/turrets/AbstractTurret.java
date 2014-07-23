@@ -254,7 +254,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
                 (float) (position.y + Math.sin(getAngleInRadians()
                         + angleBetweenOriginAndShootPosition) * distanceBetweenOriginAndShootPosition));
         AbstractAmmunition ammunition = weapon.tryToShoot(worldController, spawnPoint, angleDeg);
-        
+
         // TODO Decrease accuracy? Use SimTick as hash?
 
         if (ammunition != null) { // Weapon was fired
@@ -361,7 +361,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
                 target.getPosition().x,
                 target.getPosition().y);
 
-        return MathHelper.round(getAngle(), 1) != MathHelper.round(Math.toDegrees(angleBetweenTurretAndTargetInRadians), 1);
+        return MathHelper.round(getAngle(), 0) == MathHelper.round(Math.toDegrees(angleBetweenTurretAndTargetInRadians), 0);
     }
 
     public Vector2 getRelativePosition() {
