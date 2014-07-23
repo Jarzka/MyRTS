@@ -170,7 +170,7 @@ public class ListenSocketThread extends Thread {
 
             socket.getOutputStream().write(message.getBytes());
             socket.getOutputStream().flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
             if (socketType == SocketType.SERVER_SOCKET) {
                 Gdx.app.debug(TAG, "WARNING: Unable to send message to server: " + e.getMessage());
             } else if (socketType == SocketType.PLAYER_SOCKET) {
