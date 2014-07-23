@@ -221,7 +221,11 @@ public class WorldController {
         audioEffectsToBeRemoved.clear();
 
         for (AbstractAmmunition ammunition : ammunitionToBeRemoved) {
-            Gdx.app.debug(TAG, "About to remove ammunition. id: " + ammunition.getObjectId());
+            if (!isPredictedWorld()) {
+                Gdx.app.debug(TAG, "About to remove ammunition. id: " + ammunition.getObjectId());
+                Gdx.app.debug(TAG, "World is prediced: " + isPredictedWorld());
+            }
+
             ammunitionContainer.remove(ammunition);
         }
         ammunitionToBeRemoved.clear();
@@ -232,7 +236,10 @@ public class WorldController {
         effectsToBeRemoved.clear();
 
         for (AbstractUnit unit : unitsToBeRemoved) {
-            Gdx.app.debug(TAG, "About to remove unit . id: " + unit.getObjectId());
+            if (!isPredictedWorld()) {
+                Gdx.app.debug(TAG, "About to remove unit. id: " + unit.getObjectId());
+                Gdx.app.debug(TAG, "World is prediced: " + isPredictedWorld());
+            }
             removeUnitFromWorld(unit);
         }
         unitsToBeRemoved.clear();
