@@ -160,10 +160,12 @@ public class WorldRenderer implements Disposable {
             worldToBeRendered = worldControllerPredicted;
         }
 
+        batch.begin();
         renderGround();
         renderUnits(worldToBeRendered);
         renderAmmunition(worldToBeRendered);
         renderEffects(worldToBeRendered);
+        batch.end();
         renderUnitEnergyBars(worldToBeRendered);
         renderHud();
         renderUnitSelectionRectangle();
@@ -179,7 +181,6 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderGround() {
-        batch.begin();
         for (int i = 0; i < 60; i++) { // TODO Map size
             for (int j = 0; j < 60; j++) {
 
@@ -189,11 +190,9 @@ public class WorldRenderer implements Disposable {
 
             }
         }
-        batch.end();
     }
 
     private void renderUnits(final WorldController worldToBeRendered) {
-        batch.begin();
         for (AbstractUnit unit : worldToBeRendered.getAllUnits()) {
             // Draw unit
             Sprite unitSprite = unit.getSprite();
@@ -217,11 +216,9 @@ public class WorldRenderer implements Disposable {
                 }
             }
         }
-        batch.end();
     }
 
     private void renderAmmunition(final WorldController worldToBeRendered) {
-        batch.begin();
         for (AbstractAmmunition ammunition : worldToBeRendered.getAmmunitionContainer()) {
 
             Sprite sprite = ammunition.getSprite();
@@ -234,11 +231,9 @@ public class WorldRenderer implements Disposable {
 
 
         }
-        batch.end();
     }
 
     private void renderEffects(final WorldController worldToBeRendered) {
-        batch.begin();
         for (AbstractEffect effect : worldToBeRendered.getEffectsContainer()) {
 
             Sprite sprite = effect.getSprite();
@@ -250,7 +245,6 @@ public class WorldRenderer implements Disposable {
             sprite.setAlpha(1 - effect.getLivedLifeAsPercent());
             sprite.draw(batch);
         }
-        batch.end();
     }
 
     private void renderUnitEnergyBars(final WorldController worldToBeRendered) {
