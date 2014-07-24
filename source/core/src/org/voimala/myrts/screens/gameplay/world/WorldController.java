@@ -129,7 +129,8 @@ public class WorldController {
         // TODO For now we just create a simple test map.
         // The final implementation should load the map from hard disk.
         //createTestWorldSimple();
-        createTestWorldNormal();
+        //createTestWorldNormal();
+        createTestWorldNormalWithInputsShouldGoOutOfSync();
         //createTestWorldStreeTest();
     }
 
@@ -159,6 +160,31 @@ public class WorldController {
                 unit.setTeam(1);
                 unit.setPlayerNumber(1);
                 unit.setAngle(0);
+                unitContainer.addUnit(unit);
+            }
+        }
+
+        for (int i = 0; i < 12; i++) {
+            for (int j = 0; j < 12; j++) {
+                M4Unit unit = new M4Unit(this);
+                unit.setPosition(new Vector2(5000 + TILE_SIZE_PIXELS * i, 5000 + TILE_SIZE_PIXELS  * j));
+                unit.setPlayerNumber(2);
+                unit.setTeam(2);
+                unit.setAngle(180);
+                unitContainer.addUnit(unit);
+            }
+        }
+    }
+
+    private void createTestWorldNormalWithInputsShouldGoOutOfSync() {
+        for (int i = 0; i < 12; i++) {
+            for (int j = 0; j < 12; j++) {
+                M4Unit unit = new M4Unit(this);
+                unit.setPosition(new Vector2(500 + TILE_SIZE_PIXELS * i, 500 + TILE_SIZE_PIXELS  * j));
+                unit.setTeam(1);
+                unit.setPlayerNumber(1);
+                unit.setAngle(0);
+                unit.getMovement().addPathPoint(new Vector2(5000, 5000));
                 unitContainer.addUnit(unit);
             }
         }
