@@ -41,7 +41,7 @@ public class GameplayScreen extends AbstractGameScreen {
 
     private GameMode gameMode = GameMode.SINGLEPLAYER;
     private long lastWorldUpdateTimestamp = 0;
-    private long worldUpdateTick = 0;
+
     private long renderTick = 0;
 
     /** @param worldController Preloaded WorldController object.
@@ -131,7 +131,7 @@ public class GameplayScreen extends AbstractGameScreen {
              * increased for example every 10 world updates. Another solution is to decide that commands sent in turn x
              * will be executed for example in turn x + 3 globally. You should find out which method is simpler and more
              * reliable to implement. */
-            if (Float.valueOf(MultiplayerSynchronizationManager.getInstance().getSimTick()) == worldUpdateTick / 5f) {
+            if (Float.valueOf(MultiplayerSynchronizationManager.getInstance().getSimTick()) == worldController.getWorldUpdateTick() / 5f) {
                 MultiplayerSynchronizationManager.getInstance().handleNewSimTick();
             }
         }
@@ -139,7 +139,6 @@ public class GameplayScreen extends AbstractGameScreen {
 
     private void updateWorldUsingVariablePhysics(final float deltaTime) {
         worldController.updateWorld(deltaTime);
-        worldUpdateTick++;
         lastWorldUpdateTimestamp = System.currentTimeMillis();
     }
 
@@ -149,7 +148,6 @@ public class GameplayScreen extends AbstractGameScreen {
         if (System.currentTimeMillis() >= lastWorldUpdateTimestamp + (long) (((float) 1 / (float) fixedPhysicsFps) * 1000)) {
             float deltaTime = (float) 1 / (float) fixedPhysicsFps;
             worldController.updateWorld(deltaTime);
-            worldUpdateTick++;
             lastWorldUpdateTimestamp = System.currentTimeMillis();
         }
     }
@@ -204,10 +202,6 @@ public class GameplayScreen extends AbstractGameScreen {
 
     public long getLastWorldUpdateTimestamp() {
         return lastWorldUpdateTimestamp;
-    }
-
-    public long getWorldUpdateTick() {
-        return worldUpdateTick;
     }
 
     public long getRenderTick() {

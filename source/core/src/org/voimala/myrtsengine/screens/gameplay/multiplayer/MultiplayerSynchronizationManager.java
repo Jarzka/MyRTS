@@ -64,7 +64,7 @@ public class MultiplayerSynchronizationManager {
             simTick++;
             startedWaitingInputTimestamp = 0;
             Gdx.app.debug(TAG, "Player " + GameMain.getInstance().getPlayer().getNumber() + " world tick is "
-                            + gameplayScreen.getWorldUpdateTick() + " and simtick is " + simTick);
+                            + gameplayScreen.getWorldController().getWorldUpdateTick() + " and simtick is " + simTick);
             return true;
         }
 

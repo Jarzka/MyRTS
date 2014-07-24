@@ -40,6 +40,8 @@ public class WorldController {
      * "visually" */
     private boolean isPredictedWorld = false;
 
+    private long worldUpdateTick = 0;
+
     private GameplayScreen gameplayScreen;
 
     private double hudSize = 1; // TODO Hud needs to be implemented
@@ -209,6 +211,8 @@ public class WorldController {
         if (!isPredictedWorld) {
             finishWorldUpdating();
         }
+
+        worldUpdateTick++;
     }
 
     /** If objects were removed directly during world update, it would cause problems since the WorldController would be
@@ -391,5 +395,9 @@ public class WorldController {
 
     public long getNextFreeId() {
         return nextFreeId++;
+    }
+
+    public long getWorldUpdateTick() {
+        return worldUpdateTick;
     }
 }

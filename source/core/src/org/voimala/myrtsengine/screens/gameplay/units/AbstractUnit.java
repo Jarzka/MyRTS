@@ -154,7 +154,7 @@ public abstract class AbstractUnit extends AbstractGameObject {
         super.initializeId();
 
         if (!worldController.isPredictedWorld()) {
-            Gdx.app.debug(TAG, "New unit created at world update " + worldController.getGameplayScreen().getWorldUpdateTick()
+            Gdx.app.debug(TAG, "New unit created at world update " + worldController.getWorldUpdateTick()
                     + " id: " + getObjectId()
                     + ". x: " + getX()
                     + ". y: " + getY()

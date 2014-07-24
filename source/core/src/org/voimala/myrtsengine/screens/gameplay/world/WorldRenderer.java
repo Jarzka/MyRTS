@@ -307,7 +307,7 @@ public class WorldRenderer implements Disposable {
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight());
         defaultFont.draw(hudBatch,
-                "World Update Tick: " + worldController.getGameplayScreen().getWorldUpdateTick(),
+                "World Update Tick: " + worldController.getWorldUpdateTick(),
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 2);
         defaultFont.draw(hudBatch,
