@@ -346,6 +346,7 @@ public class WorldController {
         this.unitsToBeRemoved.add(unit);
     }
 
+    // TODO Time consuming process, do only once per second?
     public String getGameStateHash() {
         String hash = "";
 
@@ -382,8 +383,8 @@ public class WorldController {
             hash += hashBuilder.toString();
         }
 
-        return hash; // Used for testing purposes only
-        //return md5(hash); // For production
+        return hash; // Slow, used for testing purposes only
+        //return md5(hash); // Fast, production ready
     }
 
     public static String md5(String message){
