@@ -53,7 +53,9 @@ public class CarMovement extends AbstractMovement {
         // TODO Count buildings, trees, rocks etc. too
 
         if (!isCollisionDetected) {
-            owner.setPosition(nextPosition);
+            if (nextPosition.x != owner.getX() || nextPosition.y != owner.getY()) {
+                owner.setPosition(nextPosition);
+            }
         }
     }
 
