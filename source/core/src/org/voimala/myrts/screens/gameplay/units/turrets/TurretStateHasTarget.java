@@ -27,12 +27,16 @@ public class TurretStateHasTarget extends AbstractTurretState {
         checkIfTargetCanBeShot();
 
         if (!ownerTurret.hasTarget()) {
-            ownerTurret.setState(new TurretStateIdle(ownerTurret));
+            ownerTurret.findClosestEnemyInRange(); // Check if there are more enemy units in range
+            if (!ownerTurret.hasTarget()) {
+                ownerTurret.setState(new TurretStateIdle(ownerTurret));
+            }
         }
     }
 
     private boolean checkIfTargetIsDead() {
         if (ownerTurret.getTarget() == null) {
+
             return true;
         }
 

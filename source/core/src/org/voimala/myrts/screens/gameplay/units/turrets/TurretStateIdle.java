@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class TurretStateIdle extends AbstractTurretState {
 
     private long timeSpentSinceLastAttemptToTryToFindNewTargetMs = 0;
-    private final long findNewTargetIdleMs = 500;
+    private final long findNewTargetIdleMs = 0; // Saves time but causes turrets to lag.
 
     public TurretStateIdle(AbstractTurret owner) {
         super(owner);
@@ -19,7 +19,13 @@ public class TurretStateIdle extends AbstractTurretState {
     public void updateState(final float deltaTime) {
         timeSpentSinceLastAttemptToTryToFindNewTargetMs += deltaTime * 1000;
         rotateTowardsOwnerUnit();
-        findNewClosestTarget();
+
+        // This is somewhat time consuming method so do not run it on every world update.
+        if (timeSpentSinceLastAttemptToTryToFindNewTargetMs >= findNewTargetIdleMs) {
+            timeSpentSinceLastAttemptToTryToFindNewTargetMs = 0;
+            ownerTurret.findNewClosestTarget();
+            changeStateIfTargetFound();
+        }
     }
 
     private void rotateTowardsOwnerUnit() {
@@ -56,65 +62,12 @@ public class TurretStateIdle extends AbstractTurretState {
         }
     }
 
-    /** Does nothing if less than 0.5 seconds have passed since last call */
-    private void findNewClosestTarget() {
-        // This is somewhat time consuming method so do not run it on every world update.
-        if (timeSpentSinceLastAttemptToTryToFindNewTargetMs >= findNewTargetIdleMs) {
-            timeSpentSinceLastAttemptToTryToFindNewTargetMs = 0;
 
-            // Target is null if nothing is found.
-            ownerTurret.setTarget(findClosestEnemyInRange());
-
-            changeStateIfTargetFound();
-        }
-    }
 
     private void changeStateIfTargetFound() {
         if (ownerTurret.hasTarget()) {
             ownerTurret.setState(new TurretStateHasTarget(ownerTurret));
         }
-    }
-
-    protected AbstractUnit findClosestEnemyInRange() {
-        // TODO Very time consuming method
-        // Find all units in range
-        ArrayList<AbstractUnit> targetsInRange = new ArrayList<AbstractUnit>();
-        for (AbstractUnit unit : ownerTurret.getWorldController().getUnitContainerAllUnits().getUnits()) {
-            if (unit.getTeam() == ownerTurret.getOwnerUnit().getTeam()) {
-                continue;
-            }
-
-            if (MathHelper.getDistanceBetweenPoints(ownerTurret.getPosition().x,
-                    ownerTurret.getPosition().y,
-                    unit.getX(),
-                    unit.getY()) <= ownerTurret.getRange()) {
-                targetsInRange.add(unit);
-            }
-        }
-
-        // Find the closest one
-
-        AbstractUnit currentClosestTarget = null;
-        if (!targetsInRange.isEmpty()) {
-            currentClosestTarget = targetsInRange.get(0);
-        }
-
-        for (AbstractUnit unit : targetsInRange) {
-            if (MathHelper.getDistanceBetweenPoints(
-                    ownerTurret.getPosition().x,
-                    ownerTurret.getPosition().y,
-                    unit.getX(),
-                    unit.getY()) <
-                    MathHelper.getDistanceBetweenPoints(
-                            ownerTurret.getPosition().x,
-                            ownerTurret.getPosition().y,
-                            currentClosestTarget.getX(),
-                            currentClosestTarget.getY())) {
-                currentClosestTarget = unit;
-            }
-        }
-
-        return currentClosestTarget;
     }
 
 }

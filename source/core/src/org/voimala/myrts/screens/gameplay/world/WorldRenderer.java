@@ -179,8 +179,8 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderGround() {
-        for (int i = 0; i < 40; i++) { // TODO Map size
-            for (int j = 0; j < 40; j++) {
+        for (int i = 0; i < 60; i++) { // TODO Map size
+            for (int j = 0; j < 60; j++) {
                 batch.begin();
                 Sprite sprite = SpriteContainer.getInstance().getSprite("grass1");
                 sprite.setPosition(i * worldController.TILE_SIZE_PIXELS, j * worldController.TILE_SIZE_PIXELS);
@@ -414,8 +414,7 @@ public class WorldRenderer implements Disposable {
          * physics prediction is used. When the actual game world is updated, it is used as a base for the next
          * predicted game world. */
 
-         /* TODO Cloning the entire game world is a VERY time consuming process.
-          * Would it be possible to just synchronize the two game worlds? */
+
 
         if (worldController.getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
                 if (worldControllerPredicted == null) {

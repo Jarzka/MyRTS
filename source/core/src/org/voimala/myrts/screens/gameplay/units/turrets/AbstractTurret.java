@@ -4,7 +4,10 @@ import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
 import org.voimala.myrts.screens.gameplay.weapons.AbstractWeapon;
 import org.voimala.myrts.screens.gameplay.world.AbstractGameObject;
+import org.voimala.utility.MathHelper;
 import org.voimala.utility.RotationDirection;
+
+import java.util.ArrayList;
 
 public abstract class AbstractTurret extends AbstractGameObject implements Cloneable {
 
@@ -223,5 +226,54 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
 
     public double getRotationDeceleration() {
         return rotationDeceleration;
+    }
+
+    public void findNewClosestTarget() {
+        // Target is null if nothing is found.
+        setTarget(findClosestEnemyInRange());
+
+
+    }
+
+    protected AbstractUnit findClosestEnemyInRange() {
+        // TODO Somewhat time consuming method
+        // Find all units in range
+        ArrayList<AbstractUnit> targetsInRange = new ArrayList<AbstractUnit>();
+        for (AbstractUnit unit : getWorldController().getUnitContainerAllUnits().getUnits()) {
+            if (unit.getTeam() == getOwnerUnit().getTeam()) {
+                continue;
+            }
+
+            if (MathHelper.getDistanceBetweenPoints(getPosition().x,
+                    getPosition().y,
+                    unit.getX(),
+                    unit.getY()) <= getRange()) {
+                targetsInRange.add(unit);
+            }
+        }
+
+        // Find the closest one
+
+        AbstractUnit currentClosestTarget = null;
+        if (!targetsInRange.isEmpty()) {
+            currentClosestTarget = targetsInRange.get(0);
+        }
+
+        for (AbstractUnit unit : targetsInRange) {
+            if (MathHelper.getDistanceBetweenPoints(
+                    getPosition().x,
+                    getPosition().y,
+                    unit.getX(),
+                    unit.getY()) <
+                    MathHelper.getDistanceBetweenPoints(
+                            getPosition().x,
+                            getPosition().y,
+                            currentClosestTarget.getX(),
+                            currentClosestTarget.getY())) {
+                currentClosestTarget = unit;
+            }
+        }
+
+        return currentClosestTarget;
     }
 }

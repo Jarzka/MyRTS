@@ -137,7 +137,9 @@ public class WorldController {
     private void initializeMap() {
         // TODO For now we just create a simple test map.
         // The final implementation should load the map from hard disk.
-        createTestWorldNormal();
+        //createTestWorldSimple();
+        //createTestWorldNormal();
+        createTestWorldStreeTest();
     }
 
     private void createTestWorldSimple() {
@@ -183,8 +185,8 @@ public class WorldController {
     }
 
     private void createTestWorldStreeTest() {
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 15; j++) {
+        for (int i = 0; i < 25; i++) {
+            for (int j = 0; j < 25; j++) {
                 M4Unit unit = new M4Unit(this);
                 unit.setPosition(new Vector2(500 + TILE_SIZE_PIXELS * i, 500 + TILE_SIZE_PIXELS  * j));
                 unit.setTeam(1);
@@ -194,10 +196,10 @@ public class WorldController {
             }
         }
 
-        for (int i = 0; i < 15; i++) {
-            for (int j = 0; j < 15; j++) {
+        for (int i = 0; i < 25; i++) {
+            for (int j = 0; j < 25; j++) {
                 M4Unit unit = new M4Unit(this);
-                unit.setPosition(new Vector2(6000 + TILE_SIZE_PIXELS * i, 6000 + TILE_SIZE_PIXELS  * j));
+                unit.setPosition(new Vector2(9000 + TILE_SIZE_PIXELS * i, 9000 + TILE_SIZE_PIXELS  * j));
                 unit.setPlayerNumber(2);
                 unit.setTeam(2);
                 unit.setAngle(180);
@@ -425,7 +427,7 @@ public class WorldController {
 
     /** When done, will return a world that is the same as target. */
     public static WorldController synchronizeWorlds(WorldController source, final WorldController target) {
-        // TODO Currently this is just a dumb clone operation.
+        // TODO Currently this is just a dumb clone operation. This is a VERY time consuming process.
         WorldController newSource = new WorldController(target);
         return newSource;
     }
