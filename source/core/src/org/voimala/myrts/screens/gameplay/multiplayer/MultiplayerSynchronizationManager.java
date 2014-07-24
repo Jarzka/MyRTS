@@ -27,6 +27,8 @@ public class MultiplayerSynchronizationManager {
     private boolean isWaitingInputForNextSimTick = false;
     private long startedWaitingInputTimestamp = 0;
 
+    private int sendHashEveryNthSimTick = 4; /** 1 = means send hash on every SimTick, 3 every third SimTick etc.*/
+
     private MultiplayerSynchronizationManager() {}
 
     public static MultiplayerSynchronizationManager getInstance() {
@@ -72,12 +74,14 @@ public class MultiplayerSynchronizationManager {
     }
 
     private void sendGameStateHash() {
-        String hash = gameplayScreen.getWorldController().getGameStateHash();
+        if (simTick % sendHashEveryNthSimTick == 0) {
+            String hash = gameplayScreen.getWorldController().getGameStateHash();
 
-        NetworkManager.getInstance().getClientThread().sendMessage(
-                RTSProtocolManager.getInstance().createNetworkMessageGameStateHash(
-                        simTick,
-                        hash));
+            NetworkManager.getInstance().getClientThread().sendMessage(
+                    RTSProtocolManager.getInstance().createNetworkMessageGameStateHash(
+                            simTick,
+                            hash));
+        }
     }
 
     public long getSimTick() {
