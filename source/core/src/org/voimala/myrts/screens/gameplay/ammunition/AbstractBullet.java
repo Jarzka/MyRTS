@@ -58,7 +58,7 @@ public abstract class AbstractBullet extends AbstractAmmunition {
     }
 
     private void checkCollision() {
-        for (AbstractUnit unit : worldController.getUnitContainerAllUnits().getUnits()) {
+        for (AbstractUnit unit : worldController.getUnitContainer().getAllUnits()) {
             if (unit.onCollision(position)) {
                 unit.decreaseEnergy(weaponOptions.getHitPowerAgainstUnit(unit));
                 die();

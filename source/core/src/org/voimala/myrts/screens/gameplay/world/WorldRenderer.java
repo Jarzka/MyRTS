@@ -193,7 +193,7 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnits(final WorldController worldToBeRendered) {
-        for (AbstractUnit unit : worldToBeRendered.getUnitContainerAllUnits().getUnits()) {
+        for (AbstractUnit unit : worldToBeRendered.getUnitContainer().getAllUnits()) {
             // Draw unit
             Sprite unitSprite = unit.getSprite();
             if (unitSprite != null) {
@@ -248,7 +248,7 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnitEnergyBars(final WorldController worldToBeRendered) {
-        for (AbstractUnit unit : worldToBeRendered.getUnitContainerAllUnits().getUnits()) {
+        for (AbstractUnit unit : worldToBeRendered.getUnitContainer().getAllUnits()) {
             if (unit.isSelected()) {
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                 shapeRenderer.setColor(Color.WHITE);
@@ -303,7 +303,7 @@ public class WorldRenderer implements Disposable {
                         + worldController.getGameplayScreen().getRenderTick() + ", mode: " + renderModeText + ")",
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight());
-        defaultFont.draw(hudBatch, "Units: " + worldController.getUnitContainerAllUnits().getUnits().size(),
+        defaultFont.draw(hudBatch, "Units: " + worldController.getUnitContainer().getAllUnits().size(),
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 2);
         defaultFont.draw(hudBatch,
@@ -319,7 +319,7 @@ public class WorldRenderer implements Disposable {
 
     private void renderDebugHelpers(WorldController worldToBeRendered) {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            for (AbstractUnit unit : worldToBeRendered.getUnitContainerAllUnits().getUnits()) {
+            for (AbstractUnit unit : worldToBeRendered.getUnitContainer().getAllUnits()) {
                 for (AbstractTurret turret : unit.getTurrets()) {
                     if (turret.hasTarget()) {
                         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);

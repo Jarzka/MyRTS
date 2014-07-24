@@ -38,7 +38,7 @@ public class CarMovement extends AbstractMovement {
 
         boolean isCollisionDetected = false;
         /* TODO Currently buggy
-        for (AbstractUnit unit : owner.getWorldController().getUnitContainerAllUnits().getUnits()) {
+        for (AbstractUnit unit : owner.getWorldController().getUnitContainer().getAllUnits()) {
             if (unit == owner) {
                 continue;
             }

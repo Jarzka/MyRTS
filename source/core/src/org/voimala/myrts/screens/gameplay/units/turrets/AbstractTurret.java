@@ -237,7 +237,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
         // TODO Very time consuming method
         // Find all units in range
         ArrayList<AbstractUnit> targetsInRange = new ArrayList<AbstractUnit>();
-        for (AbstractUnit unit : getWorldController().getUnitContainerAllUnits().getUnits()) {
+        for (AbstractUnit unit : getWorldController().getUnitContainer().getAllUnits()) {
             if (unit.getTeam() == getOwnerUnit().getTeam()) {
                 continue;
             }

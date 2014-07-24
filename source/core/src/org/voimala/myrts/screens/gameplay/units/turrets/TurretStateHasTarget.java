@@ -157,7 +157,7 @@ public class TurretStateHasTarget extends AbstractTurretState {
             checkSight.y = (float) (checkSight.y + Math.sin(angleBetweenDotAndTargetRad) * accuracy);
 
             // Check if there is a collision between the dot and some obstacle.
-            for (AbstractUnit unit : ownerTurret.getWorldController().getUnitContainerAllUnits().getUnits()) {
+            for (AbstractUnit unit : ownerTurret.getWorldController().getUnitContainer().getAllUnits()) {
                 if (unit == ownerTurret.getOwnerUnit()
                     || unit == ownerTurret.getTarget()
                     || unit.getTeam() != ownerTurret.getOwnerUnit().getTeam() ) {
