@@ -346,12 +346,11 @@ public class WorldController {
         this.unitsToBeRemoved.add(unit);
     }
 
-    // TODO Time consuming process, do only once per second?
+    // TODO Time consuming process, do only once per second? Tai kokeile StringBuilderia?
     public String getGameStateHash() {
-        String hash = "";
+        StringBuilder hashBuilder = new StringBuilder();
 
         for (AbstractUnit unit : getAllUnits()) {
-            StringBuilder hashBuilder = new StringBuilder();
             hashBuilder.append("unit:" + unit.getObjectId() + " ");
             hashBuilder.append("x:" + unit.getObjectId() + unit.getX() + " ");
             hashBuilder.append("y:" + unit.getY() + " ");
@@ -369,22 +368,19 @@ public class WorldController {
                     hashBuilder.append("target:null");
                 }
             }
-            hash += "\n";
-            hash += hashBuilder.toString();
+            hashBuilder.append("\n");
         }
 
         for (AbstractAmmunition ammunition : ammunitionContainer) {
-            StringBuilder hashBuilder = new StringBuilder();
             hashBuilder.append("ammunition:" + ammunition.getObjectId() + " ");
             hashBuilder.append("x:" + ammunition.getX() + " ");
             hashBuilder.append("y:" + ammunition.getY() + " ");
             hashBuilder.append("angle:" + ammunition.getAngleInRadians() + " ");
-            hash += "\n";
-            hash += hashBuilder.toString();
+            hashBuilder.append("\n");
         }
 
-        return hash; // Slow, used for testing purposes only
-        //return md5(hash); // Fast, production ready
+        return hashBuilder.toString(); // Slow, used for testing purposes only
+        //return md5(hashBuilder.toString()); // Fast, production ready
     }
 
     public static String md5(String message){
