@@ -11,19 +11,30 @@ import org.voimala.utility.RotationDirection;
 
 public class TurretStateHasTarget extends AbstractTurretState {
 
+    private final long checkIfTargetIsInSightLagMs = 200;
+    private long timeSpentSinceLastCheckIfTargetIsInSight = 0;
+    private boolean isTargetInSight = false;
+
     public TurretStateHasTarget(final AbstractTurret owner) {
         super(owner);
     }
 
     @Override
     public void updateState(final float deltaTime) {
-        checkTarget();
+        checkTarget(deltaTime);
         handleLogicalRotation();
     }
 
-    private void checkTarget() {
+    private void checkTarget(final float deltaTime) {
         checkIfTargetIsDead();
         checkIfTargetIsInRange();
+
+        timeSpentSinceLastCheckIfTargetIsInSight += deltaTime * 1000;
+        if (timeSpentSinceLastCheckIfTargetIsInSight >= checkIfTargetIsInSightLagMs) {
+            timeSpentSinceLastCheckIfTargetIsInSight = 0;
+            checkIfTargetIsInSight(25); // This is time consuming method so do not run it on every world update.
+        }
+
         checkIfTargetCanBeShot();
 
         if (!ownerTurret.hasTarget()) {
@@ -50,7 +61,7 @@ public class TurretStateHasTarget extends AbstractTurretState {
 
     private void checkIfTargetCanBeShot() {
         if (ownerTurret.hasTarget()) {
-            if (isTurretRotatedTowardsTarget() && isTargetInSight(25)) {
+            if (isTurretRotatedTowardsTarget() && isTargetInSight) {
                 tryToShoot();
             }
         }
@@ -132,54 +143,57 @@ public class TurretStateHasTarget extends AbstractTurretState {
     // TODO There is a faster way to implement this:
     // http://code.tutsplus.com/tutorials/quick-tip-collision-detection-between-a-circle-and-a-line-segment--active-10632
     // https://www.google.fi/?gws_rd=ssl#q=%22line+rectangle+collision+detection
-    // TODO Do not call on every world update.
-    public boolean isTargetInSight(int accuracy) {
-        if (accuracy > 200) {
-            accuracy = 200;
-        }
+    public void checkIfTargetIsInSight(int accuracy) {
+        if (ownerTurret.hasTarget()) {
+            if (accuracy > 200) {
+                accuracy = 200;
+            }
 
-        /* TODO This is used mainly for humans. Tanks' turret is higher than humans so humans are not
-         * in the line of sight. This method needs to improved when tanks and other units are added in to the game. */
+            /* TODO This is used mainly for infantry. Tanks' turret is higher than humans so humans are not
+             * in the line of sight. This method needs to improved when tanks and other units are added in to the game. */
 
-        // Create a dot
-        Vector2 checkSight = new Vector2(ownerTurret.getPosition());
-        double angleBetweenDotAndTargetRad = MathHelper.getAngleBetweenPointsInRadians(
-                checkSight.x,
-                checkSight.y,
-                ownerTurret.getTarget().getX(),
-                ownerTurret.getTarget().getY());
+            // Create a dot
+            Vector2 checkSight = new Vector2(ownerTurret.getPosition());
+            double angleBetweenDotAndTargetRad = MathHelper.getAngleBetweenPointsInRadians(
+                    checkSight.x,
+                    checkSight.y,
+                    ownerTurret.getTarget().getX(),
+                    ownerTurret.getTarget().getY());
 
-        boolean isCollisionDetected;
-        checkSightLoop:
-        while (true) {
-            // Move the dot towards the target.
-            checkSight.x = (float) (checkSight.x + Math.cos(angleBetweenDotAndTargetRad) * accuracy);
-            checkSight.y = (float) (checkSight.y + Math.sin(angleBetweenDotAndTargetRad) * accuracy);
+            boolean isCollisionDetected;
+            checkSightLoop:
+            while (true) {
+                // Move the dot towards the target.
+                checkSight.x = (float) (checkSight.x + Math.cos(angleBetweenDotAndTargetRad) * accuracy);
+                checkSight.y = (float) (checkSight.y + Math.sin(angleBetweenDotAndTargetRad) * accuracy);
 
-            // Check if there is a collision between the dot and some obstacle.
-            for (AbstractUnit unit : ownerTurret.getWorldController().getUnitContainer().getAllUnits()) {
-                if (unit == ownerTurret.getOwnerUnit()
-                    || unit == ownerTurret.getTarget()
-                    || unit.getTeam() != ownerTurret.getOwnerUnit().getTeam() ) {
-                    continue;
+                // Check if there is a collision between the dot and some obstacle.
+                for (AbstractUnit unit : ownerTurret.getWorldController().getUnitContainer().getAllUnits()) {
+                    if (unit == ownerTurret.getOwnerUnit()
+                            || unit == ownerTurret.getTarget()
+                            || unit.getTeam() != ownerTurret.getOwnerUnit().getTeam() ) {
+                        continue;
+                    }
+
+                    if (unit.onCollision(checkSight)) {
+                        isCollisionDetected = true;
+                        break checkSightLoop;
+                    }
                 }
 
-                if (unit.onCollision(checkSight)) {
-                    isCollisionDetected = true;
-                    break checkSightLoop;
+                // TODO Check also other obstacles like buildings, trees, rocks etc.
+
+                // Target position reached
+                if (MathHelper.getDistanceBetweenPoints(checkSight.x, checkSight.y, ownerTurret.getTarget().getX(), ownerTurret.getTarget().getY()) <= accuracy) {
+                    isCollisionDetected = false;
+                    break;
                 }
             }
 
-            // TODO Check also other obstacles like buildings, trees, rocks etc.
-
-            // Target position reached
-            if (MathHelper.getDistanceBetweenPoints(checkSight.x, checkSight.y, ownerTurret.getTarget().getX(), ownerTurret.getTarget().getY()) <= accuracy) {
-                isCollisionDetected = false;
-                break;
-            }
+            isTargetInSight = !isCollisionDetected;
+        } else {
+            isTargetInSight = false;
         }
-
-        return !isCollisionDetected;
     }
 
     private void handleLogicalRotation() {

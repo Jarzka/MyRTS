@@ -234,21 +234,27 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
     }
 
     protected AbstractUnit findClosestEnemyInRange() {
-        // TODO Very time consuming method
-        // Find all units in range
+        // Find all units in range that are not in the same team as this turret's owner unit.
         ArrayList<AbstractUnit> targetsInRange = new ArrayList<AbstractUnit>();
-        for (AbstractUnit unit : getWorldController().getUnitContainer().getAllUnits()) {
-            if (unit.getTeam() == getOwnerUnit().getTeam()) {
+        for (int i = 0; i <= 8; i++) {
+            if (i == ownerUnit.getTeam()) {
                 continue;
             }
 
-            if (MathHelper.getDistanceBetweenPoints(getPosition().x,
-                    getPosition().y,
-                    unit.getX(),
-                    unit.getY()) <= getRange()) {
-                targetsInRange.add(unit);
+            for (AbstractUnit unit : getWorldController().getUnitContainer().findUnitsByTeam(i)) {
+                if (unit.getTeam() == getOwnerUnit().getTeam()) {
+                    continue;
+                }
+
+                if (MathHelper.getDistanceBetweenPoints(getPosition().x,
+                        getPosition().y,
+                        unit.getX(),
+                        unit.getY()) <= getRange()) {
+                    targetsInRange.add(unit);
+                }
             }
         }
+
 
         // Find the closest one
 

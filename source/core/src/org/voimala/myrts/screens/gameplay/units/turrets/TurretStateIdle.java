@@ -17,14 +17,13 @@ public class TurretStateIdle extends AbstractTurretState {
 
     @Override
     public void updateState(final float deltaTime) {
-        timeSpentSinceLastAttemptToTryToFindNewTargetMs += deltaTime * 1000;
         rotateTowardsOwnerUnit();
 
-        // This is somewhat time consuming method so do not run it on every world update.
+        timeSpentSinceLastAttemptToTryToFindNewTargetMs += deltaTime * 1000;
         if (timeSpentSinceLastAttemptToTryToFindNewTargetMs >= findNewTargetIdleMs) {
             timeSpentSinceLastAttemptToTryToFindNewTargetMs = 0;
             ownerTurret.findNewClosestTarget();
-            changeStateIfTargetFound();
+            changeStateIfTargetFound(); // This is time consuming method so do not run it on every world update.
         }
     }
 
