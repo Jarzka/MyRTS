@@ -16,5 +16,5 @@ public abstract class AbstractTurretState implements Cloneable {
         this.ownerTurret = ownerTurret;
     }
 
-    public abstract void updateState();
+    public abstract void updateState(final float deltaTime);
 }

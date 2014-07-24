@@ -16,7 +16,7 @@ public class TurretStateHasTarget extends AbstractTurretState {
     }
 
     @Override
-    public void updateState() {
+    public void updateState(final float deltaTime) {
         checkTarget();
         handleLogicalRotation();
     }

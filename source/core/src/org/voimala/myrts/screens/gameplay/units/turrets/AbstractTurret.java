@@ -71,7 +71,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
         updatePosition();
         updateRotation(deltaTime);
 
-        turretState.updateState();
+        turretState.updateState(deltaTime);
     }
 
     protected void updatePosition() {
