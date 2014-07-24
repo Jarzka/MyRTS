@@ -128,6 +128,7 @@ public class TurretStateHasTarget extends AbstractTurretState {
     // TODO There is a faster way to implement this:
     // http://code.tutsplus.com/tutorials/quick-tip-collision-detection-between-a-circle-and-a-line-segment--active-10632
     // https://www.google.fi/?gws_rd=ssl#q=%22line+rectangle+collision+detection
+    // TODO Do not call on every world update.
     public boolean isTargetInSight(int accuracy) {
         if (accuracy > 200) {
             accuracy = 200;

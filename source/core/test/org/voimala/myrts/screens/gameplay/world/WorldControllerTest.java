@@ -11,7 +11,6 @@ public class WorldControllerTest extends TestCase {
     @Test
     public void testClone() {
         WorldController worldControllerSource = new WorldController();
-
         worldControllerSource.getUnitContainerAllUnits().getUnits().get(0).getTurrets().get(0).setTarget(
                 worldControllerSource.getUnitContainerAllUnits().getUnits().get(5));
         String originalWorldHash = worldControllerSource.getGameStateHash();
@@ -69,5 +68,16 @@ public class WorldControllerTest extends TestCase {
         assertEquals(originalWorldHash, worldControllerClone.getGameStateHash());
     }
 
+    @Test
+    public void testSynchronizeWith() {
+        WorldController world1 = new WorldController();
+
+        WorldController world2 = new WorldController();
+        world2.getUnitContainerAllUnits().getUnits().clear();
+
+        world2 = WorldController.synchronizeWorlds(world2, world1);
+
+        assertEquals(world1.getGameStateHash(), world2.getGameStateHash());
+    }
 
 }

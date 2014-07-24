@@ -414,12 +414,17 @@ public class WorldRenderer implements Disposable {
          * physics prediction is used. When the actual game world is updated, it is used as a base for the next
          * predicted game world. */
 
-         /* TODO Cloning the entire game world is a time consuming process.
+         /* TODO Cloning the entire game world is a VERY time consuming process.
           * Would it be possible to just synchronize the two game worlds? */
 
         if (worldController.getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
-            worldControllerPredicted = new WorldController(worldController);
-            worldControllerPredicted.setPredictedWorld(true);
+                if (worldControllerPredicted == null) {
+                    worldControllerPredicted = new WorldController(worldController);
+                } else {
+                    worldControllerPredicted = WorldController.synchronizeWorlds(worldControllerPredicted, worldController);
+                }
+
+                worldControllerPredicted.setPredictedWorld(true);
         }
     }
 }
