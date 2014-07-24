@@ -69,7 +69,7 @@ public class WorldController {
 
                 unitContainer.addUnit(unitClone);
             } catch (CloneNotSupportedException e) {
-                // This should never happen. Continue without cloning this object.
+                Gdx.app.debug(TAG, "WARNING: CloneNotSupportedException when cloning Unit: " + e.getMessage());
             }
         }
 
@@ -101,7 +101,7 @@ public class WorldController {
                 ammunitionClone.setWorldController(this);
                 ammunitionContainer.add(ammunitionClone);
             } catch (CloneNotSupportedException e) {
-                // This should never happen. Continue without cloning this object.
+                Gdx.app.debug(TAG, "WARNING: CloneNotSupportedException when cloning Ammunition: " + e.getMessage());
             }
         }
 
@@ -111,7 +111,7 @@ public class WorldController {
                 effectClone.setWorldController(this);
                 effectsContainer.add(effectClone);
             } catch (CloneNotSupportedException e) {
-                // This should never happen. Continue without cloning this object.
+                Gdx.app.debug(TAG, "WARNING: CloneNotSupportedException when cloning Ammunition: " + e.getMessage());
             }
         }
 

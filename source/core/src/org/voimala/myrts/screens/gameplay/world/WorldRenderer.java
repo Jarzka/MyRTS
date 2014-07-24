@@ -123,7 +123,7 @@ public class WorldRenderer implements Disposable {
                 SoundContainer.getInstance().addSound(unitName + "-" + commandName + i, sound);
                 i++;
             } catch (Exception e) {
-                break;
+                // No more new audio files available.
             }
         }
     }
