@@ -200,6 +200,7 @@ public class WorldController {
     }
 
     public void updateWorld(final float deltaTime) {
+        Gdx.app.debug(TAG, "About to update world at WorldTick " + worldUpdateTick);
         updateUnits(deltaTime);
         updateAmmunition(deltaTime);
         updateAudioEffects();
@@ -212,6 +213,7 @@ public class WorldController {
         }
 
         worldUpdateTick++;
+        Gdx.app.debug(TAG, "World updated. WorldTick incremented and is now " + worldUpdateTick);
     }
 
     /** If objects were removed directly during world update, it would cause problems since the WorldController would be
@@ -228,7 +230,6 @@ public class WorldController {
                 Gdx.app.debug(TAG, "About to remove ammunition. id: " + ammunition.getObjectId());
                 Gdx.app.debug(TAG, "World is prediced: " + isPredictedWorld());
             }
-
             ammunitionContainer.remove(ammunition);
         }
         ammunitionToBeRemoved.clear();
@@ -321,31 +322,31 @@ public class WorldController {
         StringBuilder hashBuilder = new StringBuilder();
 
         for (AbstractUnit unit : getUnitContainer().getAllUnits()) {
-            hashBuilder.append("unit:" + unit.getObjectId() + " ");
-            hashBuilder.append("x:" + unit.getObjectId() + unit.getX() + " ");
-            hashBuilder.append("y:" + unit.getY() + " ");
-            hashBuilder.append("angle:" + unit.getAngleInRadians() + " ");
-            hashBuilder.append("player:" + unit.getPlayerNumber() + " ");
+            hashBuilder.append("unit id: " + unit.getObjectId() + " ");
+            hashBuilder.append("x: " + unit.getObjectId() + unit.getX() + " ");
+            hashBuilder.append("y: " + unit.getY() + " ");
+            hashBuilder.append("angle: " + unit.getAngleInRadians() + " ");
+            hashBuilder.append("player: " + unit.getPlayerNumber() + " ");
             hashBuilder.append("team:" + unit.getTeam() + " ");
             for (AbstractTurret turret : unit.getTurrets()) {
-                hashBuilder.append("turret:" + turret.getObjectId() + " ");
-                hashBuilder.append("x:" + turret.getX() + " ");
-                hashBuilder.append("y:" + turret.getY() + " ");
-                hashBuilder.append("angle:" + turret.getAngleInRadians() + " ");
+                hashBuilder.append("turret id: " + turret.getObjectId() + " ");
+                hashBuilder.append("x: " + turret.getX() + " ");
+                hashBuilder.append("y: " + turret.getY() + " ");
+                hashBuilder.append("angle: " + turret.getAngleInRadians() + " ");
                 if (turret.hasTarget()) {
-                    hashBuilder.append("target:" + turret.getTarget().getObjectId());
+                    hashBuilder.append("target id: " + turret.getTarget().getObjectId());
                 } else {
-                    hashBuilder.append("target:null");
+                    hashBuilder.append("target id: null");
                 }
             }
             hashBuilder.append("\n");
         }
 
         for (AbstractAmmunition ammunition : ammunitionContainer) {
-            hashBuilder.append("ammunition:" + ammunition.getObjectId() + " ");
-            hashBuilder.append("x:" + ammunition.getX() + " ");
-            hashBuilder.append("y:" + ammunition.getY() + " ");
-            hashBuilder.append("angle:" + ammunition.getAngleInRadians() + " ");
+            hashBuilder.append("ammunition id: " + ammunition.getObjectId() + " ");
+            hashBuilder.append("x: " + ammunition.getX() + " ");
+            hashBuilder.append("y: " + ammunition.getY() + " ");
+            hashBuilder.append("angle: " + ammunition.getAngleInRadians() + " ");
             hashBuilder.append("\n");
         }
 
@@ -385,6 +386,7 @@ public class WorldController {
     }
 
     public long getNextFreeId() {
+        Gdx.app.debug(TAG, "Thread " + Thread.currentThread().getName() + " called getNextFreeId()");
         return nextFreeId++;
     }
 

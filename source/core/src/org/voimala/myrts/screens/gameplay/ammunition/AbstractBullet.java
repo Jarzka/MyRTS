@@ -1,5 +1,6 @@
 package org.voimala.myrts.screens.gameplay.ammunition;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.movements.BulletMovement;
@@ -9,6 +10,8 @@ import org.voimala.myrts.screens.gameplay.world.WorldController;
 import org.voimala.utility.MathHelper;
 
 public abstract class AbstractBullet extends AbstractAmmunition {
+
+    private static final String TAG = AbstractBullet.class.getName();
 
     protected Vector2 startPosition = null;
     protected WeaponOptions weaponOptions;
@@ -76,6 +79,7 @@ public abstract class AbstractBullet extends AbstractAmmunition {
     }
 
     private void die() {
+        Gdx.app.debug(TAG, "Bullet " + getObjectId() + " died.");
         worldController.tagAmmunitionToBeRemovedInNextWorldUpdate(this);
     }
 

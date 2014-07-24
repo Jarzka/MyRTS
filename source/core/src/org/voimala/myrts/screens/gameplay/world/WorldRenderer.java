@@ -408,9 +408,6 @@ public class WorldRenderer implements Disposable {
         /* In singleplayer mode the game world is always rendered as it is. However, in multiplayer mode
          * physics prediction is used. When the actual game world is updated, it is used as a base for the next
          * predicted game world. */
-
-
-
         if (worldController.getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
                 if (worldControllerPredicted == null) {
                     worldControllerPredicted = new WorldController(worldController);
@@ -418,6 +415,8 @@ public class WorldRenderer implements Disposable {
                     worldControllerPredicted = WorldController.synchronizeWorlds(worldControllerPredicted, worldController);
                 }
 
+                // Make sure the predicted world does not have any relationship to the original world
+                worldControllerPredicted.setGameplayScreen(null);
                 worldControllerPredicted.setPredictedWorld(true);
         }
     }

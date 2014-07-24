@@ -1,5 +1,6 @@
 package org.voimala.myrts.screens.gameplay.world;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.movements.AbstractMovement;
@@ -92,8 +93,11 @@ public abstract class AbstractGameObject implements Cloneable {
     }
 
     public void setPosition(Vector2 position) {
-        this.position = position;
-        // Gdx.app.debug(TAG, "Object " + getObjectId() + " new position. x: " + position.x + ". y: " + position.y);
+        if (this.position.x != position.x || this.position.y != position.y) {
+            this.position = new Vector2(position.x, position.y);
+            //Gdx.app.debug(TAG, "Object id: " + getObjectId() + " new position. x: " + position.x + ". y: " + position.y);
+        }
+
     }
 
     public Vector2 getPosition() {
@@ -108,12 +112,15 @@ public abstract class AbstractGameObject implements Cloneable {
     public void setAngle(final float angleDeg) {
         this.angleDeg = angleDeg;
         keepAngleValueInRange();
-        //Gdx.app.debug(TAG, "Object " + getObjectId() + " new angle: " + this.angleDeg);
+        //Gdx.app.debug(TAG, "Object id: " + getObjectId() + " new angle: " + this.angleDeg);
     }
 
     public void rotate(final float angle) {
-        this.angleDeg += angle;
-        keepAngleValueInRange();
+        if (angle != 0) {
+            this.angleDeg += angle;
+            keepAngleValueInRange();
+            //Gdx.app.debug(TAG, "Object id: " + getObjectId() + " new angle: " + this.angleDeg);
+        }
     }
 
     public double getAngleInRadians() {
