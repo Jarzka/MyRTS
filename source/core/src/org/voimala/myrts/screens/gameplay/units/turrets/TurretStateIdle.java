@@ -1,15 +1,13 @@
 package org.voimala.myrts.screens.gameplay.units.turrets;
 
-import org.voimala.myrts.screens.gameplay.units.AbstractUnit;
 import org.voimala.utility.MathHelper;
 import org.voimala.utility.RotationDirection;
-
-import java.util.ArrayList;
 
 public class TurretStateIdle extends AbstractTurretState {
 
     private long timeSpentSinceLastAttemptToTryToFindNewTargetMs = 0;
     private final long findNewTargetIdleMs = 50; // Saves time but causes turrets to lag.
+    private long timeSpentWithoutHavingTargetMs = 0;
 
     public TurretStateIdle(AbstractTurret owner) {
         super(owner);
@@ -17,7 +15,12 @@ public class TurretStateIdle extends AbstractTurretState {
 
     @Override
     public void updateState(final float deltaTime) {
-        rotateTowardsOwnerUnit();
+        timeSpentWithoutHavingTargetMs += deltaTime * 1000;
+        if (timeSpentWithoutHavingTargetMs > 1000) {
+            handleLogicalRotation();
+        } else {
+            ownerTurret.setSteeringWheel(0);
+        }
 
         timeSpentSinceLastAttemptToTryToFindNewTargetMs += deltaTime * 1000;
         if (timeSpentSinceLastAttemptToTryToFindNewTargetMs >= findNewTargetIdleMs) {
@@ -25,6 +28,10 @@ public class TurretStateIdle extends AbstractTurretState {
             ownerTurret.findNewClosestTarget();
             changeStateIfTargetFound(); // This is time consuming method so do not run it on every world update.
         }
+    }
+
+    private void handleLogicalRotation() {
+        rotateTowardsOwnerUnit();
     }
 
     private void rotateTowardsOwnerUnit() {
