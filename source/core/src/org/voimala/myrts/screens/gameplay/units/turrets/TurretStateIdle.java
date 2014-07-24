@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class TurretStateIdle extends AbstractTurretState {
 
     private long timeSpentSinceLastAttemptToTryToFindNewTargetMs = 0;
-    private final long findNewTargetIdleMs = 0; // Saves time but causes turrets to lag.
+    private final long findNewTargetIdleMs = 50; // Saves time but causes turrets to lag.
 
     public TurretStateIdle(AbstractTurret owner) {
         super(owner);
