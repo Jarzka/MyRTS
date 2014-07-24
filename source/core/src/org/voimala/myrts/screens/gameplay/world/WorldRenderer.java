@@ -179,77 +179,78 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderGround() {
+        batch.begin();
         for (int i = 0; i < 60; i++) { // TODO Map size
             for (int j = 0; j < 60; j++) {
-                batch.begin();
+
                 Sprite sprite = SpriteContainer.getInstance().getSprite("grass1");
                 sprite.setPosition(i * worldController.TILE_SIZE_PIXELS, j * worldController.TILE_SIZE_PIXELS);
                 sprite.draw(batch);
-                batch.end();
+
             }
         }
+        batch.end();
     }
 
     private void renderUnits(final WorldController worldToBeRendered) {
+        batch.begin();
         for (AbstractUnit unit : worldToBeRendered.getAllUnits()) {
-
             // Draw unit
             Sprite unitSprite = unit.getSprite();
             if (unitSprite != null) {
-                batch.begin();
+
                 unitSprite.setOrigin(unitSprite.getWidth() / 2, unitSprite.getHeight() / 2 - 70);
                 unitSprite.setPosition(unit.getX() - unitSprite.getWidth() / 2, unit.getY() - unitSprite.getWidth() / 2 + 70);
                 unitSprite.setRotation(unit.getAngle() - 90);
                 unitSprite.draw(batch);
-                batch.end();
+
             }
 
             // Draw turrets
             for (AbstractTurret turret : unit.getTurrets()) {
                 Sprite turretSprite = turret.getSprite();
                 if (turretSprite != null) {
-                    batch.begin();
                     turretSprite.setOrigin(turretSprite.getWidth() / 2, turretSprite.getHeight() / 2 - 70);
                     turretSprite.setPosition(turret.getX() - turretSprite.getWidth() / 2, turret.getY() - turretSprite.getWidth() / 2 + 70);
                     turretSprite.setRotation(turret.getAngle() - 90);
                     turretSprite.draw(batch);
-                    batch.end();
                 }
             }
         }
+        batch.end();
     }
 
     private void renderAmmunition(final WorldController worldToBeRendered) {
+        batch.begin();
         for (AbstractAmmunition ammunition : worldToBeRendered.getAmmunitionContainer()) {
 
             Sprite sprite = ammunition.getSprite();
 
             // Draw unit
-            batch.begin();
             sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
             sprite.setPosition(ammunition.getX() - sprite.getWidth() / 2, ammunition.getY() - sprite.getWidth() / 2);
             sprite.setRotation(ammunition.getAngle() - 90);
             sprite.draw(batch);
-            batch.end();
+
 
         }
+        batch.end();
     }
 
     private void renderEffects(final WorldController worldToBeRendered) {
+        batch.begin();
         for (AbstractEffect effect : worldToBeRendered.getEffectsContainer()) {
 
             Sprite sprite = effect.getSprite();
 
             // Draw unit
-            batch.begin();
             sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2 - 40);
             sprite.setPosition(effect.getX() - sprite.getWidth() / 2, effect.getY() - sprite.getWidth() / 2 + 40);
             sprite.setRotation(effect.getAngle() - 90);
             sprite.setAlpha(1 - effect.getLivedLifeAsPercent());
             sprite.draw(batch);
-            batch.end();
-
         }
+        batch.end();
     }
 
     private void renderUnitEnergyBars(final WorldController worldToBeRendered) {

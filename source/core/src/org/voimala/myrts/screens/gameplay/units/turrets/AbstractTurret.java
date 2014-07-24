@@ -231,12 +231,10 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
     public void findNewClosestTarget() {
         // Target is null if nothing is found.
         setTarget(findClosestEnemyInRange());
-
-
     }
 
     protected AbstractUnit findClosestEnemyInRange() {
-        // TODO Somewhat time consuming method
+        // TODO Very time consuming method
         // Find all units in range
         ArrayList<AbstractUnit> targetsInRange = new ArrayList<AbstractUnit>();
         for (AbstractUnit unit : getWorldController().getUnitContainerAllUnits().getUnits()) {
