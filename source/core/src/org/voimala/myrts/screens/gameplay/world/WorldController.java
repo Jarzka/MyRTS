@@ -58,7 +58,7 @@ public class WorldController {
         String sourceWorldHash = source.getGameStateHash();
 
         // Clone containers
-        for (AbstractUnit unit : source.getAllUnits()) {
+        for (AbstractUnit unit : source.getUnitContainerAllUnits().getUnits()) {
             try {
                 AbstractUnit unitClone = unit.clone();
                 unitClone.setWorldController(this);
@@ -71,7 +71,7 @@ public class WorldController {
         }
 
         // Set turret targets to match corresponding units in the cloned world.
-        for (AbstractUnit clonedUnit : getAllUnits()) {
+        for (AbstractUnit clonedUnit : unitContainerAllUnits.getUnits()) {
             // Find source unit for this cloned unit
             AbstractUnit unitSource = source.getUnitContainerAllUnits().findUnitById(clonedUnit.getObjectId());
 
@@ -216,14 +216,6 @@ public class WorldController {
         unitContainerAllUnits.addUnit(unit);
     }
 
-    public UnitContainer getUnitContainerForSpecificPlayer(final int playerNumber) {
-        return unitContainersForSpecificPlayers.get(playerNumber);
-    }
-
-    public UnitContainer getUnitContainerAllUnits() {
-        return unitContainerAllUnits;
-    }
-
     public void updateWorld(final float deltaTime) {
         updateUnits(deltaTime);
         updateAmmunition(deltaTime);
@@ -314,8 +306,12 @@ public class WorldController {
         this.gameplayScreen = gameplayScreen;
     }
 
-    public List<AbstractUnit> getAllUnits() {
-        return unitContainerAllUnits.getUnits();
+    public UnitContainer getUnitContainerForSpecificPlayer(final int playerNumber) {
+        return unitContainersForSpecificPlayers.get(playerNumber);
+    }
+
+    public UnitContainer getUnitContainerAllUnits() {
+        return unitContainerAllUnits;
     }
 
     public List<AbstractAmmunition> getAmmunitionContainer() {
@@ -350,7 +346,7 @@ public class WorldController {
     public String getGameStateHash() {
         StringBuilder hashBuilder = new StringBuilder();
 
-        for (AbstractUnit unit : getAllUnits()) {
+        for (AbstractUnit unit : getUnitContainerAllUnits().getUnits()) {
             hashBuilder.append("unit:" + unit.getObjectId() + " ");
             hashBuilder.append("x:" + unit.getObjectId() + unit.getX() + " ");
             hashBuilder.append("y:" + unit.getY() + " ");

@@ -193,7 +193,7 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnits(final WorldController worldToBeRendered) {
-        for (AbstractUnit unit : worldToBeRendered.getAllUnits()) {
+        for (AbstractUnit unit : worldToBeRendered.getUnitContainerAllUnits().getUnits()) {
             // Draw unit
             Sprite unitSprite = unit.getSprite();
             if (unitSprite != null) {
@@ -248,7 +248,7 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnitEnergyBars(final WorldController worldToBeRendered) {
-        for (AbstractUnit unit : worldToBeRendered.getAllUnits()) {
+        for (AbstractUnit unit : worldToBeRendered.getUnitContainerAllUnits().getUnits()) {
             if (unit.isSelected()) {
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                 shapeRenderer.setColor(Color.WHITE);
@@ -319,7 +319,7 @@ public class WorldRenderer implements Disposable {
 
     private void renderDebugHelpers(WorldController worldToBeRendered) {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            for (AbstractUnit unit : worldToBeRendered.getAllUnits()) {
+            for (AbstractUnit unit : worldToBeRendered.getUnitContainerAllUnits().getUnits()) {
                 for (AbstractTurret turret : unit.getTurrets()) {
                     if (turret.hasTarget()) {
                         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
