@@ -149,12 +149,13 @@ public class WorldRenderer implements Disposable {
          * 90 degrees point to up etc. Libgdx seems to use a circle where 0 degrees
          * point to up, 90 degrees point to left etc. WorldRenderer makes the conversion
          * automatically. */
+
         batch.setProjectionMatrix(worldController.getGameplayScreen().getWorldCamera().combined);
 
-        //renderMode = RenderMode.GAME_STATE; // TODO For testing purposes only
+        //renderMode = RenderMode.GAME_STATE; // For testing purposes only
 
         WorldController worldToBeRendered = worldController;
-        if (renderMode == RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION) {
+        if (renderMode == RenderMode.WORLD_STATE_WITH_PHYSICS_PREDICTION) {
             preparePredictedWorldToBeRendered(deltaTime);
             worldToBeRendered = worldControllerPredicted;
         }
@@ -166,7 +167,7 @@ public class WorldRenderer implements Disposable {
         renderUnitEnergyBars(worldToBeRendered);
         renderHud();
         renderUnitSelectionRectangle();
-        renderInfoText();
+        renderInfoText(renderMode);
         renderDebugHelpers(worldToBeRendered);
         renderNetworkText();
         renderChat();
@@ -295,15 +296,16 @@ public class WorldRenderer implements Disposable {
         }
     }
 
-    private void renderInfoText() {
+    private void renderInfoText(final RenderMode renderMode) {
         hudBatch.begin();
         defaultFont.draw(hudBatch,
                 "Project \"MyRTS\", early alpha version",
                 10,
                 Gdx.graphics.getHeight() - 10);
+        String renderModeText = renderMode == RenderMode.WORLD_STATE ? "World state" : "Physics prediction";
         defaultFont.draw(hudBatch,
                 String.valueOf(Gdx.graphics.getFramesPerSecond()) + "fps (frame "
-                        + worldController.getGameplayScreen().getRenderTick() + ")",
+                        + worldController.getGameplayScreen().getRenderTick() + ", mode: " + renderModeText + ")",
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight());
         defaultFont.draw(hudBatch,

@@ -159,9 +159,9 @@ public class GameplayScreen extends AbstractGameScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (gameMode == GameMode.SINGLEPLAYER) {
-            worldRenderer.render(RenderMode.GAME_STATE, deltaTime);
+            worldRenderer.render(RenderMode.WORLD_STATE, deltaTime);
         } else if (gameMode == GameMode.MULTIPLAYER) {
-            worldRenderer.render(RenderMode.GAME_STATE_WITH_PHYSICS_PREDICTION, deltaTime);
+            worldRenderer.render(RenderMode.WORLD_STATE_WITH_PHYSICS_PREDICTION, deltaTime);
         }
     }
 
