@@ -107,7 +107,6 @@ public class RTSProtocolManager {
                         Integer.valueOf(messageSplitted[2]),
                         messageSplitted[3]);
                 for (PlayerInput playerInput : playerInputs) {
-                    // TODO Gameplayscreen can be null o_O?
                     NetworkInputQueue.getInstance().addPlayerInputToQueue(playerInput);
                 }
             } else if (client.getSocketType() == SocketType.PLAYER_SOCKET) { // The message came to the server from a player

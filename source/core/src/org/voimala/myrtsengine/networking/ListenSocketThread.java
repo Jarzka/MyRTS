@@ -116,12 +116,6 @@ public class ListenSocketThread extends Thread {
         connectionState = ConnectionState.NOT_CONNECTED;
         if (socketType == SocketType.PLAYER_SOCKET && serverThread != null) {
             serverThread.removeClient(this);
-
-            // Inform other players
-            serverThread.sendMessageToAllClients(
-                    RTSProtocolManager.getInstance().createNetworkMessageChatMessage(
-                    serverThread.getServerChatName(),
-                    player.getName() + " " + "disconnected.")); // TODO Does not work?
         }
 
         if (socket != null) {
