@@ -233,6 +233,7 @@ public abstract class AbstractTurret extends AbstractGameObject implements Clone
         setTarget(findClosestEnemyInRange());
     }
 
+    // TODO This is still one of the slowest methods to execute in this app.
     protected AbstractUnit findClosestEnemyInRange() {
         // Find all units in range that are not in the same team as this turret's owner unit.
         ArrayList<AbstractUnit> targetsInRange = new ArrayList<AbstractUnit>();
