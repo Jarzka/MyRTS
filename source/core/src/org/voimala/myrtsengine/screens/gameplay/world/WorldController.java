@@ -1,7 +1,6 @@
 package org.voimala.myrtsengine.screens.gameplay.world;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrtsengine.audio.AudioEffect;
 import org.voimala.myrtsengine.screens.gameplay.effects.AbstractEffect;
@@ -138,11 +137,10 @@ public class WorldController {
     private void initializeMap() {
         // TODO For now we just create a simple test map.
         // The final implementation should load the map from hard disk.
-        createTestUnit();
+        createTestWorldStreeTest();
     }
 
-    private void createTestUnit() {
-        /* For simple testing
+    private void createTestWorldSimple() {
         M4Unit unit = new M4Unit(this);
         unit.setPosition(new Vector2(500 + TILE_SIZE_PIXELS, 500 + TILE_SIZE_PIXELS));
         unit.setTeam(1);
@@ -158,9 +156,9 @@ public class WorldController {
         unit2.setAngle(180);
         unit2.getTurrets().get(0).setAngle(unit2.getAngle());
         storeUnitInContainer(unit2);
-        */
+    }
 
-        /* For harder testing */
+    private void createTestWorldNormal() {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 6; j++) {
                 M4Unit unit = new M4Unit(this);
@@ -176,6 +174,30 @@ public class WorldController {
             for (int j = 0; j < 4; j++) {
                 M4Unit unit = new M4Unit(this);
                 unit.setPosition(new Vector2(4000 + TILE_SIZE_PIXELS * i, 4000 + TILE_SIZE_PIXELS  * j));
+                unit.setPlayerNumber(2);
+                unit.setTeam(2);
+                unit.setAngle(180);
+                storeUnitInContainer(unit);
+            }
+        }
+    }
+
+    private void createTestWorldStreeTest() {
+        for (int i = 0; i < 15; i++) {
+            for (int j = 0; j < 15; j++) {
+                M4Unit unit = new M4Unit(this);
+                unit.setPosition(new Vector2(500 + TILE_SIZE_PIXELS * i, 500 + TILE_SIZE_PIXELS  * j));
+                unit.setTeam(1);
+                unit.setPlayerNumber(1);
+                unit.setAngle(0);
+                storeUnitInContainer(unit);
+            }
+        }
+
+        for (int i = 0; i < 15; i++) {
+            for (int j = 0; j < 15; j++) {
+                M4Unit unit = new M4Unit(this);
+                unit.setPosition(new Vector2(6000 + TILE_SIZE_PIXELS * i, 6000 + TILE_SIZE_PIXELS  * j));
                 unit.setPlayerNumber(2);
                 unit.setTeam(2);
                 unit.setAngle(180);

@@ -152,7 +152,7 @@ public class WorldRenderer implements Disposable {
 
         batch.setProjectionMatrix(worldController.getGameplayScreen().getWorldCamera().combined);
 
-        //renderMode = RenderMode.GAME_STATE; // For testing purposes only
+        //renderMode = RenderMode.WORLD_STATE; // For testing purposes only
 
         WorldController worldToBeRendered = worldController;
         if (renderMode == RenderMode.WORLD_STATE_WITH_PHYSICS_PREDICTION) {
@@ -179,8 +179,8 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderGround() {
-        for (int i = 0; i < 25; i++) { // TODO Map size
-            for (int j = 0; j < 25; j++) {
+        for (int i = 0; i < 40; i++) { // TODO Map size
+            for (int j = 0; j < 40; j++) {
                 batch.begin();
                 Sprite sprite = SpriteContainer.getInstance().getSprite("grass1");
                 sprite.setPosition(i * worldController.TILE_SIZE_PIXELS, j * worldController.TILE_SIZE_PIXELS);
@@ -308,14 +308,17 @@ public class WorldRenderer implements Disposable {
                         + worldController.getGameplayScreen().getRenderTick() + ", mode: " + renderModeText + ")",
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight());
-        defaultFont.draw(hudBatch,
-                "World Update Tick: " + worldController.getWorldUpdateTick(),
+        defaultFont.draw(hudBatch, "Units: " + worldController.getUnitContainerAllUnits().getUnits().size(),
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 2);
         defaultFont.draw(hudBatch,
-                "SimTick: " + MultiplayerSynchronizationManager.getInstance().getSimTick(),
+                "World Update Tick: " + worldController.getWorldUpdateTick(),
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 3);
+        defaultFont.draw(hudBatch,
+                "SimTick: " + MultiplayerSynchronizationManager.getInstance().getSimTick(),
+                10,
+                Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 4);
         hudBatch.end();
     }
 
