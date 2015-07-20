@@ -19,9 +19,10 @@ public class BulletMovement extends AbstractMovement {
     }
 
     private void handleVelocity(float deltaTime) {
-        owner.setPosition(new Vector2(
+        Vector2 nextPosition = new Vector2(
                 (float) (owner.getX() + Math.cos(owner.getAngleInRadians()) * currentVelocity * deltaTime),
-                (float) (owner.getY() + Math.sin(owner.getAngleInRadians()) * currentVelocity * deltaTime)));
+                (float) (owner.getY() + Math.sin(owner.getAngleInRadians()) * currentVelocity * deltaTime));
+        owner.setPosition(nextPosition);
     }
 
 }

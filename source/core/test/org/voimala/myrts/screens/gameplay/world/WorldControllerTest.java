@@ -11,15 +11,15 @@ public class WorldControllerTest extends TestCase {
     @Test
     public void testClone() {
         WorldController worldControllerSource = new WorldController();
-        worldControllerSource.getUnitContainerAllUnits().getUnits().get(0).getTurrets().get(0).setTarget(
-                worldControllerSource.getUnitContainerAllUnits().getUnits().get(5));
+        worldControllerSource.getUnitContainer().getAllUnits().get(0).getTurrets().get(0).setTarget(
+                worldControllerSource.getUnitContainer().getAllUnits().get(5));
         String originalWorldHash = worldControllerSource.getGameStateHash();
 
         WorldController worldControllerClone = new WorldController(worldControllerSource);
 
         // Check that not a single object in the cloned world has a reference to the original world.
 
-        for (AbstractUnit unit : worldControllerClone.getUnitContainerAllUnits().getUnits()) {
+        for (AbstractUnit unit : worldControllerClone.getUnitContainer().getAllUnits()) {
             assertEquals(unit.getWorldController(), worldControllerClone);
 
             for (AbstractTurret turret : unit.getTurrets()) {
@@ -33,7 +33,7 @@ public class WorldControllerTest extends TestCase {
 
         // Check that turret have a correct owner
 
-        for (AbstractUnit unit : worldControllerClone.getUnitContainerAllUnits().getUnits()) {
+        for (AbstractUnit unit : worldControllerClone.getUnitContainer().getAllUnits()) {
             for (AbstractTurret turret : unit.getTurrets()) {
                 assertEquals(turret.getOwnerUnit(), unit);
             }
@@ -41,10 +41,10 @@ public class WorldControllerTest extends TestCase {
 
         // Check that turrets target are correct
 
-        for (AbstractUnit unit : worldControllerClone.getUnitContainerAllUnits().getUnits()) {
+        for (AbstractUnit unit : worldControllerClone.getUnitContainer().getAllUnits()) {
             for (AbstractTurret turret : unit.getTurrets()) {
                 if (turret.hasTarget()) {
-                    AbstractUnit unitSource = worldControllerSource.getUnitContainerAllUnits().findUnitById(unit.getObjectId());
+                    AbstractUnit unitSource = worldControllerSource.getUnitContainer().findUnitById(unit.getObjectId());
                     AbstractTurret turretSource = null;
 
                     for (AbstractTurret turretInSourceWorld : unitSource.getTurrets()) {
@@ -73,7 +73,7 @@ public class WorldControllerTest extends TestCase {
         WorldController world1 = new WorldController();
 
         WorldController world2 = new WorldController();
-        world2.getUnitContainerAllUnits().getUnits().clear();
+        world2.getUnitContainer().getAllUnits().clear();
 
         world2 = WorldController.synchronizeWorlds(world2, world1);
 

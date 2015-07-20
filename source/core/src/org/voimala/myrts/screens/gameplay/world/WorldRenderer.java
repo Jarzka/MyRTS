@@ -123,7 +123,7 @@ public class WorldRenderer implements Disposable {
                 SoundContainer.getInstance().addSound(unitName + "-" + commandName + i, sound);
                 i++;
             } catch (Exception e) {
-                break;
+                break; // No more new audio files available.
             }
         }
     }
@@ -152,7 +152,7 @@ public class WorldRenderer implements Disposable {
 
         batch.setProjectionMatrix(worldController.getGameplayScreen().getWorldCamera().combined);
 
-        //renderMode = RenderMode.WORLD_STATE; // For testing purposes only
+        renderMode = RenderMode.WORLD_STATE; // For testing purposes only
 
         WorldController worldToBeRendered = worldController;
         if (renderMode == RenderMode.WORLD_STATE_WITH_PHYSICS_PREDICTION) {
@@ -193,7 +193,7 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnits(final WorldController worldToBeRendered) {
-        for (AbstractUnit unit : worldToBeRendered.getUnitContainerAllUnits().getUnits()) {
+        for (AbstractUnit unit : worldToBeRendered.getUnitContainer().getAllUnits()) {
             // Draw unit
             Sprite unitSprite = unit.getSprite();
             if (unitSprite != null) {
@@ -248,7 +248,7 @@ public class WorldRenderer implements Disposable {
     }
 
     private void renderUnitEnergyBars(final WorldController worldToBeRendered) {
-        for (AbstractUnit unit : worldToBeRendered.getUnitContainerAllUnits().getUnits()) {
+        for (AbstractUnit unit : worldToBeRendered.getUnitContainer().getAllUnits()) {
             if (unit.isSelected()) {
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                 shapeRenderer.setColor(Color.WHITE);
@@ -303,7 +303,7 @@ public class WorldRenderer implements Disposable {
                         + worldController.getGameplayScreen().getRenderTick() + ", mode: " + renderModeText + ")",
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight());
-        defaultFont.draw(hudBatch, "Units: " + worldController.getUnitContainerAllUnits().getUnits().size(),
+        defaultFont.draw(hudBatch, "Units: " + worldController.getUnitContainer().getAllUnits().size(),
                 10,
                 Gdx.graphics.getHeight() - 10 - defaultFont.getLineHeight() * 2);
         defaultFont.draw(hudBatch,
@@ -319,7 +319,7 @@ public class WorldRenderer implements Disposable {
 
     private void renderDebugHelpers(WorldController worldToBeRendered) {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            for (AbstractUnit unit : worldToBeRendered.getUnitContainerAllUnits().getUnits()) {
+            for (AbstractUnit unit : worldToBeRendered.getUnitContainer().getAllUnits()) {
                 for (AbstractTurret turret : unit.getTurrets()) {
                     if (turret.hasTarget()) {
                         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -408,17 +408,18 @@ public class WorldRenderer implements Disposable {
         /* In singleplayer mode the game world is always rendered as it is. However, in multiplayer mode
          * physics prediction is used. When the actual game world is updated, it is used as a base for the next
          * predicted game world. */
-
-
-
         if (worldController.getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
+            /*
                 if (worldControllerPredicted == null) {
                     worldControllerPredicted = new WorldController(worldController);
                 } else {
                     worldControllerPredicted = WorldController.synchronizeWorlds(worldControllerPredicted, worldController);
                 }
 
+                // Make sure the predicted world does not have any relationship to the original world
+                worldControllerPredicted.setGameplayScreen(null);
                 worldControllerPredicted.setPredictedWorld(true);
+            */
         }
     }
 }

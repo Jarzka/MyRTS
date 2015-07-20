@@ -15,17 +15,14 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class WorldController {
 
     private static final String TAG = WorldController.class.getName();
 
-    /** Contains all units used in the game */
-    private UnitContainer unitContainerAllUnits = new UnitContainer();
-    /** Contains all units used by a specific player for fast access. Integer = Player number */
-    private HashMap<Integer, UnitContainer> unitContainersForSpecificPlayers = new HashMap<Integer, UnitContainer>();
+    /* Containers */
+    private UnitContainer unitContainer = new UnitContainer();
     private ArrayList<AbstractUnit> unitsToBeRemoved = new ArrayList<AbstractUnit>();
     private ArrayList<AbstractAmmunition> ammunitionContainer = new ArrayList<AbstractAmmunition>();
     private ArrayList<AbstractAmmunition> ammunitionToBeRemoved = new ArrayList<AbstractAmmunition>();
@@ -33,10 +30,12 @@ public class WorldController {
     private ArrayList<AbstractEffect> effectsToBeRemoved = new ArrayList<AbstractEffect>();
     private ArrayList<AudioEffect> audioEffectContainer = new ArrayList<AudioEffect>();
     private ArrayList<AudioEffect> audioEffectsToBeRemoved = new ArrayList<AudioEffect>();
+
     private long nextFreeId = 0;
 
     /** If true, this is a predicted world that is used in rendering process. This world should be updated only
-     * "visually" */
+     * "visually", which means that real game world should never be affected. For example if a player is predicted to
+     * lose money, the money is not decreased in real game world. */
     private boolean isPredictedWorld = false;
 
     private long worldUpdateTick = 0;
@@ -47,33 +46,37 @@ public class WorldController {
 
     public final int TILE_SIZE_PIXELS = 256;
 
-    /**
-     * Copy constructor.
-     */
+    public WorldController() {
+        initialize();
+    }
+
+    /** Copy constructor. */
     public WorldController(final WorldController source) {
-        initializeContainers();
+        /* NOTE: initialize() is not called because at the moment (24.7.2014) it is used only for creating test map.
+         * For the cloned world it is better to start from scratch when all containers are empty.
+         */
 
         this.gameplayScreen = source.getGameplayScreen();
 
         String sourceWorldHash = source.getGameStateHash();
 
         // Clone containers
-        for (AbstractUnit unit : source.getUnitContainerAllUnits().getUnits()) {
+        for (AbstractUnit unit : source.getUnitContainer().getAllUnits()) {
             try {
                 AbstractUnit unitClone = unit.clone();
                 unitClone.setWorldController(this);
 
 
-                storeUnitInContainer(unitClone);
+                unitContainer.addUnit(unitClone);
             } catch (CloneNotSupportedException e) {
-                // This should never happen. Continue without cloning this object.
+                Gdx.app.debug(TAG, "WARNING: CloneNotSupportedException when cloning Unit: " + e.getMessage());
             }
         }
 
         // Set turret targets to match corresponding units in the cloned world.
-        for (AbstractUnit clonedUnit : unitContainerAllUnits.getUnits()) {
+        for (AbstractUnit clonedUnit : unitContainer.getAllUnits()) {
             // Find source unit for this cloned unit
-            AbstractUnit unitSource = source.getUnitContainerAllUnits().findUnitById(clonedUnit.getObjectId());
+            AbstractUnit unitSource = source.getUnitContainer().findUnitById(clonedUnit.getObjectId());
 
             for (AbstractTurret clonedTurret : clonedUnit.getTurrets()) {
                 // Find source turret for this turret
@@ -86,7 +89,7 @@ public class WorldController {
                 }
 
                 if (turretSource.hasTarget()) {
-                    clonedTurret.setTarget(unitContainerAllUnits.findUnitById(turretSource.getTarget().getObjectId()));
+                    clonedTurret.setTarget(unitContainer.findUnitById(turretSource.getTarget().getObjectId()));
                 }
             }
         }
@@ -98,7 +101,7 @@ public class WorldController {
                 ammunitionClone.setWorldController(this);
                 ammunitionContainer.add(ammunitionClone);
             } catch (CloneNotSupportedException e) {
-                // This should never happen. Continue without cloning this object.
+                Gdx.app.debug(TAG, "WARNING: CloneNotSupportedException when cloning Ammunition: " + e.getMessage());
             }
         }
 
@@ -108,7 +111,7 @@ public class WorldController {
                 effectClone.setWorldController(this);
                 effectsContainer.add(effectClone);
             } catch (CloneNotSupportedException e) {
-                // This should never happen. Continue without cloning this object.
+                Gdx.app.debug(TAG, "WARNING: CloneNotSupportedException when cloning Ammunition: " + e.getMessage());
             }
         }
 
@@ -118,27 +121,16 @@ public class WorldController {
         }
     }
 
-    public WorldController() {
-        initialize();
-    }
-
     private void initialize() {
-        initializeContainers();
         initializeMap();
     }
-
-    private void initializeContainers() {
-        for (int i = 1; i <= 8; i++) {
-            unitContainersForSpecificPlayers.put(i, new UnitContainer());
-        }
-    }
-
 
     private void initializeMap() {
         // TODO For now we just create a simple test map.
         // The final implementation should load the map from hard disk.
         //createTestWorldSimple();
-        createTestWorldNormal();
+        //createTestWorldNormal();
+        createTestWorldNormalWithInputsGoesSometimesOutOfSync();
         //createTestWorldStreeTest();
     }
 
@@ -149,7 +141,7 @@ public class WorldController {
         unit.setPlayerNumber(1);
         unit.setAngle(0);
         unit.getMovement().addPathPoint(new Vector2(3600, 3600));
-        storeUnitInContainer(unit);
+        unitContainer.addUnit(unit);
 
         M4Unit unit2 = new M4Unit(this);
         unit2.setPosition(new Vector2(4000 + TILE_SIZE_PIXELS, 4000 + TILE_SIZE_PIXELS));
@@ -157,7 +149,7 @@ public class WorldController {
         unit2.setTeam(2);
         unit2.setAngle(180);
         unit2.getTurrets().get(0).setAngle(unit2.getAngle());
-        storeUnitInContainer(unit2);
+        unitContainer.addUnit(unit2);
     }
 
     private void createTestWorldNormal() {
@@ -168,7 +160,7 @@ public class WorldController {
                 unit.setTeam(1);
                 unit.setPlayerNumber(1);
                 unit.setAngle(0);
-                storeUnitInContainer(unit);
+                unitContainer.addUnit(unit);
             }
         }
 
@@ -179,7 +171,34 @@ public class WorldController {
                 unit.setPlayerNumber(2);
                 unit.setTeam(2);
                 unit.setAngle(180);
-                storeUnitInContainer(unit);
+                unitContainer.addUnit(unit);
+            }
+        }
+    }
+
+    /** Usually goes out of sync around SimTick 30 but can also go out of sync around SimTick 60. This is not
+     * deterministic. */
+    private void createTestWorldNormalWithInputsGoesSometimesOutOfSync() {
+        for (int i = 0; i < 12; i++) {
+            for (int j = 0; j < 12; j++) {
+                M4Unit unit = new M4Unit(this);
+                unit.setPosition(new Vector2(500 + TILE_SIZE_PIXELS * i, 500 + TILE_SIZE_PIXELS  * j));
+                unit.setTeam(1);
+                unit.setPlayerNumber(1);
+                unit.setAngle(0);
+                unit.getMovement().addPathPoint(new Vector2(5000, 5000));
+                unitContainer.addUnit(unit);
+            }
+        }
+
+        for (int i = 0; i < 12; i++) {
+            for (int j = 0; j < 12; j++) {
+                M4Unit unit = new M4Unit(this);
+                unit.setPosition(new Vector2(5000 + TILE_SIZE_PIXELS * i, 5000 + TILE_SIZE_PIXELS  * j));
+                unit.setPlayerNumber(2);
+                unit.setTeam(2);
+                unit.setAngle(180);
+                unitContainer.addUnit(unit);
             }
         }
     }
@@ -192,7 +211,7 @@ public class WorldController {
                 unit.setTeam(1);
                 unit.setPlayerNumber(1);
                 unit.setAngle(0);
-                storeUnitInContainer(unit);
+                unitContainer.addUnit(unit);
             }
         }
 
@@ -203,20 +222,13 @@ public class WorldController {
                 unit.setPlayerNumber(2);
                 unit.setTeam(2);
                 unit.setAngle(180);
-                storeUnitInContainer(unit);
+                unitContainer.addUnit(unit);
             }
         }
     }
 
-    public void storeUnitInContainer(AbstractUnit unit) {
-        if (getUnitContainerForSpecificPlayer(unit.getPlayerNumber()) != null) {
-            getUnitContainerForSpecificPlayer(unit.getPlayerNumber()).addUnit(unit);
-        }
-
-        unitContainerAllUnits.addUnit(unit);
-    }
-
     public void updateWorld(final float deltaTime) {
+        Gdx.app.debug(TAG, "About to update world at WorldTick " + worldUpdateTick);
         updateUnits(deltaTime);
         updateAmmunition(deltaTime);
         updateAudioEffects();
@@ -229,6 +241,7 @@ public class WorldController {
         }
 
         worldUpdateTick++;
+        Gdx.app.debug(TAG, "World updated. WorldTick incremented and is now " + worldUpdateTick);
     }
 
     /** If objects were removed directly during world update, it would cause problems since the WorldController would be
@@ -245,7 +258,6 @@ public class WorldController {
                 Gdx.app.debug(TAG, "About to remove ammunition. id: " + ammunition.getObjectId());
                 Gdx.app.debug(TAG, "World is prediced: " + isPredictedWorld());
             }
-
             ammunitionContainer.remove(ammunition);
         }
         ammunitionToBeRemoved.clear();
@@ -260,18 +272,13 @@ public class WorldController {
                 Gdx.app.debug(TAG, "About to remove unit. id: " + unit.getObjectId());
                 Gdx.app.debug(TAG, "World is prediced: " + isPredictedWorld());
             }
-            removeUnitFromWorld(unit);
+            unitContainer.removeUnit(unit);
         }
         unitsToBeRemoved.clear();
     }
 
-    private void removeUnitFromWorld(final AbstractUnit unit) {
-        unitContainersForSpecificPlayers.get(unit.getPlayerNumber()).removeUnit(unit);
-        unitContainerAllUnits.removeUnit(unit);
-    }
-
     private void updateUnits(final float deltaTime) {
-        for (AbstractUnit unit : unitContainerAllUnits.getUnits()) {
+        for (AbstractUnit unit : unitContainer.getAllUnits()) {
             unit.updateState(deltaTime);
         }
     }
@@ -306,12 +313,8 @@ public class WorldController {
         this.gameplayScreen = gameplayScreen;
     }
 
-    public UnitContainer getUnitContainerForSpecificPlayer(final int playerNumber) {
-        return unitContainersForSpecificPlayers.get(playerNumber);
-    }
-
-    public UnitContainer getUnitContainerAllUnits() {
-        return unitContainerAllUnits;
+    public UnitContainer getUnitContainer() {
+        return unitContainer;
     }
 
     public List<AbstractAmmunition> getAmmunitionContainer() {
@@ -346,32 +349,32 @@ public class WorldController {
     public String getGameStateHash() {
         StringBuilder hashBuilder = new StringBuilder();
 
-        for (AbstractUnit unit : getUnitContainerAllUnits().getUnits()) {
-            hashBuilder.append("unit:" + unit.getObjectId() + " ");
-            hashBuilder.append("x:" + unit.getObjectId() + unit.getX() + " ");
-            hashBuilder.append("y:" + unit.getY() + " ");
-            hashBuilder.append("angle:" + unit.getAngleInRadians() + " ");
-            hashBuilder.append("player:" + unit.getPlayerNumber() + " ");
+        for (AbstractUnit unit : getUnitContainer().getAllUnits()) {
+            hashBuilder.append("unit id: " + unit.getObjectId() + " ");
+            hashBuilder.append("x: " + unit.getObjectId() + unit.getX() + " ");
+            hashBuilder.append("y: " + unit.getY() + " ");
+            hashBuilder.append("angle: " + unit.getAngleInRadians() + " ");
+            hashBuilder.append("player: " + unit.getPlayerNumber() + " ");
             hashBuilder.append("team:" + unit.getTeam() + " ");
             for (AbstractTurret turret : unit.getTurrets()) {
-                hashBuilder.append("turret:" + turret.getObjectId() + " ");
-                hashBuilder.append("x:" + turret.getX() + " ");
-                hashBuilder.append("y:" + turret.getY() + " ");
-                hashBuilder.append("angle:" + turret.getAngleInRadians() + " ");
+                hashBuilder.append("turret id: " + turret.getObjectId() + " ");
+                hashBuilder.append("x: " + turret.getX() + " ");
+                hashBuilder.append("y: " + turret.getY() + " ");
+                hashBuilder.append("angle: " + turret.getAngleInRadians() + " ");
                 if (turret.hasTarget()) {
-                    hashBuilder.append("target:" + turret.getTarget().getObjectId());
+                    hashBuilder.append("target id: " + turret.getTarget().getObjectId());
                 } else {
-                    hashBuilder.append("target:null");
+                    hashBuilder.append("target id: null");
                 }
             }
             hashBuilder.append("\n");
         }
 
         for (AbstractAmmunition ammunition : ammunitionContainer) {
-            hashBuilder.append("ammunition:" + ammunition.getObjectId() + " ");
-            hashBuilder.append("x:" + ammunition.getX() + " ");
-            hashBuilder.append("y:" + ammunition.getY() + " ");
-            hashBuilder.append("angle:" + ammunition.getAngleInRadians() + " ");
+            hashBuilder.append("ammunition id: " + ammunition.getObjectId() + " ");
+            hashBuilder.append("x: " + ammunition.getX() + " ");
+            hashBuilder.append("y: " + ammunition.getY() + " ");
+            hashBuilder.append("angle: " + ammunition.getAngleInRadians() + " ");
             hashBuilder.append("\n");
         }
 
@@ -411,6 +414,7 @@ public class WorldController {
     }
 
     public long getNextFreeId() {
+        Gdx.app.debug(TAG, "Thread " + Thread.currentThread().getName() + " called getNextFreeId()");
         return nextFreeId++;
     }
 

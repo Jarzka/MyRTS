@@ -35,7 +35,7 @@ public class RTSCommandExecuter {
     }
 
     private void handleCommandMoveUnit(final ExecuteCommandMethod method, final RTSCommandMoveUnit rtsCommandMoveUnit) {
-        AbstractUnit unit = worldController.getUnitContainerAllUnits().findUnitById(rtsCommandMoveUnit.getObjectId());
+        AbstractUnit unit = worldController.getUnitContainer().findUnitById(rtsCommandMoveUnit.getObjectId());
 
         if (unit != null) {
             if (method == ExecuteCommandMethod.EXECUTE_LOCALLY) {
@@ -74,7 +74,7 @@ public class RTSCommandExecuter {
     }
 
     private void handleCommandSelectUnit(final ExecuteCommandMethod method, final RTSCommandSelectUnit rtsCommandSelectUnit) {
-        AbstractUnit unit = worldController.getUnitContainerAllUnits().findUnitById(rtsCommandSelectUnit.getObjectId());
+        AbstractUnit unit = worldController.getUnitContainer().findUnitById(rtsCommandSelectUnit.getObjectId());
 
         if (method == ExecuteCommandMethod.EXECUTE_LOCALLY) {
             unit.setSelected(true);

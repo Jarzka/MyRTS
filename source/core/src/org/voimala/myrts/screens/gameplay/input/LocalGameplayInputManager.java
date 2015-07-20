@@ -70,8 +70,8 @@ public class LocalGameplayInputManager {
     private void handleMouseInputSelectSingleUnit() {
         if (mouseButtonLeftPressedLastFrame && !Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
             unselectAllUnits();
-            for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainerForSpecificPlayer(
-                    GameMain.getInstance().getPlayer().getNumber()).getUnits()) {
+            for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainer().findUnitsByPlayerNumber(
+                    GameMain.getInstance().getPlayer().getNumber())) {
                 Vector3 mouseLocationInWorld = gameplayScreen.getWorldCamera().unproject(new Vector3(
                         Gdx.input.getX(),
                         Gdx.input.getY(),
@@ -116,8 +116,8 @@ public class LocalGameplayInputManager {
                         rectangleBottomRightWorld.x - rectangleBottomLeftWorld.x,
                         rectangleTopRightWorld.y - rectangleBottomRightWorld.y);
 
-                for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainerForSpecificPlayer(
-                        GameMain.getInstance().getPlayer().getNumber()).getUnits()) {
+                for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainer().findUnitsByPlayerNumber(
+                        GameMain.getInstance().getPlayer().getNumber())) {
                     if (rectangleWorld.contains(unit.getX(), unit.getY())
                             && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
                        gameplayScreen.getRTSCommandExecuter().executeCommand(ExecuteCommandMethod.EXECUTE_LOCALLY,
@@ -191,8 +191,8 @@ public class LocalGameplayInputManager {
         if (cameraManager.timeSinceCameraMovementStoppedInMs() > 100
                 && mouseButtonRightPressedLastFrame
                 && !Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
-            for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainerForSpecificPlayer(
-                    GameMain.getInstance().getPlayer().getNumber()).getUnits()) {
+            for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainer().findUnitsByPlayerNumber(
+                    GameMain.getInstance().getPlayer().getNumber())) {
                 if (unit.isSelected() && unit.getPlayerNumber() == GameMain.getInstance().getPlayer().getNumber()) {
                     handleCommandMoveUnit(unit);
                 }
@@ -222,8 +222,8 @@ public class LocalGameplayInputManager {
     }
 
     private void unselectAllUnits() {
-        for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainerForSpecificPlayer(
-                GameMain.getInstance().getPlayer().getNumber()).getUnits()) {
+        for (AbstractUnit unit : gameplayScreen.getWorldController().getUnitContainer().findUnitsByPlayerNumber(
+                GameMain.getInstance().getPlayer().getNumber())) {
             unit.setSelected(false);
         }
     }

@@ -1,11 +1,14 @@
 package org.voimala.myrts.screens.gameplay.weapons;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import org.voimala.myrts.screens.gameplay.ammunition.AbstractAmmunition;
 import org.voimala.myrts.screens.gameplay.ammunition.M4Bullet;
 import org.voimala.myrts.screens.gameplay.world.WorldController;
 
 public class M4 extends AbstractWeapon {
+
+    private static final String TAG = AbstractWeapon.class.getName();
 
     @Override
     protected void initialize() {
@@ -35,7 +38,7 @@ public class M4 extends AbstractWeapon {
                         worldController,
                         weaponOptions.clone());
             } catch (CloneNotSupportedException e) {
-                // This should never happen. Continue.
+                Gdx.app.debug(TAG, "WARNING: CloneNotSupportedException when cloning Weapon: " + e.getMessage());
             }
             m4Bullet.setPosition(position);
             m4Bullet.setAngle(angle);

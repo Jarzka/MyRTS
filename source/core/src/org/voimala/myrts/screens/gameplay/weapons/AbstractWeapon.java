@@ -15,8 +15,6 @@ public abstract class AbstractWeapon implements Cloneable {
     protected int shootTimes; /// How many times the weapon is allowed to fire before it has to be reloaded
     protected int shotsFired; /// Is used to calculate number of shots before reload.
 
-
-
     protected WeaponOptions weaponOptions = new WeaponOptions();
 
     protected WeaponState weaponState = WeaponState.IDLE;
