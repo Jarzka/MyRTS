@@ -98,14 +98,12 @@ public class TurretStateHasTarget extends AbstractTurretState {
             GeneralMuzzleFire muzzleFire = new GeneralMuzzleFire(ownerTurret.getWorldController(), spawnPoint, ownerTurret.getAngle());
             ownerTurret.getWorldController().getEffectsContainer().add(muzzleFire);
 
-            if (!ownerTurret.getWorldController().isPredictedWorld()) { // Play sound in real world
-                ownerTurret.getWorldController().getAudioEffectContainer().add(
-                        new AudioEffect(
-                                ownerTurret.getWorldController(),
-                                SoundContainer.getInstance().getSound("m4"),
-                                0.08f,
-                                new Vector2(ownerTurret.getPosition().x, ownerTurret.getPosition().y)));
-            }
+            ownerTurret.getWorldController().getAudioEffectContainer().add(
+                    new AudioEffect(
+                            ownerTurret.getWorldController(),
+                            SoundContainer.getInstance().getSound("m4"),
+                            0.08f,
+                            new Vector2(ownerTurret.getPosition().x, ownerTurret.getPosition().y)));
         }
     }
 
@@ -136,9 +134,11 @@ public class TurretStateHasTarget extends AbstractTurretState {
         return MathHelper.round(ownerTurret.getAngle(), 0) == MathHelper.round(Math.toDegrees(angleBetweenTurretAndTargetInRadians), 0);
     }
 
-    /** Return true if there are now obstacles between the turret and the target.
+    /**
+     * Return true if there are now obstacles between the turret and the target.
+     *
      * @param accuracy How many pixels the dot will be moved per loop.
-     * Zero means very accurate and consumes lots of time. Max value is 200.
+     *                 Zero means very accurate and consumes lots of time. Max value is 200.
      */
     // TODO There is a faster way to implement this:
     // http://code.tutsplus.com/tutorials/quick-tip-collision-detection-between-a-circle-and-a-line-segment--active-10632
@@ -171,7 +171,7 @@ public class TurretStateHasTarget extends AbstractTurretState {
                 for (AbstractUnit unit : ownerTurret.getWorldController().getUnitContainer().getAllUnits()) {
                     if (unit == ownerTurret.getOwnerUnit()
                             || unit == ownerTurret.getTarget()
-                            || unit.getTeam() != ownerTurret.getOwnerUnit().getTeam() ) {
+                            || unit.getTeam() != ownerTurret.getOwnerUnit().getTeam()) {
                         continue;
                     }
 

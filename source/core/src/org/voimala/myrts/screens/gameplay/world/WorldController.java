@@ -30,13 +30,7 @@ public class WorldController {
     private ArrayList<AbstractEffect> effectsToBeRemoved = new ArrayList<AbstractEffect>();
     private ArrayList<AudioEffect> audioEffectContainer = new ArrayList<AudioEffect>();
     private ArrayList<AudioEffect> audioEffectsToBeRemoved = new ArrayList<AudioEffect>();
-
     private long nextFreeId = 0;
-
-    /** If true, this is a predicted world that is used in rendering process. This world should be updated only
-     * "visually", which means that real game world should never be affected. For example if a player is predicted to
-     * lose money, the money is not decreased in real game world. */
-    private boolean isPredictedWorld = false;
 
     private long worldUpdateTick = 0;
 
@@ -52,9 +46,7 @@ public class WorldController {
 
     /** Copy constructor. */
     public WorldController(final WorldController source) {
-        /* NOTE: initialize() is not called because at the moment (24.7.2014) it is used only for creating test map.
-         * For the cloned world it is better to start from scratch when all containers are empty.
-         */
+        /* NOTE: initialize() is not called because at the moment (24.7.2014) it is used only for creating test map.*/
 
         this.gameplayScreen = source.getGameplayScreen();
 
@@ -130,7 +122,7 @@ public class WorldController {
         // The final implementation should load the map from hard disk.
         //createTestWorldSimple();
         //createTestWorldNormal();
-        createTestWorldNormalWithInputsShouldGoOutOfSync();
+        createTestWorldNormalWithInputsGoesSometimesOutOfSync();
         //createTestWorldStreeTest();
     }
 
@@ -176,7 +168,9 @@ public class WorldController {
         }
     }
 
-    private void createTestWorldNormalWithInputsShouldGoOutOfSync() {
+    /** Usually goes out of sync around SimTick 30 but can also go out of sync around SimTick 60. This is not
+     * deterministic. */
+    private void createTestWorldNormalWithInputsGoesSometimesOutOfSync() {
         for (int i = 0; i < 12; i++) {
             for (int j = 0; j < 12; j++) {
                 M4Unit unit = new M4Unit(this);
@@ -234,10 +228,6 @@ public class WorldController {
 
         removeTaggedObjects();
 
-        if (!isPredictedWorld) {
-            finishWorldUpdating();
-        }
-
         worldUpdateTick++;
         Gdx.app.debug(TAG, "World updated. WorldTick incremented and is now " + worldUpdateTick);
     }
@@ -252,10 +242,6 @@ public class WorldController {
         audioEffectsToBeRemoved.clear();
 
         for (AbstractAmmunition ammunition : ammunitionToBeRemoved) {
-            if (!isPredictedWorld()) {
-                Gdx.app.debug(TAG, "About to remove ammunition. id: " + ammunition.getObjectId());
-                Gdx.app.debug(TAG, "World is prediced: " + isPredictedWorld());
-            }
             ammunitionContainer.remove(ammunition);
         }
         ammunitionToBeRemoved.clear();
@@ -266,10 +252,6 @@ public class WorldController {
         effectsToBeRemoved.clear();
 
         for (AbstractUnit unit : unitsToBeRemoved) {
-            if (!isPredictedWorld()) {
-                Gdx.app.debug(TAG, "About to remove unit. id: " + unit.getObjectId());
-                Gdx.app.debug(TAG, "World is prediced: " + isPredictedWorld());
-            }
             unitContainer.removeUnit(unit);
         }
         unitsToBeRemoved.clear();
@@ -297,10 +279,6 @@ public class WorldController {
         for (AbstractEffect effect : effectsContainer) {
             effect.updateState(deltaTime);
         }
-    }
-
-    private void finishWorldUpdating() {
-        getGameplayScreen().getWorldRenderer().notifyWorldUpdated();
     }
 
     public GameplayScreen getGameplayScreen() {
@@ -403,14 +381,6 @@ public class WorldController {
         return digest;
     }
 
-    public boolean isPredictedWorld() {
-        return isPredictedWorld;
-    }
-
-    public void setPredictedWorld(final boolean isPredictedWorld) {
-        this.isPredictedWorld = isPredictedWorld;
-    }
-
     public long getNextFreeId() {
         Gdx.app.debug(TAG, "Thread " + Thread.currentThread().getName() + " called getNextFreeId()");
         return nextFreeId++;
@@ -418,12 +388,5 @@ public class WorldController {
 
     public long getWorldUpdateTick() {
         return worldUpdateTick;
-    }
-
-    /** When done, will return a world that is the same as target. */
-    public static WorldController synchronizeWorlds(WorldController source, final WorldController target) {
-        // TODO Currently this is just a dumb clone operation. This is a VERY time consuming process.
-        WorldController newSource = new WorldController(target);
-        return newSource;
     }
 }

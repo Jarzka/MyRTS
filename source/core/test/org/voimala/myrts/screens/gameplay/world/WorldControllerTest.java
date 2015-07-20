@@ -68,16 +68,5 @@ public class WorldControllerTest extends TestCase {
         assertEquals(originalWorldHash, worldControllerClone.getGameStateHash());
     }
 
-    @Test
-    public void testSynchronizeWith() {
-        WorldController world1 = new WorldController();
-
-        WorldController world2 = new WorldController();
-        world2.getUnitContainer().getAllUnits().clear();
-
-        world2 = WorldController.synchronizeWorlds(world2, world1);
-
-        assertEquals(world1.getGameStateHash(), world2.getGameStateHash());
-    }
-
+    // TODO Create two simulations are make sure they are deterministic
 }

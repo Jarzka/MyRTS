@@ -144,7 +144,7 @@ public class GameplayScreen extends AbstractGameScreen {
 
     private void updateWorldUsingFixedPhysics() {
         // Update game world when 1 / fixedPhysicsFps seconds have passed. Use a constant delta time.
-        final long fixedPhysicsFps = 20;
+        final long fixedPhysicsFps = 30;
         if (System.currentTimeMillis() >= lastWorldUpdateTimestamp + (long) (((float) 1 / (float) fixedPhysicsFps) * 1000)) {
             float deltaTime = (float) 1 / (float) fixedPhysicsFps;
             worldController.updateWorld(deltaTime);

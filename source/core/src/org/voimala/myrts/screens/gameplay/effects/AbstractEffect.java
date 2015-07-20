@@ -27,16 +27,6 @@ public abstract class AbstractEffect extends AbstractGameObject {
     @Override
     public void initializeId() {
         super.initializeId();
-
-        if (!worldController.isPredictedWorld()) {
-            Gdx.app.debug(TAG, "New effect created at world update " + worldController.getWorldUpdateTick()
-                    + " id: " + getObjectId()
-                    + ". x: " + getX()
-                    + ". y: " + getY()
-                    + ". angle: " + getAngle());
-            Gdx.app.debug(TAG, "World is predicted: " + worldController.isPredictedWorld());
-        }
-
     }
 
     public float getLivedLifeAsPercent() {

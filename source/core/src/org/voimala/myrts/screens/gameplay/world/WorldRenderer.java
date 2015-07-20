@@ -30,7 +30,6 @@ public class WorldRenderer implements Disposable {
     private SpriteBatch batch;
     private SpriteBatch hudBatch;
     private WorldController worldController;
-    private WorldController worldControllerPredicted;
     private ShapeRenderer shapeRenderer = new ShapeRenderer();
 
     private int chatMessagesXScreen = 80;
@@ -152,32 +151,22 @@ public class WorldRenderer implements Disposable {
 
         batch.setProjectionMatrix(worldController.getGameplayScreen().getWorldCamera().combined);
 
-        //renderMode = RenderMode.WORLD_STATE; // For testing purposes only
+        renderMode = RenderMode.WORLD_STATE; // For testing purposes only
 
-        WorldController worldToBeRendered = worldController;
-        if (renderMode == RenderMode.WORLD_STATE_WITH_PHYSICS_PREDICTION) {
-            preparePredictedWorldToBeRendered(deltaTime);
-            worldToBeRendered = worldControllerPredicted;
-        }
 
         batch.begin();
         renderGround();
-        renderUnits(worldToBeRendered);
-        renderAmmunition(worldToBeRendered);
-        renderEffects(worldToBeRendered);
+        renderUnits(worldController);
+        renderAmmunition(worldController);
+        renderEffects(worldController);
         batch.end();
-        renderUnitEnergyBars(worldToBeRendered);
+        renderUnitEnergyBars(worldController);
         renderHud();
         renderUnitSelectionRectangle();
         renderInfoText(renderMode);
-        renderDebugHelpers(worldToBeRendered);
+        renderDebugHelpers(worldController);
         renderNetworkText();
         renderChat();
-    }
-
-    private void preparePredictedWorldToBeRendered(final float deltaTime) {
-        worldControllerPredicted.setPredictedWorld(true);
-        worldControllerPredicted.updateWorld(deltaTime); // TODO Shooting with many players goes out of sync
     }
 
     private void renderGround() {
@@ -187,13 +176,12 @@ public class WorldRenderer implements Disposable {
                 Sprite sprite = SpriteContainer.getInstance().getSprite("grass1");
                 sprite.setPosition(i * worldController.TILE_SIZE_PIXELS, j * worldController.TILE_SIZE_PIXELS);
                 sprite.draw(batch);
-
             }
         }
     }
 
-    private void renderUnits(final WorldController worldToBeRendered) {
-        for (AbstractUnit unit : worldToBeRendered.getUnitContainer().getAllUnits()) {
+    private void renderUnits(final WorldController worldController) {
+        for (AbstractUnit unit : worldController.getUnitContainer().getAllUnits()) {
             // Draw unit
             Sprite unitSprite = unit.getSprite();
             if (unitSprite != null) {
@@ -218,8 +206,8 @@ public class WorldRenderer implements Disposable {
         }
     }
 
-    private void renderAmmunition(final WorldController worldToBeRendered) {
-        for (AbstractAmmunition ammunition : worldToBeRendered.getAmmunitionContainer()) {
+    private void renderAmmunition(final WorldController worldController) {
+        for (AbstractAmmunition ammunition : worldController.getAmmunitionContainer()) {
 
             Sprite sprite = ammunition.getSprite();
 
@@ -233,8 +221,8 @@ public class WorldRenderer implements Disposable {
         }
     }
 
-    private void renderEffects(final WorldController worldToBeRendered) {
-        for (AbstractEffect effect : worldToBeRendered.getEffectsContainer()) {
+    private void renderEffects(final WorldController worldController) {
+        for (AbstractEffect effect : worldController.getEffectsContainer()) {
 
             Sprite sprite = effect.getSprite();
 
@@ -247,8 +235,8 @@ public class WorldRenderer implements Disposable {
         }
     }
 
-    private void renderUnitEnergyBars(final WorldController worldToBeRendered) {
-        for (AbstractUnit unit : worldToBeRendered.getUnitContainer().getAllUnits()) {
+    private void renderUnitEnergyBars(final WorldController worldController) {
+        for (AbstractUnit unit : worldController.getUnitContainer().getAllUnits()) {
             if (unit.isSelected()) {
                 shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
                 shapeRenderer.setColor(Color.WHITE);
@@ -317,16 +305,16 @@ public class WorldRenderer implements Disposable {
         hudBatch.end();
     }
 
-    private void renderDebugHelpers(WorldController worldToBeRendered) {
+    private void renderDebugHelpers(WorldController worldController) {
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            for (AbstractUnit unit : worldToBeRendered.getUnitContainer().getAllUnits()) {
+            for (AbstractUnit unit : worldController.getUnitContainer().getAllUnits()) {
                 for (AbstractTurret turret : unit.getTurrets()) {
                     if (turret.hasTarget()) {
                         shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
                         shapeRenderer.setColor(0, 255, 0, (float) 0.5);
-                        shapeRenderer.line(worldToBeRendered.getGameplayScreen().getWorldCamera().project(
+                        shapeRenderer.line(worldController.getGameplayScreen().getWorldCamera().project(
                                         new Vector3(turret.getX(), turret.getY(), 0)),
-                                worldToBeRendered.getGameplayScreen().getWorldCamera().project(
+                                worldController.getGameplayScreen().getWorldCamera().project(
                                         new Vector3(turret.getTarget().getX(), turret.getTarget().getY(), 0))
                         );
                         shapeRenderer.end();
@@ -401,23 +389,5 @@ public class WorldRenderer implements Disposable {
 
     public void setWorldController(final WorldController worldController) {
         this.worldController = worldController;
-    }
-
-    /** WorldController uses this method to notify WorldRenderer that the game world has been updated */
-    public void notifyWorldUpdated() {
-        /* In singleplayer mode the game world is always rendered as it is. However, in multiplayer mode
-         * physics prediction is used. When the actual game world is updated, it is used as a base for the next
-         * predicted game world. */
-        if (worldController.getGameplayScreen().getGameMode() == GameMode.MULTIPLAYER) {
-                if (worldControllerPredicted == null) {
-                    worldControllerPredicted = new WorldController(worldController);
-                } else {
-                    worldControllerPredicted = WorldController.synchronizeWorlds(worldControllerPredicted, worldController);
-                }
-
-                // Make sure the predicted world does not have any relationship to the original world
-                worldControllerPredicted.setGameplayScreen(null);
-                worldControllerPredicted.setPredictedWorld(true);
-        }
     }
 }

@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'de.richsource.gradle.plugins:gwt-gradle-plugin:0.4'
-        classpath 'com.android.tools.build:gradle:0.10+'
+        classpath 'com.android.tools.build:gradle:1.1.1'
         classpath 'com.github.jtakakura:gradle-robovm-plugin:0.0.7'
     }
 }
@@ -18,7 +18,7 @@ allprojects {
     version = '1.0'
     ext {
         appName = 'myrts'
-        gdxVersion = '1.0.1'
+        gdxVersion = '1.6.4'
         roboVMVersion = '0.0.12'
     }
 
