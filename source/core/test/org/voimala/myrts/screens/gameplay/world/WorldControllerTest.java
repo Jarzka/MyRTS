@@ -31,7 +31,7 @@ public class WorldControllerTest extends TestCase {
             assertEquals(ammunition.getWorldController(), worldControllerClone);
         }
 
-        // Check that turret have a correct owner
+        // Check that turrest have a correct owner
 
         for (AbstractUnit unit : worldControllerClone.getUnitContainer().getAllUnits()) {
             for (AbstractTurret turret : unit.getTurrets()) {
@@ -68,5 +68,5 @@ public class WorldControllerTest extends TestCase {
         assertEquals(originalWorldHash, worldControllerClone.getGameStateHash());
     }
 
-    // TODO Create two simulations are make sure they are deterministic
+    // TODO Create two simulations and make sure they are deterministic
 }
