@@ -1,6 +1,6 @@
 # MyRTS
 
-**NOTE: This project is old. It was created mainly for fun and learning purposes. If I wrote this project today, I would do some things differently. Still, the code works for the most part, so hopefully you find it useful if you are interested in creating your own multiplayer RTS game.**
+**NOTE: This project is old. It was created mainly for fun and learning purposes. If I wrote this project today, I would do some things differently. Still, the code works (for the most part), so hopefully you find it useful if you are interested in creating your own multiplayer RTS game.**
 
 MyRTS is a multi player Real Time Strategy game prototype written in Java using libgdx library. The game is currently in very early stage but some core features have been implemented already like giving simple commands to units and synchronizing the game over network.
 
